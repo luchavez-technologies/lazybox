@@ -14,11 +14,22 @@
 ######################################
 
 # Ignore variable data
-/.env
+#/.env
 /backups/*
 
 # Ignore Data dirs
-/data/www/*
+/data/www/PHP5.3/*
+/data/www/PHP5.4/*
+/data/www/PHP5.5/*
+/data/www/PHP5.6/*
+/data/www/PHP7.0/*
+/data/www/PHP7.1/*
+/data/www/PHP7.2/*
+/data/www/PHP7.3/*
+/data/www/PHP7.4/*
+/data/www/PHP8.0/*
+/data/www/PHP8.1/*
+/data/www/PHP8.2/*
 
 # Ignore Certificate Authority
 /ca/*
