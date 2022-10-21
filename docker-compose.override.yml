@@ -9,29 +9,29 @@ services:
   httpd:
     volumes:
       - ~/.config/composer:/home/devilbox/.config/composer:ro${MOUNT_OPTIONS}
-#  minio:
-#    image: 'minio/minio:latest'
-#    ports:
-#      - '${FORWARD_MINIO_PORT:-9000}:9000'
-#      - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
-#    environment:
-#      MINIO_ROOT_USER: 'root'
-#      MINIO_ROOT_PASSWORD: 'password'
-#    networks:
-#      app_net:
-#        ipv4_address: 172.16.238.17
-#    volumes:
-#      - 'devilbox-minio:/data/minio'
-#    command: minio server /data/minio --console-address ":8900"
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-#      retries: 3
-#      timeout: 5s
-#    # For ease of use always automatically start these:
-#    depends_on:
-#      - bind
-#      - php
-#      - httpd
+  minio:
+    image: 'minio/minio:latest'
+    ports:
+      - '${FORWARD_MINIO_PORT:-9000}:9000'
+      - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+    environment:
+      MINIO_ROOT_USER: 'root'
+      MINIO_ROOT_PASSWORD: 'password'
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.17
+    volumes:
+      - 'devilbox-minio:/data/minio'
+    command: minio server /data/minio --console-address ":8900"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      retries: 3
+      timeout: 5s
+    # For ease of use always automatically start these:
+    depends_on:
+      - bind
+      - php
+      - httpd
   # -----------------------------------------------------------------------------------------------
   # Ngrok
   # -----------------------------------------------------------------------------------------------
@@ -52,8 +52,8 @@ services:
       - php
       - httpd
 
-#volumes:
-#  # ------------------------------------------------------------
-#  # Misc
-#  # ------------------------------------------------------------
-#  devilbox-minio:
+volumes:
+  # ------------------------------------------------------------
+  # Misc
+  # ------------------------------------------------------------
+  devilbox-minio:
