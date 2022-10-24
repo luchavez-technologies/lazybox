@@ -161,6 +161,7 @@
 
 # Ignore custom bash and other confi files
 /bash/*
+!/bash/aliases.sh
 !/bash/bashrc.sh-example
 !/bash/README.md
 
