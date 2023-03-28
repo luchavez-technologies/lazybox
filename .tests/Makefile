@@ -6,9 +6,21 @@ endif
 # -------------------------------------------------------------------------------------------------
 # Misc Targets
 # -------------------------------------------------------------------------------------------------
-update-readme:
+.PHONY: update-readme
+update-readme: _update-readme-modules
+update-readme: _update-readme-tools
+
+.PHONY: _update-readme-modules
+_update-readme-modules:
 	cat "../README.md" \
 		| perl -0 -pe "s#<!-- modules -->.*<!-- /modules -->#<!-- modules -->\n$$(./scripts/get-modules.sh)\n<!-- /modules -->#s" \
+		> "../README.md.tmp"
+	yes | mv -f "../README.md.tmp" "../README.md"
+
+.PHONY: _update-readme-tools
+_update-readme-tools:
+	cat "../README.md" \
+		| perl -0 -pe "s#<!-- tools -->.*<!-- /tools -->#<!-- tools -->\n$$(./scripts/get-tools.sh)\n<!-- /tools -->#s" \
 		> "../README.md.tmp"
 	yes | mv -f "../README.md.tmp" "../README.md"
 
@@ -51,7 +63,7 @@ pull: ../.env
 ###
 start: ../.env
 	@$(MAKE) --no-print-directory configure KEY=HOST_PATH_HTTPD_DATADIR VAL=.tests/www
-	@$(MAKE) --no-print-directory configure KEY=DEBUG_COMPOSE_ENTRYPOINT VAL=2
+	@$(MAKE) --no-print-directory configure KEY=DEBUG_ENTRYPOINT VAL=3
 	@$(MAKE) --no-print-directory configure KEY=NEW_UID VAL=$$(id -u)
 	@$(MAKE) --no-print-directory configure KEY=NEW_GID VAL=$$(id -g)
 	@$(PWD)/scripts/compose-start.sh
