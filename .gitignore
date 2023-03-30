@@ -241,4 +241,4 @@ $RECYCLE.BIN/
 
 # data/www related
 /data/www/*
-!/data/www/templates
+!/data/www/.keepme
