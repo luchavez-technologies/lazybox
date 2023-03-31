@@ -226,3 +226,32 @@ function php_change() {
     fi
   fi
 }
+
+function php_default() {
+  # check if no argument is given
+  if [ $# -eq 0 ]; then
+    echo "Please enter vhost:"
+    read vhost
+
+    if [ -z $vhost ]; then
+      echo "The vhost is empty."
+      exit
+    fi
+  else
+    # check if input is not empty
+    if [ -n "$1" ]; then
+    vhost=$1
+    fi
+  fi
+
+  # make sure to come back first to root
+  cd /shared/httpd
+
+  if [ -d $vhost ]; then
+    # change directory
+    cd $vhost
+
+    # remove .devilbox folder
+    rm -rf .devilbox
+  fi
+}
