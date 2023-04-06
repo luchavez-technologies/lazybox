@@ -6,10 +6,11 @@
 # docker-compose up -d httpd mysql redis minio ngrok
 
 # check if no argument is given
+shell=""
 if [ $# -eq 0 ]; then
   # ask for user input
   echo "Please enter PHP container (default: php): "
-  read input
+  read -r input
   # check if input is empty
   if [ -z "$input" ]; then
     # do something if input is empty
@@ -24,6 +25,11 @@ else
 
   # store initial argument to shell variable
   shell=$1
+fi
+
+# make sure shell variable starts with php
+if [[ ! "$shell" == php* ]]; then
+  shell="php"
 fi
 
 # decide what program to use
