@@ -277,14 +277,14 @@ services:
       - "${LOCAL_LISTEN_ADDR}${HOST_PORT_NGROK:-4040}:4040"
     networks:
       app_net:
-        ipv4_address: 172.16.238.202
+        ipv4_address: 172.16.238.18
     depends_on:
       - bind
       - php
       - httpd
 
   # -----------------------------------------------------------------------------------------------
-  # Ngrok
+  # Minio
   # -----------------------------------------------------------------------------------------------
   minio:
     image: 'minio/minio:latest'
