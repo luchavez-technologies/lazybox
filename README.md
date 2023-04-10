@@ -65,8 +65,6 @@ To run Redis and/or MySQL databases, just add them at the very end when you run 
 #### 3. How to run `ngrok`?
 
 To run Ngrok, just add it at the very end when you run the `Up` script like this: `./up.sh php74 ngrok`<br/>
-For devices using M2 chip like Macbook, it is still getting fixed so please use the one from their website or use an alternative.<br/>
-<br/>
 Btw, the token used is mine so please replace it. You can find it at the very bottom of the [.env](.env) file.<br/>
 I just followed this [official documentation](https://devilbox.readthedocs.io/en/latest/custom-container/enable-ngrok.html) from Devilbox when setting up Ngrok. Please refer to that if you encounter an issue.
 
