@@ -45,7 +45,7 @@ cd devilbox
 
 **Note #1**: These bash aliases are only usable inside the Devilbox terminal.<br/>
 **Note #2**: Btw, these bash aliases can be found at `bash/aliases.sh`. You are free to add your own bash aliases or modify existing ones.<br/>
-**Note #3**: These bash aliases will ask for user input when no arguments are provided.</br>
+**Note #3**: These bash aliases will ask for user input when no arguments are provided.<br/>
 **Note #4**: Make sure the PHP version of Devilbox terminal matches the to-be-created or to-be-cloned Laravel app.
 
 ## FAQs
