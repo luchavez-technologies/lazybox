@@ -1,7 +1,8 @@
 # Customized Devilbox for Laravel Development
 
 This is just a copy of original [Devilbox repository](https://github.com/cytopia/devilbox). I just added some bash aliases and shell scripts to quickly start your Laravel Development.<br/>
-To read more about Devilbox, please click the original [README](DEVILBOX.md).
+<br/>
+To learn more about Devilbox, please take a look at the original [README](DEVILBOX.md) or visit the [official documentations](https://devilbox.readthedocs.io).
 
 ## Installation
 
@@ -15,8 +16,8 @@ git clone git@github.com:luchmewep/laravel-devilbox.git devilbox
 # Go to Devilbox's folder
 cd devilbox
 
-# Start the basic Devilbox containers (php, httpd, bind) and mysql as well
-./up.sh mysql redis
+# Start the basic Devilbox containers (php, httpd, bind), another PHP containers, as well as MySQL, Redis, and Minio
+./up.sh php54 php74 php82 mysql redis minio
 ```
 
 ## Usage
@@ -29,7 +30,7 @@ cd devilbox
 | Stop    | `./stop.sh` | Stops all running Devilbox containers. You can turn them back on with the `Up` script.                                                                 |
 | Down    | `./down.sh` | Stops and deletes all Devilbox containers and their volumes. The deleted volumes are irrecoverable.                                                    |
 
-**Note #1**: You don't need to run `./shell.sh` anymore since it's already included in the `Up` script.<br/>
+**Note #1**: You don't need to run [./shell.sh](shell.sh) anymore since it's already included in the `Up` script.<br/>
 **Note #2**: The databases will be included in the deleted volumes so make sure to back it up if necessary.
 
 ### Custom Bash Aliases for Devilbox Shell
@@ -44,7 +45,7 @@ cd devilbox
 
 
 **Note #1**: These bash aliases are only usable inside the Devilbox terminal.<br/>
-**Note #2**: Btw, these bash aliases can be found at `bash/aliases.sh`. You are free to add your own bash aliases or modify existing ones.<br/>
+**Note #2**: These bash aliases can be found at [bash/aliases.sh](bash/aliases.sh). You are free to add your own bash aliases or modify existing ones.<br/>
 **Note #3**: These bash aliases will ask for user input when no arguments are provided.<br/>
 **Note #4**: Make sure the PHP version of Devilbox terminal matches the to-be-created or to-be-cloned Laravel app.
 
@@ -75,4 +76,4 @@ Minio is an S3-compatible storage service. You can use it for local development 
 
 ## Questions
 
-If you have questions, feel free to send an email at [jamescarloluchavez@gmail.com](mailto:jamescarloluchavez@gmail.com).
+If you have questions, feel free to send an email at [`jamescarloluchavez@gmail.com`](mailto:jamescarloluchavez@gmail.com).
