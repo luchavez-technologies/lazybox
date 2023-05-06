@@ -89,6 +89,15 @@ I just followed this [official documentation](https://devilbox.readthedocs.io/en
 To run Minio, just add it at the very end when you run the `Up` script like this: `./up.sh php74 minio`<br/>
 Minio is an S3-compatible storage service. You can use it for local development if you don't have an S3 instance yet.
 
+#### 5. How to fix multiple NodeJS apps trying to run on the same port number?
+
+When running multiple NodeJS apps at the same time, there is a possibility that the designated port number is already taken.
+And if the port is already taken, it's possible that when you visit your app, it will display the other app or show a Nginx error.
+That is because your app's Devilbox config should be updated with the port change.
+
+To fix this, just run the `port_change` bash function. It will ask for your app's `vhost name` and `port number` where it is currently running.
+Don't forget to press `Reload` on `C&C` page afterwards.
+
 ## Questions
 
 If you have questions, feel free to send an email at [`jamescarloluchavez@gmail.com`](mailto:jamescarloluchavez@gmail.com).
