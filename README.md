@@ -1,6 +1,6 @@
-# Customized Devilbox for Laravel Development
+# Customized Devilbox for Laravel and NodeJS Development
 
-This is just a copy of original [Devilbox repository](https://github.com/cytopia/devilbox). I just added some bash aliases and shell scripts to quickly start your Laravel Development.<br/>
+This is just a copy of original [Devilbox repository](https://github.com/cytopia/devilbox). I just added some bash aliases and shell scripts to quickly start your Laravel and NodeJS Development.<br/>
 <br/>
 To learn more about Devilbox, please take a look at the original [README](DEVILBOX.md) or visit the [official documentations](https://devilbox.readthedocs.io).
 
@@ -8,16 +8,16 @@ To learn more about Devilbox, please take a look at the original [README](DEVILB
 
 ```shell
 # Clone via HTTP
-git clone https://github.com/luchmewep/laravel-devilbox.git devilbox
+git clone https://github.com/luchmewep/simple-devilbox.git devilbox
 
 # Or, clone via SSH
-git clone git@github.com:luchmewep/laravel-devilbox.git devilbox
+git clone git@github.com:luchmewep/simple-devilbox.git devilbox
 
 # Go to Devilbox's folder
 cd devilbox
 
 # Start the basic Devilbox containers (php, httpd, bind), another PHP containers, as well as MySQL, Redis, and Minio
-./up.sh php54 php74 php82 mysql redis minio
+./up.sh mysql redis minio php54 php74 php82
 ```
 
 ## Usage
@@ -35,17 +35,32 @@ cd devilbox
 
 ### Custom Bash Aliases for Devilbox Shell
 
-| Alias          | What does it do?                                                             |
-|----------------|------------------------------------------------------------------------------|
-| `laravel_new`  | Creates a new Laravel app using `composer` inside the specified `vhost`.     |
-| `git_clone`    | Clones a new Laravel app using `git` inside the specified `vhost`.           |
-| `laravel_link` | Symlinks the `public` folder of your Laravel app to your `vhost`'s `htdocs`. |
-| `php_change`   | Changes the PHP container of a `vhost`.                                      |
-| `php_default`  | Changes the PHP container of a `vhost` to default.                           |
+#### Main Functions
 
+| Alias           | What does it do?                                                         |
+|-----------------|--------------------------------------------------------------------------|
+| `laravel_new`   | Creates a new Laravel app using `composer` inside the specified `vhost`. |
+| `laravel_clone` | Clones a new Laravel app using `git` inside the specified `vhost`.       |
+| `next_new`      | Creates a new NextJS app using `npx` inside the specified `vhost`.       |
+| `next_clone`    | Clones a new NextJS app using `git` inside the specified `vhost`.        |
+| `gatsby_new`    | Creates a new GatsbyJS app using `npx` inside the specified `vhost`.     |
+| `gatsby_clone`  | Clones a new GatsbyJS app using `git` inside the specified `vhost`.      |
+| `vite_new`      | Creates a new ViteJS app using `npx` inside the specified `vhost`.       |
+| `vite_clone`    | Clones a new ViteJS app using `git` inside the specified `vhost`.        |
+| `astro_new`     | Creates a new AstroJS app using `npx` inside the specified `vhost`.      |
+| `astro_clone`   | Clones a new AstroJS app using `git` inside the specified `vhost`.       |
+
+#### Other Functions
+
+| Alias         | What does it do?                                                     |
+|---------------|----------------------------------------------------------------------|
+| `symlink`     | Symlinks the `public` folder of your app to your `vhost`'s `htdocs`. |
+| `php_change`  | Changes the PHP container of a `vhost`.                              |
+| `php_default` | Changes the PHP container of a `vhost` to `default`.                 |
+| `port_change` | Changes the port number of a `vhost` for reverse proxy.              |
 
 **Note #1**: These bash aliases are only usable inside the Devilbox terminal.<br/>
-**Note #2**: These bash aliases can be found at [bash/aliases.sh](bash/aliases.sh). You are free to add your own bash aliases or modify existing ones.<br/>
+**Note #2**: These bash aliases can be found at the [bash folder](bash). You are free to add your own bash aliases or modify existing ones.<br/>
 **Note #3**: These bash aliases will ask for user input when no arguments are provided.<br/>
 **Note #4**: Make sure the PHP version of Devilbox terminal matches the to-be-created or to-be-cloned Laravel app.
 
