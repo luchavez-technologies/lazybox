@@ -48,7 +48,7 @@ function port_change() {
       mkdir .devilbox 2>/dev/null
       touch .devilbox/backend.cfg 2>/dev/null
       echo "conf:rproxy:http:172.16.238.10:$port" > .devilbox/backend.cfg
-      echo_success "✅ Go to C&C page then click 'Reload' on 'watcherd' daemon: http://localhost/cnc.php"
+      echo_success "🔄 Go to C&C page then click 'Reload' on 'watcherd' daemon 👉 \033[1mhttp://localhost/cnc.php"
     fi
   fi
 }

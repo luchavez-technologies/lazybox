@@ -59,20 +59,34 @@ function laravel_new() {
   cd "$name" || stop_function
 
   # create new laravel app based on the inputs
-  composer create-project laravel/laravel$version "$name"
+  composer create-project "laravel/laravel$version" "$name" 2>/dev/null
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  php_change "$name" "$php_version"
+  if [ -n "$php_version" ]; then
+    php_change "$name" "$php_version"
+  else
+    php_default "$name"
+  fi
 
   # cd to project
   cd "$name" || stop_function
 
+  env=".env"
+  # run migrate:fresh --seed if .env exists
+  if [ -f $env ]; then
+    replace_db_host
+    replace_db_name "$name"
+    replace_redis_host
+    pa migrate --seed 2>/dev/null
+  fi
+
   # exit message
-  echo_success "Welcome to your new app ($name)! Happy coding! 🎉"
-  echo_error "Here's your app URL: https://$name.dvl.to"
+  echo_success "👋 Welcome to your new app ($name)! Happy coding! 🎉"
+  echo_success "🚀 Here's your app URL 👉 \033[1mhttps://$name.dvl.to"
 }
 
+# Clone and run a Laravel app
 function laravel_clone() {
   php_version=""
   url=""
@@ -132,12 +146,66 @@ function laravel_clone() {
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  php_change "$name" "$php_version"
+  if [ -n "$php_version" ]; then
+    php_change "$name" "$php_version"
+  else
+    php_default "$name"
+  fi
 
   # cd to project
   cd "$name" || stop_function
 
+  # install dependencies
+  composer install 2>/dev/null
+
+  # copy .env.example to .env
+  env=".env"
+  if [ ! -f $env ]; then
+      cp .env.example "$env" 2>/dev/null
+  fi
+
+  # run migrate:fresh --seed if .env exists
+  if [ -f $env ]; then
+    replace_db_host
+    replace_db_name "$name"
+    replace_redis_host
+    pa migrate --seed 2>/dev/null
+  fi
+
   # exit message
-  echo_success "Welcome to your newly cloned app ($name)! Happy coding! 🎉"
-  echo_success "Here's your app URL: https://$name.dvl.to"
+  echo_success "👋 Welcome to your newly cloned app ($name)! Happy coding! 🎉"
+  echo_success "🚀 Here's your app URL 👉 \033[1mhttps://$name.dvl.to"
+}
+
+# Replace DB_HOST on .env with Devilbox's DB URL
+function replace_db_host() {
+  text_replace "DB_HOST=127.0.0.1" "DB_HOST=172.16.238.12" .env 2>/dev/null
+}
+
+# Replace DB_DATABASE on .env with vhost name
+function replace_db_name() {
+  if [ $# -eq 0 ]; then
+    echo "Please enter Laravel app name:"
+    read -r app
+
+    if [ -z "$app" ]; then
+      echo_error "The app name is empty!"
+      stop_function
+    fi
+  else
+    if [ -n "$1" ]; then
+      app=$1
+    else
+      echo_error "The app name is empty!"
+      stop_function
+    fi
+  fi
+
+  app=${app//-/_}
+  text_replace "DB_DATABASE=laravel" "DB_DATABASE=$app" .env 2>/dev/null
+}
+
+# Replace REDIS_HOST on .env with Devilbox's DB URL
+function replace_redis_host() {
+  text_replace "REDIS_HOST=127.0.0.1" "REDIS_HOST=172.16.238.14" .env 2>/dev/null
 }

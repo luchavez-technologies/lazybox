@@ -14,7 +14,7 @@ function php_change() {
     read -r php_version
 
     if [ -z "$php_version" ]; then
-      echo_error "The container name is empty."
+      echo_error "The container name is empty!"
       stop_function
     fi
   else
@@ -30,7 +30,7 @@ function php_change() {
     if [ -n "$2" ]; then
       php_version=$2
     else
-      echo_error "The container name is empty."
+      echo_error "The container name is empty!"
       stop_function
     fi
   fi
@@ -48,7 +48,7 @@ function php_change() {
       mkdir .devilbox 2>/dev/null
       touch .devilbox/backend.cfg 2>/dev/null
       echo "conf:phpfpm:tcp:$php_version:9000" > .devilbox/backend.cfg
-      echo "✅ Go to C&C page then click 'Reload' on 'watcherd' daemon: http://localhost/cnc.php"
+      echo_success "🔄 Go to C&C page then click 'Reload' on 'watcherd' daemon 👉 \033[1mhttp://localhost/cnc.php"
     fi
   fi
 }
@@ -80,6 +80,6 @@ function php_default() {
 
     # remove .devilbox folder
     rm -rf .devilbox
-    echo_success "✅ Go to C&C page then click 'Reload' on 'watcherd' daemon: http://localhost/cnc.php"
+    echo_success "🔄 Go to C&C page then click 'Reload' on 'watcherd' daemon 👉 \033[1mhttp://localhost/cnc.php"
   fi
 }

@@ -60,11 +60,12 @@ function text_replace() {
     fi
   fi
 
-  # replace the text
-  if sed -i "s/$search/$replace/g" "$file_name" 2>/dev/null; then
+  # check if text actually exists
+  if grep -q "$search" "$file_name"; then
+    sed -i "s/$search/$replace/g" "$file_name" 2>/dev/null
     echo_success "✅ Successfully replaced '$search' with '$replace'."
   else
-    echo_error "❌ Failed to replace '$search' with '$replace'."
+    echo_error "❌ Failed to find '$search' in '$file_name'."
   fi
 }
 
@@ -76,11 +77,11 @@ function symlink() {
     read -r vhost
 
     if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty."
+      echo_error "The vhost is empty!"
       stop_function
     fi
 
-    echo "Please enter laravel app name (default: '$vhost'):"
+    echo "Please enter PHP app name (default: '$vhost'):"
     read -r app
 
     if [ -z "$app" ]; then
@@ -91,7 +92,7 @@ function symlink() {
     if [ -n "$1" ]; then
       vhost=$1
     else
-      echo_error "The vhost is empty."
+      echo_error "The vhost is empty!"
       stop_function
     fi
 
@@ -113,9 +114,9 @@ function symlink() {
 
     # symlink public folder of the new laravel app to htdocs
     if ln -s "$app/public" htdocs 2>/dev/null; then
-      echo_success "Successfully symlinked $app/public to htdocs."
+      echo_success "👍 Successfully symlinked '$app/public' to 'htdocs'."
     else
-      echo_error "Failed to symlink $app/public to htdocs."
+      echo_error "👎 Failed to symlink '$app/public' to 'htdocs'."
     fi
   fi
 }

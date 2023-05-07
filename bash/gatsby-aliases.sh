@@ -1,6 +1,7 @@
 # Create and run a new GatsbyJS app
 function gatsby_new() {
   gatsby_version="latest"
+  gatsby_port=8000
   # check if no argument is given
   if [ $# -eq 0 ]; then
     # ask for app name
@@ -13,7 +14,20 @@ function gatsby_new() {
 
     # ask for GatsbyJS version
     echo "Please enter GatsbyJS version (default: 'latest'):"
-    read -r gatsby_version
+    read -r version
+
+    if [ -n "$version" ]; then
+        gatsby_version=$version
+    fi
+
+    # ask for GatsbyJS port
+    echo "Note: Make sure that the port $gatsby_port is not taken. If taken, specify a new port below."
+    echo "Please enter GatsbyJS port (default: '$gatsby_port'):"
+    read -r port
+
+    if [ -n "$port" ]; then
+        gatsby_port=$port
+    fi
   else
     # set as name input is not empty
     if [ -n "$1" ]; then
@@ -23,6 +37,11 @@ function gatsby_new() {
     # set as gatsby_version if input is not empty
     if [ -n "$2" ]; then
       gatsby_version=$2
+    fi
+
+    # set as gatsby_port if input is not empty
+    if [ -n "$3" ]; then
+      gatsby_port=$3
     fi
   fi
 
@@ -36,20 +55,20 @@ function gatsby_new() {
   cd "$name" || stop_function
 
   # create new laravel app based on the inputs
-  npx gatsby@"$gatsby_version" new "$name"
+  npx gatsby@"$gatsby_version" new "$name" 2>/dev/null
 
   # add the devilbox config
-  port_change "$name" 8000
+  port_change "$name" "$gatsby_port"
 
   # cd to project
   cd "$name" || stop_function
 
   # make sure to expose GatsbyJS to the Docker network
-  text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0\"" "package.json"
+  text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0 --port $gatsby_port\"" "package.json"
 
   # exit message
-  echo_success "Welcome to your new app ($name)! Happy coding! 🎉"
-  echo_success "Here's your app URL: https://$name.dvl.to"
+  echo_success "👋 Welcome to your new app ($name)! Happy coding! 🎉"
+  echo_success "🚀 Here's your app URL 👉 \033[1mhttps://$name.dvl.to"
 
   # run the app
   npm run develop
@@ -58,6 +77,7 @@ function gatsby_new() {
 # Clone and run a GatsbyJS app
 function gatsby_clone() {
   url=""
+  gatsby_port=8000
   # check if no argument is given
   if [ $# -eq 0 ]; then
     # ask for Git URL
@@ -78,6 +98,15 @@ function gatsby_clone() {
       # do something if input is empty
       name="app-$RANDOM"
     fi
+
+    # ask for GatsbyJS port
+    echo "Note: Make sure that the port $gatsby_port is not taken. If taken, specify a new port below."
+    echo "Please enter GatsbyJS port (default: '$gatsby_port'):"
+    read -r port
+
+    if [ -n "$port" ]; then
+        gatsby_port=$port
+    fi
   else
     # check if input is not empty
     if [ -n "$1" ]; then
@@ -88,6 +117,11 @@ function gatsby_clone() {
     if [ -n "$2" ]; then
       # do something if input is empty
       name=$2
+    fi
+
+    # set as gatsby_port if input is not empty
+    if [ -n "$3" ]; then
+      gatsby_port=$3
     fi
   fi
 
@@ -104,7 +138,7 @@ function gatsby_clone() {
   git clone "$url" "$name"
 
   # add the devilbox config
-  port_change "$name" 8000
+  port_change "$name" "$gatsby_port"
 
   # cd to project
   cd "$name" || stop_function
@@ -118,14 +152,14 @@ function gatsby_clone() {
   fi
 
   # make sure to expose GatsbyJS to the Docker network
-  text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0\"" "package.json"
+  text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0 --port $gatsby_port\"" "package.json"
 
   # install dependencies
-  $runner install
+  $runner install 2>/dev/null
 
   # exit message
-  echo_success "Welcome to your newly cloned app ($name)! Happy coding! 🎉"
-  echo_success "Here's your app URL: https://$name.dvl.to"
+  echo_success "👋 Welcome to your newly cloned app ($name)! Happy coding! 🎉"
+  echo_success "🚀 Here's your app URL 👉 \033[1mhttps://$name.dvl.to"
 
   # run the app
   $runner run develop
