@@ -1,6 +1,5 @@
 # This will replace a text with another text inside a file
 function text_replace() {
-  # check if no argument is given
   if [ $# -eq 0 ]; then
     echo "Please enter the search text:"
     read -r search
@@ -30,7 +29,6 @@ function text_replace() {
     fi
 
   else
-    # check if input is not empty
     if [ -n "$1" ]; then
       search=$1
     else
@@ -38,7 +36,6 @@ function text_replace() {
       stop_function
     fi
 
-    # check if input is not empty
     if [ -n "$2" ]; then
       replace=$2
     else
@@ -46,7 +43,6 @@ function text_replace() {
       stop_function
     fi
 
-    # check if input is not empty
     if [ -n "$3" ]; then
       if [ -f "$3" ]; then
         file_name=$3
@@ -71,7 +67,6 @@ function text_replace() {
 
 # This will make a symbolic link that connects the project's "public" folder to vhost's "htdocs"
 function symlink() {
-  # check if no argument is given
   if [ $# -eq 0 ]; then
     echo "Please enter vhost:"
     read -r vhost
@@ -88,7 +83,6 @@ function symlink() {
       app=$vhost
     fi
   else
-    # check if input is not empty
     if [ -n "$1" ]; then
       vhost=$1
     else
@@ -96,7 +90,6 @@ function symlink() {
       stop_function
     fi
 
-    # check if input is not empty
     if [ -n "$2" ]; then
       app=$2
     else
@@ -104,12 +97,10 @@ function symlink() {
     fi
   fi
 
-  # make sure to come back first to root
   cd /shared/httpd || stop_function
 
   directory="$vhost/$app/public"
   if [ -d "$directory" ]; then
-    # cd to vhost
     cd "$vhost" || stop_function
 
     # symlink public folder of the new laravel app to htdocs
@@ -123,15 +114,39 @@ function symlink() {
 
 # Display error message
 function echo_error() {
+  if [ -n "$1" ]; then
     echo -e "\e[31m$1\e[0m"
+  else
+    echo "The message is empty!"
+  fi
 }
 
 # Display success message
 function echo_success() {
-    echo -e "\033[0;32m$1\033[0m"
+  if [ -n "$1" ]; then
+    echo -e "\e[31m$1\e[0m"
+  else
+    echo "The message is empty!"
+  fi
 }
 
 # Stop function execution
 function stop_function() {
-    kill -INT $$
+  kill -INT $$
+}
+
+# Welcome user to new app
+function welcome_to_new_app_message() {
+  if [ -n "$1" ]; then
+    reload_watcherd_message
+    echo_success "👋 Welcome to your new app ($1)! Happy coding! 🎉"
+    echo_success "🚀 Here's your app URL 👉👉👉 \033[1mhttps://$1.dvl.to"
+  else
+    echo_error "The vhost is empty!"
+  fi
+}
+
+# Reload watcherd message
+function reload_watcherd_message() {
+  echo_success "🔄 Click 'Reload' on 'watcherd' daemon on C&C page 👉👉👉 \033[1mhttp://localhost/cnc.php"
 }
