@@ -124,7 +124,7 @@ function echo_error() {
 # Display success message
 function echo_success() {
   if [ -n "$1" ]; then
-    echo -e "\e[31m$1\e[0m"
+    echo -e "\e[32m$1\e[0m"
   else
     echo "The message is empty!"
   fi

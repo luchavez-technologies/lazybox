@@ -77,6 +77,7 @@ function yarn_run {
 # Run npm or yarn script
 function npm_or_yarn_run() {
   if [ -n "$1" ]; then
-    npm_run "$1" || yarn_run "$1"
+    npm_run "$1"
+    yarn_run "$1"
   fi
 }
