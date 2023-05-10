@@ -52,11 +52,11 @@ function vite_new() {
 
   text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $vite_port\"" "package.json"
 
-  npm install
+  project_install
 
   welcome_to_new_app_message "$name"
 
-  npm run dev
+  npm_or_yarn_run dev
 }
 
 # Clone and run a ViteJS app
@@ -112,19 +112,11 @@ function vite_clone() {
 
   cd "$name" || stop_function
 
-  # yarn or npm
-  runner=""
-  if [ -f "yarn.lock" ]; then
-    runner="yarn"
-  else
-    runner="npm"
-  fi
-
   text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $vite_port\"" "package.json"
 
-  $runner install 2>/dev/null
+  project_install
 
   welcome_to_new_app_message "$name"
 
-  $runner run dev
+  npm_or_yarn_run dev || npm_or_yarn_run develop || npm_or_yarn_run development || npm_or_yarn_run start
 }

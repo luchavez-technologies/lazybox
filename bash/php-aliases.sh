@@ -72,3 +72,10 @@ function php_default() {
     reload_watcherd_message
   fi
 }
+
+# Install composer dependencies when necessary
+function composer_install {
+  if [ -f composer.lock ] && [ ! -d vendor ]; then
+    composer install 2>/dev/null && echo_success "Successfully installed dependencies!"
+  fi
+}

@@ -150,3 +150,10 @@ function welcome_to_new_app_message() {
 function reload_watcherd_message() {
   echo_success "🔄 Click 'Reload' on 'watcherd' daemon on C&C page 👉👉👉 \033[1mhttp://localhost/cnc.php"
 }
+
+# Install project dependencies
+function project_install() {
+    composer_install
+    npm_install
+    yarn_install
+}

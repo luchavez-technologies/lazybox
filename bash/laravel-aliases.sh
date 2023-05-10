@@ -64,9 +64,7 @@ function laravel_new() {
   env=".env"
   # run migrate:fresh --seed if .env exists
   if [ -f $env ]; then
-    replace_db_host
-    replace_db_name "$name"
-    replace_redis_host
+    replace_env_variables "$name"
     pa migrate --seed 2>/dev/null
   fi
 
@@ -127,7 +125,8 @@ function laravel_clone() {
 
   cd "$name" || stop_function
 
-  composer install 2>/dev/null
+  # install dependencies
+  project_install
 
   # copy .env.example to .env
   env=".env"
@@ -137,9 +136,7 @@ function laravel_clone() {
 
   # run migrate:fresh --seed if .env exists
   if [ -f $env ]; then
-    replace_db_host
-    replace_db_name "$name"
-    replace_redis_host
+    replace_env_variables "$name"
     pa migrate --seed 2>/dev/null
   fi
 
@@ -153,28 +150,24 @@ function replace_db_host() {
 
 # Replace DB_DATABASE on .env with vhost name
 function replace_db_name() {
-  if [ $# -eq 0 ]; then
-    echo "Please enter Laravel app name:"
-    read -r app
-
-    if [ -z "$app" ]; then
-      echo_error "The app name is empty!"
-      stop_function
-    fi
-  else
-    if [ -n "$1" ]; then
-      app=$1
-    else
-      echo_error "The app name is empty!"
-      stop_function
-    fi
+  if [ -n "$1" ]; then
+    app=$1
+    app=${app//-/_}
+    text_replace "DB_DATABASE=laravel" "DB_DATABASE=$app" .env 2>/dev/null
   fi
-
-  app=${app//-/_}
-  text_replace "DB_DATABASE=laravel" "DB_DATABASE=$app" .env 2>/dev/null
 }
 
 # Replace REDIS_HOST on .env with Devilbox's DB URL
 function replace_redis_host() {
   text_replace "REDIS_HOST=127.0.0.1" "REDIS_HOST=172.16.238.14" .env 2>/dev/null
+}
+
+# Replace all necessary env variables
+function replace_env_variables() {
+  if [ -n "$1" ]; then
+    replace_db_name $1
+  fi
+
+  replace_db_host
+  replace_redis_host
 }

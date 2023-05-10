@@ -1,12 +1,20 @@
 #!/bin/sh
 
-# WARNING: Be careful since all volumes will be removed.
+read -p "The volumes will be deleted. Are you sure you want to proceed? (y/n) " choice
+case "$choice" in
+  y|Y )
+    if hash docker-compose 2>/dev/null; then
+    	prepend="docker-compose"
+    else
+    	prepend="docker compose"
+    fi
 
-# decide what program to use
-if hash docker-compose 2>/dev/null; then
-	prepend="docker-compose"
-else
-	prepend="docker compose"
-fi
-
-$prepend down -v
+    $prepend down -v
+    ;;
+  n|N )
+    echo "Execution cancelled."
+    ;;
+  * )
+    echo "Invalid choice."
+    ;;
+esac

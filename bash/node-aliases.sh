@@ -45,3 +45,38 @@ function port_change() {
     fi
   fi
 }
+
+# Install npm dependencies when necessary
+function npm_install {
+  if [ -f package.lock ] && [ ! -d node_modules ]; then
+    npm install 2>/dev/null && echo_success "Successfully installed dependencies!"
+  fi
+}
+
+# Install npm dependencies when necessary
+function yarn_install {
+  if [ -f yarn.lock ] && [ ! -d node_modules ]; then
+    yarn 2>/dev/null && echo_success "Successfully installed dependencies!"
+  fi
+}
+
+# Run npm script
+function npm_run {
+  if [ -f package-lock.json ] && [ -d node_modules ] && [ -n "$1" ]; then
+    npm run "$1" 2>/dev/null
+  fi
+}
+
+# Run npm script
+function yarn_run {
+  if [ -f yarn.lock ] && [ -d node_modules ] && [ -n "$1" ]; then
+    yarn "$1" 2>/dev/null
+  fi
+}
+
+# Run npm or yarn script
+function npm_or_yarn_run() {
+  if [ -n "$1" ]; then
+    npm_run "$1" || yarn_run "$1"
+  fi
+}

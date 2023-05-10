@@ -52,9 +52,11 @@ function gatsby_new() {
 
   text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0 --port $gatsby_port\"" "package.json"
 
+  project_install
+
   welcome_to_new_app_message "$name"
 
-  npm run develop
+  npm_or_yarn_run develop
 }
 
 # Clone and run a GatsbyJS app
@@ -110,19 +112,11 @@ function gatsby_clone() {
 
   cd "$name" || stop_function
 
-  # yarn or npm
-  runner=""
-  if [ -f "yarn.lock" ]; then
-    runner="yarn"
-  else
-    runner="npm"
-  fi
-
   text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0 --port $gatsby_port\"" "package.json"
 
-  $runner install 2>/dev/null
+  project_install
 
   welcome_to_new_app_message "$name"
 
-  $runner run develop
+  npm_or_yarn_run dev || npm_or_yarn_run develop || npm_or_yarn_run development || npm_or_yarn_run start
 }
