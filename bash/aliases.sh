@@ -157,3 +157,8 @@ function project_install() {
     yarn_install
     composer_install
 }
+
+# Run project (NodeJS apps)
+function project_start() {
+    npm_or_yarn_run dev || npm_or_yarn_run develop || npm_or_yarn_run development || npm_or_yarn_run start
+}

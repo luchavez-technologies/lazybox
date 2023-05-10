@@ -56,7 +56,7 @@ function gatsby_new() {
 
   welcome_to_new_app_message "$name"
 
-  npm_or_yarn_run develop
+  project_start
 }
 
 # Clone and run a GatsbyJS app
@@ -118,5 +118,5 @@ function gatsby_clone() {
 
   welcome_to_new_app_message "$name"
 
-  npm_or_yarn_run dev || npm_or_yarn_run develop || npm_or_yarn_run development || npm_or_yarn_run start
+  project_start
 }
