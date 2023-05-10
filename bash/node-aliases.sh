@@ -63,14 +63,14 @@ function yarn_install {
 # Run npm script
 function npm_run {
   if [ -f package-lock.json ] && [ -d node_modules ] && [ -n "$1" ]; then
-    npm run "$1" 2>/dev/null
+    npm run "$1"
   fi
 }
 
 # Run npm script
 function yarn_run {
   if [ -f yarn.lock ] && [ -d node_modules ] && [ -n "$1" ]; then
-    yarn "$1" 2>/dev/null
+    yarn "$1"
   fi
 }
 
