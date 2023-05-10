@@ -76,6 +76,6 @@ function php_default() {
 # Install composer dependencies when necessary
 function composer_install {
   if [ -f composer.lock ] && [ ! -d vendor ]; then
-    composer install 2>/dev/null && echo_success "Successfully installed dependencies!"
+    composer install && echo_success "Successfully installed dependencies!"
   fi
 }

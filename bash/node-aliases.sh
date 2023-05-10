@@ -49,14 +49,14 @@ function port_change() {
 # Install npm dependencies when necessary
 function npm_install {
   if [ -f package.lock ] && [ ! -d node_modules ]; then
-    npm install 2>/dev/null && echo_success "Successfully installed dependencies!"
+    npm install && echo_success "Successfully installed dependencies!"
   fi
 }
 
 # Install npm dependencies when necessary
 function yarn_install {
   if [ -f yarn.lock ] && [ ! -d node_modules ]; then
-    yarn 2>/dev/null && echo_success "Successfully installed dependencies!"
+    yarn && echo_success "Successfully installed dependencies!"
   fi
 }
 

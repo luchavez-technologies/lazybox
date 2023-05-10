@@ -153,7 +153,7 @@ function reload_watcherd_message() {
 
 # Install project dependencies
 function project_install() {
-    composer_install
     npm_install
     yarn_install
+    composer_install
 }
