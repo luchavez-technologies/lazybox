@@ -35,5 +35,5 @@ else
 	prepend="docker compose"
 fi
 
-$prepend up php httpd bind $input -d
+$prepend up php httpd bind $input mysql redis -d
 $prepend exec --user devilbox $shell /bin/sh -c "cd /shared/httpd; exec bash -l"

@@ -9,7 +9,7 @@ if "%~1"=="" (
   if "%input%"=="" (
     set "input=php"
   )
-  
+
   set "shell=%input%"
 ) else (
   set "input=%*"
@@ -27,5 +27,5 @@ if %errorlevel% equ 0 (
   set "prepend=docker compose"
 )
 
-%prepend% up php httpd bind %input% -d
+%prepend% up php httpd bind %input% mysql redis -d
 %prepend% exec --user devilbox %shell% /bin/sh -c "cd /shared/httpd; exec bash -l"
