@@ -51,7 +51,7 @@ function laravel_new() {
 
   cd "$name" || stop_function
 
-  composer create-project "laravel/laravel$version" "$name" 2>/dev/null
+  composer create-project "laravel/laravel$version" "$name"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
