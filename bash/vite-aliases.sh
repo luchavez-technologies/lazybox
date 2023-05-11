@@ -3,14 +3,14 @@ function vite_new() {
   vite_version="latest"
   vite_port=5173
   if [ $# -eq 0 ]; then
-    echo "Please enter ViteJS app name (default: 'app-x'):"
+    echo "👀 Please enter ViteJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "Please enter ViteJS version (default: 'latest'):"
+    echo "👀 Please enter ViteJS version (default: 'latest'):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function vite_new() {
     fi
 
     echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "Please enter ViteJS port (default: '$vite_port'):"
+    echo "👀 Please enter ViteJS port (default: '$vite_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -39,6 +39,8 @@ function vite_new() {
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
@@ -63,8 +65,9 @@ function vite_new() {
 function vite_clone() {
   url=""
   vite_port=5173
+  branch="develop"
   if [ $# -eq 0 ]; then
-    echo "Please enter Git URL of your ViteJS app:"
+    echo "👀 Please enter Git URL of your ViteJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -72,7 +75,14 @@ function vite_clone() {
       stop_function
     fi
 
-    echo "Please enter ViteJS app name (default: 'app-x'):"
+    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    read -r b
+
+    if [ -n "$b" ]; then
+      branch="$b"
+    fi
+
+    echo "👀 Please enter ViteJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -80,7 +90,7 @@ function vite_clone() {
     fi
 
     echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "Please enter ViteJS port (default: '$vite_port'):"
+    echo "👀 Please enter ViteJS port (default: '$vite_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -92,7 +102,11 @@ function vite_clone() {
     fi
 
     if [ -n "$2" ]; then
-      name=$2
+      branch=$2
+    fi
+
+    if [ -n "$3" ]; then
+      name=$3
     fi
 
     if [ -n "$3" ]; then
@@ -102,11 +116,14 @@ function vite_clone() {
 
   cd /shared/httpd || stop_function
 
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+
   mkdir "$name"
 
   cd "$name" || stop_function
 
   git clone "$url" "$name"
+  git checkout "$branch"
 
   port_change "$name" "$vite_port"
 

@@ -3,14 +3,14 @@ function next_new() {
   next_version="latest"
   next_port=3000
   if [ $# -eq 0 ]; then
-    echo "Please enter NextJS app name (default: 'app-x'):"
+    echo "👀 Please enter NextJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "Please enter NextJS version (default: 'latest'):"
+    echo "👀 Please enter NextJS version (default: 'latest'):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function next_new() {
     fi
 
     echo "Note: Make sure that the port $next_port is not taken. If taken, specify a new port below."
-    echo "Please enter NextJS port (default: '$next_port'):"
+    echo "👀 Please enter NextJS port (default: '$next_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -39,6 +39,8 @@ function next_new() {
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
@@ -63,8 +65,9 @@ function next_new() {
 function next_clone() {
   url=""
   next_port=3000
+  branch="develop"
   if [ $# -eq 0 ]; then
-    echo "Please enter Git URL of your NextJS app:"
+    echo "👀 Please enter Git URL of your NextJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -72,7 +75,14 @@ function next_clone() {
       stop_function
     fi
 
-    echo "Please enter NextJS app name (default: 'app-x'):"
+    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    read -r b
+
+    if [ -n "$b" ]; then
+      branch="$b"
+    fi
+
+    echo "👀 Please enter NextJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -80,7 +90,7 @@ function next_clone() {
     fi
 
     echo "Note: Make sure that the port $next_port is not taken. If taken, specify a new port below."
-    echo "Please enter NextJS port (default: '$next_port'):"
+    echo "👀 Please enter NextJS port (default: '$next_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -92,21 +102,28 @@ function next_clone() {
     fi
 
     if [ -n "$2" ]; then
-      name=$2
+      branch=$2
     fi
 
     if [ -n "$3" ]; then
-      next_port=$3
+      name=$3
+    fi
+
+    if [ -n "$4" ]; then
+      next_port=$4
     fi
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   git clone "$url" "$name"
+  git checkout "$branch"
 
   port_change "$name" "$next_port"
 

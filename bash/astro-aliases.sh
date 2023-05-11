@@ -3,14 +3,14 @@ function astro_new() {
   astro_version="latest"
   astro_port=3000
   if [ $# -eq 0 ]; then
-    echo "Please enter AstroJS app name (default: 'app-x'):"
+    echo "👀 Please enter AstroJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "Please enter AstroJS version (default: 'latest'):"
+    echo "👀 Please enter AstroJS version (default: 'latest'):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function astro_new() {
     fi
 
     echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "Please enter AstroJS port (default: '$astro_port'):"
+    echo "👀 Please enter AstroJS port (default: '$astro_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -39,6 +39,8 @@ function astro_new() {
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
@@ -63,8 +65,9 @@ function astro_new() {
 function astro_clone() {
   url=""
   astro_port=3000
+  branch="develop"
   if [ $# -eq 0 ]; then
-    echo "Please enter Git URL of your AstroJS app:"
+    echo "👀 Please enter Git URL of your AstroJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -72,7 +75,14 @@ function astro_clone() {
       stop_function
     fi
 
-    echo "Please enter AstroJS app name (default: 'app-x'):"
+    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    read -r b
+
+    if [ -n "$b" ]; then
+      branch="$b"
+    fi
+
+    echo "👀 Please enter AstroJS app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -80,7 +90,7 @@ function astro_clone() {
     fi
 
     echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "Please enter AstroJS port (default: '$astro_port'):"
+    echo "👀 Please enter AstroJS port (default: '$astro_port'):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -92,21 +102,28 @@ function astro_clone() {
     fi
 
     if [ -n "$2" ]; then
-      name=$2
+      branch=$2
     fi
 
     if [ -n "$3" ]; then
-      astro_port=$3
+      name=$3
+    fi
+
+    if [ -n "$4" ]; then
+      astro_port=$4
     fi
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   git clone "$url" "$name"
+  git checkout "$branch"
 
   port_change "$name" "$astro_port"
 

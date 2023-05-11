@@ -16,7 +16,7 @@ if [ $# -eq 0 ]; then
 
   shell=$input
 else
-  # store all argument to php variable
+  # store all arguments to a php variable
   input=$*
 
   # store initial argument to shell variable

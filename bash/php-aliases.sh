@@ -1,7 +1,7 @@
 # This will change the PHP container where the vhost will run on
 function php_change() {
   if [ $# -eq 0 ]; then
-    echo "Please enter vhost:"
+    echo "👀 Please enter vhost:"
     read -r vhost
 
     if [ -z "$vhost" ]; then
@@ -9,7 +9,7 @@ function php_change() {
       stop_function
     fi
 
-    echo "Please enter PHP container where the app should run:"
+    echo "👀 Please enter PHP container where the app should run:"
     read -r php_version
 
     if [ -z "$php_version" ]; then
@@ -49,7 +49,7 @@ function php_change() {
 # This will change back the PHP version of a vhost to the default one by remove the `backend.cfg` file
 function php_default() {
   if [ $# -eq 0 ]; then
-    echo "Please enter vhost:"
+    echo "👀 Please enter vhost:"
     read -r vhost
 
     if [ -z "$vhost" ]; then
@@ -75,7 +75,7 @@ function php_default() {
 
 # Install composer dependencies when necessary
 function composer_install {
-  if [ -f composer.lock ] && [ ! -d vendor ]; then
+  if { [ -f "composer.lock" ] || [ -f "composer.json" ]; } && [ ! -d "vendor" ]; then
     composer install && echo_success "Successfully installed dependencies!"
   fi
 }

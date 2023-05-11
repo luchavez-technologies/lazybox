@@ -1,7 +1,7 @@
 # This will change the port where the node app will be expected to run on
 function port_change() {
   if [ $# -eq 0 ]; then
-    echo "Please enter vhost:"
+    echo "👀 Please enter vhost:"
     read -r vhost
 
     if [ -z "$vhost" ]; then
@@ -9,7 +9,7 @@ function port_change() {
       stop_function
     fi
 
-    echo "Please enter port number where the app will run:"
+    echo "👀 Please enter port number where the app will run:"
     read -r port
 
     if [ -z "$port" ]; then
@@ -46,38 +46,56 @@ function port_change() {
   fi
 }
 
-# Install npm dependencies when necessary
-function npm_install {
-  if [ -f package.lock ] && [ ! -d node_modules ]; then
-    npm install && echo_success "Successfully installed dependencies!"
+# Execute npm or yarn commands
+function npm_yarn() {
+  args=""
+  if [ $# -gt 0 ]; then
+    args=$*
+  fi
+
+  prepend=""
+  if [ -f package-lock.json ]; then
+    prepend=npm
+  elif [ -f yarn.lock ]; then
+    prepend=yarn
+  elif [ -f package.json ]; then
+    prepend=npm
+  fi
+
+  if [ -n "$prepend" ]; then
+    echo_success "🙏 \033[1m$prepend $args"
+    $prepend $args
   fi
 }
 
-# Install npm dependencies when necessary
-function yarn_install {
-  if [ -f yarn.lock ] && [ ! -d node_modules ]; then
-    yarn && echo_success "Successfully installed dependencies!"
+# Install NPM dependencies
+function npm_yarn_install() {
+  args=""
+  if [ $# -gt 0 ]; then
+    args=$*
+  fi
+
+  if [ ! -d node_modules ]; then
+    npm_yarn install $args
+  else
+    echo_error "Dependencies are already installed."
   fi
 }
 
-# Run npm script
-function npm_run {
-  if [ -f package-lock.json ] && [ -d node_modules ] && [ -n "$1" ]; then
-    npm run "$1"
-  fi
+# Install NPM dependencies for production
+function npm_yarn_install_production() {
+  npm_yarn_install --production
 }
 
-# Run npm script
-function yarn_run {
-  if [ -f yarn.lock ] && [ -d node_modules ] && [ -n "$1" ]; then
-    yarn "$1"
-  fi
-}
-
-# Run npm or yarn script
-function npm_or_yarn_run() {
-  if [ -n "$1" ]; then
-    npm_run "$1"
-    yarn_run "$1"
+# Execute npm or yarn commands
+function npm_yarn_run() {
+  args=""
+  if [ $# -eq 0 ]; then
+    echo_error "Missing arguments!"
+  elif [ -d node_modules ]; then
+    args=$*
+    npm_yarn run $args
+  else
+    echo_error "Dependencies are not yet installed."
   fi
 }

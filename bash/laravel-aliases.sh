@@ -7,17 +7,17 @@ function laravel_new() {
   laravel_version=""
   php_version=""
   if [ $# -eq 0 ]; then
-    echo "Please enter Laravel app name (default: 'app-x'):"
+    echo "👀 Please enter Laravel app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "Please enter Laravel version (default: 'latest'):"
+    echo "👀 Please enter Laravel version (default: 'latest'):"
     read -r laravel_version
 
-    echo "Please enter PHP container to run the app on (default: 'php'):"
+    echo "👀 Please enter PHP container to run the app on (default: 'php'):"
     read -r php_version
   else
     if [ -n "$1" ]; then
@@ -44,6 +44,8 @@ function laravel_new() {
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
@@ -75,8 +77,9 @@ function laravel_new() {
 function laravel_clone() {
   php_version=""
   url=""
+  branch="develop"
   if [ $# -eq 0 ]; then
-    echo "Please enter Git URL of your Laravel app:"
+    echo "👀 Please enter Git URL of your Laravel app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -84,14 +87,21 @@ function laravel_clone() {
       stop_function
     fi
 
-    echo "Please enter app name (default: 'app-x'):"
+    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    read -r b
+
+    if [ -n "$b" ]; then
+      branch="$b"
+    fi
+
+    echo "👀 Please enter app name (default: 'app-x'):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "Please enter PHP container where the app should run (default: 'php'):"
+    echo "👀 Please enter PHP container where the app should run (default: 'php'):"
     read -r php_version
   else
     if [ -n "$1" ]; then
@@ -99,21 +109,28 @@ function laravel_clone() {
     fi
 
     if [ -n "$2" ]; then
-      name=$2
+      branch=$2
     fi
 
     if [ -n "$3" ]; then
-      php_version=$3
+      name=$3
+    fi
+
+    if [ -n "$4" ]; then
+      php_version=$4
     fi
   fi
 
   cd /shared/httpd || stop_function
+
+  echo_success "\033[1mLet's do this! 🔥🔥🔥"
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   git clone "$url" "$name"
+  git checkout "$branch"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -165,7 +182,7 @@ function replace_redis_host() {
 # Replace all necessary env variables
 function replace_env_variables() {
   if [ -n "$1" ]; then
-    replace_db_name $1
+    replace_db_name "$1"
   fi
 
   replace_db_host

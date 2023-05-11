@@ -1,7 +1,7 @@
 # This will replace a text with another text inside a file
 function text_replace() {
   if [ $# -eq 0 ]; then
-    echo "Please enter the search text:"
+    echo "👀 Please enter the search text:"
     read -r search
 
     if [ -z "$search" ]; then
@@ -9,7 +9,7 @@ function text_replace() {
       stop_function
     fi
 
-    echo "Please enter the replace text:"
+    echo "👀 Please enter the replace text:"
     read -r replace
 
     if [ -z "$replace" ]; then
@@ -17,7 +17,7 @@ function text_replace() {
       stop_function
     fi
 
-    echo "Please enter the file name:"
+    echo "👀 Please enter the file name:"
     read -r file_name
 
     if [ -z "$file_name" ]; then
@@ -68,7 +68,7 @@ function text_replace() {
 # This will make a symbolic link that connects the project's "public" folder to vhost's "htdocs"
 function symlink() {
   if [ $# -eq 0 ]; then
-    echo "Please enter vhost:"
+    echo "👀 Please enter vhost:"
     read -r vhost
 
     if [ -z "$vhost" ]; then
@@ -76,7 +76,7 @@ function symlink() {
       stop_function
     fi
 
-    echo "Please enter PHP app name (default: '$vhost'):"
+    echo "👀 Please enter PHP app name (default: '$vhost'):"
     read -r app
 
     if [ -z "$app" ]; then
@@ -153,12 +153,19 @@ function reload_watcherd_message() {
 
 # Install project dependencies
 function project_install() {
-    npm_install
-    yarn_install
-    composer_install
+  npm_yarn_install
+  composer_install
 }
 
 # Run project (NodeJS apps)
 function project_start() {
-    npm_or_yarn_run dev || npm_or_yarn_run develop || npm_or_yarn_run development || npm_or_yarn_run start
+  scripts=("dev" "develop" "development" "start")
+
+  for script in "${scripts[@]}"
+  do
+    if grep -q "\"$script\"" package.json ; then
+      npm_yarn_run "$script"
+      break
+    fi
+  done
 }
