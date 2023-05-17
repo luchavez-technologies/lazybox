@@ -5,7 +5,7 @@ alias pamfspi='pamfs && pa passport:install'
 # Create and run a new Laravel app
 function laravel_new() {
   laravel_version=""
-  php_version=""
+  php_version="php"
   if [ $# -eq 0 ]; then
     echo "👀 Please enter Laravel app name (default: 'app-x'):"
     read -r name
@@ -18,7 +18,11 @@ function laravel_new() {
     read -r laravel_version
 
     echo "👀 Please enter PHP container to run the app on (default: 'php'):"
-    read -r php_version
+    read -r version
+
+    if [ -n "$version" ]; then
+      php_version=$version
+    fi
   else
     if [ -n "$1" ]; then
       name=$1
@@ -37,7 +41,7 @@ function laravel_new() {
   if [ -n "$laravel_version" ]; then
     version=":^$laravel_version"
 
-    # check if the period does not have a period
+    # check if the version does not have a period
     if echo "$laravel_version" | grep -qv "\."; then
       version+=".0"
     fi
@@ -45,7 +49,7 @@ function laravel_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  echo_success "\033[1mNow creating your awesome Laravel app! 🔥🔥🔥"
 
   mkdir "$name"
 
@@ -75,8 +79,8 @@ function laravel_new() {
 
 # Clone and run a Laravel app
 function laravel_clone() {
-  php_version=""
   url=""
+  php_version="php"
   branch="develop"
   if [ $# -eq 0 ]; then
     echo "👀 Please enter Git URL of your Laravel app:"
@@ -102,7 +106,11 @@ function laravel_clone() {
     fi
 
     echo "👀 Please enter PHP container where the app should run (default: 'php'):"
-    read -r php_version
+    read -r version
+
+    if [ -n "$version" ]; then
+      php_version=$version
+    fi
   else
     if [ -n "$1" ]; then
       url=$1
@@ -123,14 +131,14 @@ function laravel_clone() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  echo_success "\033[1mNow cloning your awesome Laravel app! 🔥🔥🔥"
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   git clone "$url" "$name"
-  git checkout "$branch"
+  git checkout "$branch" 2>/dev/null
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -141,9 +149,6 @@ function laravel_clone() {
   fi
 
   cd "$name" || stop_function
-
-  # install dependencies
-  project_install
 
   # copy .env.example to .env
   env=".env"
@@ -156,6 +161,9 @@ function laravel_clone() {
     replace_env_variables "$name"
     pa migrate --seed 2>/dev/null
   fi
+
+  # install dependencies
+  project_install
 
   welcome_to_new_app_message "$name"
 }
