@@ -52,6 +52,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php55:
     <<: *default-php
@@ -73,6 +74,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php56:
     <<: *default-php
@@ -94,6 +96,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php70:
     <<: *default-php
@@ -115,6 +118,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php71:
     <<: *default-php
@@ -136,6 +140,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php72:
     <<: *default-php
@@ -157,6 +162,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php73:
     <<: *default-php
@@ -178,6 +184,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php74:
     <<: *default-php
@@ -199,6 +206,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php80:
     <<: *default-php
@@ -220,6 +228,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php81:
     <<: *default-php
@@ -241,6 +250,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   php82:
     <<: *default-php
@@ -262,6 +272,7 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ~/.config/composer:/home/devilbox/.composer:rw
       - ~/.ssh:/home/devilbox/.ssh:rw
+      - ~/.gitconfig:/home/devilbox/.gitconfig:rw
 
   # -----------------------------------------------------------------------------------------------
   # Ngrok
@@ -277,7 +288,7 @@ services:
       - "${LOCAL_LISTEN_ADDR}${HOST_PORT_NGROK:-4040}:4040"
     networks:
       app_net:
-        ipv4_address: 172.16.238.18
+        ipv4_address: 172.16.238.202
     depends_on:
       - bind
       - php
