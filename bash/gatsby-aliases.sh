@@ -3,14 +3,14 @@ function gatsby_new() {
   gatsby_version="latest"
   gatsby_port=8000
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter GatsbyJS app name (default: 'app-x'):"
+    echo "👀 Please enter GatsbyJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "👀 Please enter GatsbyJS version (default: 'latest'):"
+    echo "👀 Please enter GatsbyJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function gatsby_new() {
     fi
 
     echo "Note: Make sure that the port $gatsby_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter GatsbyJS port (default: '$gatsby_port'):"
+    echo "👀 Please enter GatsbyJS $(style "port number" underline bold) (default: $(style "$gatsby_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -40,7 +40,7 @@ function gatsby_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 
@@ -67,7 +67,7 @@ function gatsby_clone() {
   gatsby_port=8000
   branch="develop"
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter Git URL of your GatsbyJS app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your GatsbyJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -75,14 +75,14 @@ function gatsby_clone() {
       stop_function
     fi
 
-    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
 
-    echo "👀 Please enter GatsbyJS app name (default: 'app-x'):"
+    echo "👀 Please enter GatsbyJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -90,7 +90,7 @@ function gatsby_clone() {
     fi
 
     echo "Note: Make sure that the port $gatsby_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter GatsbyJS port (default: '$gatsby_port'):"
+    echo "👀 Please enter GatsbyJS $(style "port number" underline bold) (default: $(style "$gatsby_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -116,7 +116,7 @@ function gatsby_clone() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 

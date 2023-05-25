@@ -3,14 +3,14 @@ function vite_new() {
   vite_version="latest"
   vite_port=5173
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter ViteJS app name (default: 'app-x'):"
+    echo "👀 Please enter ViteJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "👀 Please enter ViteJS version (default: 'latest'):"
+    echo "👀 Please enter ViteJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function vite_new() {
     fi
 
     echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter ViteJS port (default: '$vite_port'):"
+    echo "👀 Please enter ViteJS $(style "port number" underline bold) (default: $(style "$vite_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -40,7 +40,7 @@ function vite_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 
@@ -67,7 +67,7 @@ function vite_clone() {
   vite_port=5173
   branch="develop"
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter Git URL of your ViteJS app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your ViteJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -75,14 +75,14 @@ function vite_clone() {
       stop_function
     fi
 
-    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
 
-    echo "👀 Please enter ViteJS app name (default: 'app-x'):"
+    echo "👀 Please enter ViteJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -90,7 +90,7 @@ function vite_clone() {
     fi
 
     echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter ViteJS port (default: '$vite_port'):"
+    echo "👀 Please enter ViteJS $(style "port number" underline bold) (default: $(style "$vite_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -116,7 +116,7 @@ function vite_clone() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 

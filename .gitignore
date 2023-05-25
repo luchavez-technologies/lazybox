@@ -77,19 +77,19 @@
 /cfg/percona-8.0/*.cnf
 
 # Ignore custom PHP.ini configs
-/cfg/php-ini-5.2/*.ini
-/cfg/php-ini-5.3/*.ini
-/cfg/php-ini-5.4/*.ini
-/cfg/php-ini-5.5/*.ini
-/cfg/php-ini-5.6/*.ini
-/cfg/php-ini-7.0/*.ini
-/cfg/php-ini-7.1/*.ini
-/cfg/php-ini-7.2/*.ini
-/cfg/php-ini-7.3/*.ini
-/cfg/php-ini-7.4/*.ini
-/cfg/php-ini-8.0/*.ini
-/cfg/php-ini-8.1/*.ini
-/cfg/php-ini-8.2/*.ini
+#/cfg/php-ini-5.2/*.ini
+#/cfg/php-ini-5.3/*.ini
+#/cfg/php-ini-5.4/*.ini
+#/cfg/php-ini-5.5/*.ini
+#/cfg/php-ini-5.6/*.ini
+#/cfg/php-ini-7.0/*.ini
+#/cfg/php-ini-7.1/*.ini
+#/cfg/php-ini-7.2/*.ini
+#/cfg/php-ini-7.3/*.ini
+#/cfg/php-ini-7.4/*.ini
+#/cfg/php-ini-8.0/*.ini
+#/cfg/php-ini-8.1/*.ini
+#/cfg/php-ini-8.2/*.ini
 
 # Ignore custom PHP-FPM configs
 /cfg/php-fpm-5.2/php-fpm.xml

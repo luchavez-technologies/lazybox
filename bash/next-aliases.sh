@@ -3,14 +3,14 @@ function next_new() {
   next_version="latest"
   next_port=3000
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter NextJS app name (default: 'app-x'):"
+    echo "👀 Please enter NextJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "👀 Please enter NextJS version (default: 'latest'):"
+    echo "👀 Please enter NextJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function next_new() {
     fi
 
     echo "Note: Make sure that the port $next_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter NextJS port (default: '$next_port'):"
+    echo "👀 Please enter NextJS $(style "port number" underline bold) (default: $(style "$next_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -40,7 +40,7 @@ function next_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 
@@ -67,7 +67,7 @@ function next_clone() {
   next_port=3000
   branch="develop"
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter Git URL of your NextJS app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your NextJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -75,14 +75,14 @@ function next_clone() {
       stop_function
     fi
 
-    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
 
-    echo "👀 Please enter NextJS app name (default: 'app-x'):"
+    echo "👀 Please enter NextJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -90,7 +90,7 @@ function next_clone() {
     fi
 
     echo "Note: Make sure that the port $next_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter NextJS port (default: '$next_port'):"
+    echo "👀 Please enter NextJS $(style "port number" underline bold) (default: $(style "$next_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -116,7 +116,7 @@ function next_clone() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 

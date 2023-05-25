@@ -50,8 +50,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php55:
     <<: *default-php
@@ -71,8 +72,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php56:
     <<: *default-php
@@ -92,8 +94,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php70:
     <<: *default-php
@@ -113,8 +116,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php71:
     <<: *default-php
@@ -134,8 +138,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php72:
     <<: *default-php
@@ -155,8 +160,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php73:
     <<: *default-php
@@ -176,8 +182,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php74:
     <<: *default-php
@@ -197,8 +204,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php80:
     <<: *default-php
@@ -218,8 +226,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php81:
     <<: *default-php
@@ -239,8 +248,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   php82:
     <<: *default-php
@@ -260,8 +270,9 @@ services:
       # - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
       - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
-      - ~/.config/composer:/home/devilbox/.composer:rw
-      - ~/.ssh:/home/devilbox/.ssh:rw
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ~/.config/composer:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ~/.ssh:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
 
   # -----------------------------------------------------------------------------------------------
   # Ngrok
@@ -277,7 +288,7 @@ services:
       - "${LOCAL_LISTEN_ADDR}${HOST_PORT_NGROK:-4040}:4040"
     networks:
       app_net:
-        ipv4_address: 172.16.238.202
+        ipv4_address: 172.16.238.200
     depends_on:
       - bind
       - php
@@ -288,23 +299,50 @@ services:
   # -----------------------------------------------------------------------------------------------
   minio:
     image: 'minio/minio:latest'
+    hostname: minio
     ports:
-      - '${FORWARD_MINIO_PORT:-9000}:9000'
-      - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+      - '${HOST_PORT_MINIO:-9000}:9000'
+      - '${HOST_PORT_MINIO_CONSOLE:-8900}:8900'
     environment:
-      MINIO_ROOT_USER: 'root'
-      MINIO_ROOT_PASSWORD: 'password'
+      - MINIO_ROOT_USER=${MINIO_USERNAME:-root}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD:-root}
     networks:
       app_net:
-        ipv4_address: 172.16.238.17
+        ipv4_address: 172.16.238.199
     volumes:
-      - 'devilbox-minio:/data/minio'
-    command: minio server /data/minio --console-address ":8900"
+      - 'devilbox-minio:/data'
+      #- ${DEVILBOX_PATH}/ca/devilbox-ca.key:/root/.minio/certs/private.key:ro${MOUNT_OPTIONS}
+      #- ${DEVILBOX_PATH}/ca/devilbox-ca.crt:/root/.minio/certs/public.crt:ro${MOUNT_OPTIONS}
+      #- ${DEVILBOX_PATH}/ca/devilbox-ca.srl:/root/.minio/certs/ca.srl:ro${MOUNT_OPTIONS}
+    command: minio server /data --console-address ":8900"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       retries: 3
       timeout: 5s
     # For ease of use always automatically start these:
+    depends_on:
+      - bind
+      - php
+      - httpd
+
+  # -----------------------------------------------------------------------------------------------
+  # MailHog
+  # -----------------------------------------------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog:${MAILHOG_SERVER:-latest}
+    hostname: mailhog
+    restart: always
+    ports:
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MAILHOG_CONSOLE:-8025}:8025"
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MAILHOG:-1025}:1025"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.198
+    environment:
+      - MH_STORAGE=maildir
+      - MH_MAILDIR_PATH=maildir
+    volumes:
+      - 'devilbox-mail:/home/mailhog'
     depends_on:
       - bind
       - php

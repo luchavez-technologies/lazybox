@@ -1,8 +1,8 @@
 # This will change the port where the node app will be expected to run on
 function port_change() {
-  php_version="php"
+  php_version=$(php_version)
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter vhost:"
+    echo "👀 Please enter $(style "vhost" underline bold)"
     read -r vhost
 
     if [ -z "$vhost" ]; then
@@ -10,7 +10,7 @@ function port_change() {
       stop_function
     fi
 
-    echo "👀 Please enter port number where the app should run:"
+    echo "👀 Please enter $(style "port number" underline bold) where the app should run:"
     read -r port
 
     if [ -z "$port" ]; then
@@ -18,12 +18,12 @@ function port_change() {
       stop_function
     fi
 
-    echo "👀 Please enter PHP container where the app should run (default: php):"
+    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
+    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
 
-    if [ -n "$version" ]; then
+    if [ -n "$version" ] && is_php_container_valid "$version"; then
       php_version=$version
-      stop_function
     fi
   else
     if [ -n "$1" ]; then
@@ -76,7 +76,7 @@ function npm_yarn() {
   fi
 
   if [ -n "$prepend" ]; then
-    echo_success "🙏 \033[1m$prepend $args"
+    style "🙏 $prepend $args" bold green
     $prepend $args
   fi
 }
@@ -112,3 +112,24 @@ function npm_yarn_run() {
     echo_error "Dependencies are not yet installed."
   fi
 }
+
+# Run project (NodeJS apps)
+function project_start() {
+  scripts=("dev" "develop" "development" "start")
+
+  for script in "${scripts[@]}"
+  do
+    if grep -q "\"$script\"" package.json ; then
+      npm_yarn_run "$script"
+      break
+    fi
+  done
+}
+
+# Set devilbox as the owner of /opt/nvm directory
+function own_nvm() {
+  own_directory /opt/nvm
+}
+
+# Own NVM automatically by devilbox user
+own_nvm

@@ -3,14 +3,14 @@ function astro_new() {
   astro_version="latest"
   astro_port=3000
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter AstroJS app name (default: 'app-x'):"
+    echo "👀 Please enter AstroJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
 
-    echo "👀 Please enter AstroJS version (default: 'latest'):"
+    echo "👀 Please enter AstroJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
     read -r version
 
     if [ -n "$version" ]; then
@@ -18,7 +18,7 @@ function astro_new() {
     fi
 
     echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter AstroJS port (default: '$astro_port'):"
+    echo "👀 Please enter AstroJS $(style "port number" underline bold) (default: $(style "$astro_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -40,7 +40,7 @@ function astro_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 
@@ -67,7 +67,7 @@ function astro_clone() {
   astro_port=3000
   branch="develop"
   if [ $# -eq 0 ]; then
-    echo "👀 Please enter Git URL of your AstroJS app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your AstroJS app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -75,14 +75,14 @@ function astro_clone() {
       stop_function
     fi
 
-    echo "👀 Please enter branch name to checkout at (default: 'develop'):"
+    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
 
-    echo "👀 Please enter AstroJS app name (default: 'app-x'):"
+    echo "👀 Please enter AstroJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -90,7 +90,7 @@ function astro_clone() {
     fi
 
     echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter AstroJS port (default: '$astro_port'):"
+    echo "👀 Please enter AstroJS $(style "port number" underline bold) (default: $(style "$astro_port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
@@ -116,7 +116,7 @@ function astro_clone() {
 
   cd /shared/httpd || stop_function
 
-  echo_success "\033[1mLet's do this! 🔥🔥🔥"
+  style "🚀 Creating your project..." bold green
 
   mkdir "$name"
 
