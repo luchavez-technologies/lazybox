@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ###
 ### Step 1: Declare functions
 ###
@@ -46,7 +44,7 @@ function style() {
   # in case the string contains formatted substring, replace all instance of end_code
   string=$(echo "${string}" | awk -v new="$end_code$styles" '{gsub(/\033\[0m/,new)}1')
 
-  echo "$styles$string$suffix"
+  printf "$styles$string$suffix"
 }
 
 # Check if the PHP container name input is valid

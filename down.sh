@@ -1,6 +1,4 @@
-#!/bin/sh
-
-read -p "The volumes will be deleted. Are you sure you want to proceed? (y/n) " choice
+read -rp "The volumes will be deleted. Are you sure you want to proceed? (y/n) " choice
 case "$choice" in
   y|Y )
     if hash docker-compose 2>/dev/null; then
