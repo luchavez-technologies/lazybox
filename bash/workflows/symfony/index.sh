@@ -62,7 +62,6 @@ function symfony_new() {
   cd "$name" || stop_function
 
   # create project
-#  composer create-project symfony/skeleton "$name" "$version"
   composer create-project symfony/framework-standard-edition "$name" "$symfony_version"
 
   # symlink and add devilbox config
@@ -75,12 +74,12 @@ function symfony_new() {
 
   cd "$name" || stop_function
 
-  env=".env"
-  # run migrate:fresh --seed if .env exists
-  if [ -f $env ]; then
-    symfony_replace_env_variables "$name"
+#  env=".env"
+#  # run migrate:fresh --seed if .env exists
+#  if [ -f $env ]; then
+#    symfony_replace_env_variables "$name"
 #    pa migrate --seed 2>/dev/null
-  fi
+#  fi
 
   welcome_to_new_app_message "$name"
 }
@@ -158,18 +157,17 @@ function symfony_clone() {
   cd "$name" || stop_function
   git checkout "$branch" 2>/dev/null
 
-  # copy .env.example to .env
-  env=".env"
-  env_example=".env.example"
-  if [ ! -f $env ] && [ -f $env_example ] ; then
-    if cp "$env_example" "$env"; then
-      symfony_replace_env_variables "$name"
-#      pa migrate --seed 2>/dev/null
-    fi
-  fi
-
   # install dependencies
-  project_install
+  own_directory /var/lib
+  own_directory /var/cache
+  own_directory /var/log
+
+  config_local_example="app/config/config_local.example.yml"
+  config_local="app/config/config_local.yml"
+
+  if [ ! -f "$config_local" ] && [ -f "$config_local_example" ] && cp "$config_local_example" "$config_local"; then
+    composer_install
+  fi
 
   welcome_to_new_app_message "$name"
 }
