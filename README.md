@@ -1,39 +1,96 @@
-# Customized Devilbox for Laravel and NodeJS Development
+# Simple Devilbox for PHP and NodeJS Development
 
-This is just a copy of original [Devilbox repository](https://github.com/cytopia/devilbox). I just added some bash aliases and shell scripts to quickly start your Laravel and NodeJS Development.<br/>
+This is just a fork of [Devilbox](https://github.com/cytopia/devilbox) so a huge thanks to the awesome team behind it! 🩷
 <br/>
-To learn more about Devilbox, please take a look at the original [README](DEVILBOX.md) or visit the [official documentations](https://devilbox.readthedocs.io).
+<br/>
+So what's new with this forked copy? I added what I prefer to call as "workflows".<br/>
+For example, if you want to create a new Laravel application, you can just call the "laravel_new" ✨ command.<br/>
+It will then ask you your preferred app name, Laravel version, and PHP version.<br/>
+It will then create necessary folders, then symlink some stuff, and probably make some Devilbox specific configs.
+<br/>
+<br/>
+Why? Simply because Devilbox will automatically run your apps based on those configs.<br/>
+Quite complicated for beginner, right? Which is why I made it my goal to simplify some things up. 🚀<br/>
+<br/>
+Here's a list of apps that I planned to add workflows for:
+<br/>
+<br/>
+🐘 PHP Apps
+-[x] Laravel
+-[ ] Lumen
+-[ ] Symfony
+-[ ] CodeIgniter
+-[ ] WordPress
+-[ ] Drupal
+-[x] Yii
+-[ ] CakePHP
+-[ ] Slim
+-[ ] Framework X
+
+🍀 NodeJS Apps
+-[x] Vite (which includes Vanilla, Vue, React, Preact, Lit, and Svelte)
+-[x] NextJS
+-[x] GatsbyJS
+-[x] AstroJS
+-[ ] Strapi
+
+Unfortunately, you can't make a PR on this GitHub repo since this is just a mirrored copy from somewhere else. 😔<br/>
+Worry not because you can just create a "New Discussion" if you want to request a framework support. 😇<br/>
+<br/>
+If you want to read more about Devilbox, please take a look at the original [README](DEVILBOX.md) or visit the [official documentations](https://devilbox.readthedocs.io).
 
 ## Installation
 
 ```shell
 # Clone via HTTP
-git clone https://github.com/luchmewep/simple-devilbox.git devilbox
+git clone https://github.com/luchavez-technologies/simple-devilbox.git devilbox
 
 # Or, clone via SSH
-git clone git@github.com:luchmewep/simple-devilbox.git devilbox
+git clone git@github.com:luchavez-technologies/simple-devilbox.git devilbox
 
-# Go to Devilbox's folder
+# Change directory to Devilbox's folder
 cd devilbox
 
-# Start the basic Devilbox containers (php, httpd, bind), another PHP containers, as well as MySQL, Redis, and Minio
-./up.sh mysql redis minio php54 php74 php82
+# Invoke the "up" script to start Devilbox
+./up.sh
+
+# The containers that will be booted up by default are "bind", "httpd", "mailhog", "minio", "mysql", "ngrok", "redis", and "php".
+# The "php" in this case refers to PHP 8.1 which you can change by editing the ".env" file.
+
+# Or, if you want to also run the other PHP containers aside from the default, you may do this...
+./up.sh php54 php55 php56 php70 php71 php72 php73 php74 php80 php81 php82
+
+# Or, if you added your own Docker container on "docker-compose.override.yml", you may do this...
+./up.sh some-custom-container
 ```
+
+If everything works , you should be able to see this... ✨
+
+![./up.sh](./images/devilbox-up.png)
+
+Afterward, you should be able to see this welcome screen... ✨
+
+![devilbox-cli](./images/devilbox-cli.png)
+
+## Project Structure
+
+Since you already cloned, 
+
+![skeleton](./images/devilbox-skeleton.png)
 
 ## Usage
 
-### Custom Docker Shell Scripts
+In this section, you can learn all the available commands that you can use to start up your apps. Let's get to it then! 😉
 
-| Command | Script      | Description                                                                                                                                            |
-|---------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Up      | `./up.sh`   | Starts the Devilbox basic containers which are `php`, `httpd`, and `bind`.<br/>Want to run `mysql` or `redis`? You can do this: `./up.sh mysql redis`. |
-| Stop    | `./stop.sh` | Stops all running Devilbox containers. You can turn them back on with the `Up` script.                                                                 |
-| Down    | `./down.sh` | Stops and deletes all Devilbox containers and their volumes. The deleted volumes are irrecoverable.                                                    |
+### Available Shell Scripts
 
-**Note #1**: You don't need to run [./shell.sh](shell.sh) anymore since it's already included in the `Up` script.<br/>
-**Note #2**: The databases will be included in the deleted volumes so make sure to back it up if necessary.
+| Command | Script      | Description                                                              |
+|---------|-------------|--------------------------------------------------------------------------|
+| Up      | `./up.sh`   | Boots up the PHP and non-PHP containers                                  |
+| Stop    | `./stop.sh` | Stops all running PHP and non-PHP containers.                            |
+| Down    | `./down.sh` | Stops and deletes all containers with their data. Use this with caution! |
 
-### Custom Bash Aliases for Devilbox Shell
+### Available Devilbox Shell Scripts
 
 #### Main Functions
 
@@ -96,7 +153,7 @@ And if the port is already taken, it's possible that when you visit your app, it
 That is because your app's Devilbox config should be updated with the port change.
 
 To fix this, just run the `port_change` bash function. It will ask for your app's `vhost name` and `port number` where it is currently running.
-Don't forget to press `Reload` on `C&C` page afterwards.
+Don't forget to press `Reload` on `C&C` page afterward.
 
 ## Questions
 

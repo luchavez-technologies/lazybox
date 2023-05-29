@@ -9,6 +9,7 @@ function php_change() {
       stop_function
     fi
 
+    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
     echo "👀 Please enter $(style "PHP container" underline bold) where the app should run:"
     read -r php_version
 
@@ -67,8 +68,8 @@ function php_default() {
   if [ -d "$vhost" ]; then
     cd "$vhost" || stop_function
 
-    # remove .devilbox folder
-    rm -rf .devilbox
+    # remove .devilbox/backend.cfg file
+    rm -f .devilbox/backend.cfg 2>/dev/null
     reload_watcherd_message
   fi
 }
@@ -83,25 +84,6 @@ function php_version() {
 function php_server() {
   version=$PHP_SERVER
   echo "php${version//./}"
-}
-
-# Check if the PHP container name input is valid
-function is_php_container_valid() {
-  if [ -z "$1" ]; then
-    return 1
-  fi
-
-  input=$1
-
-  containers=('php' 'php54' 'php55' 'php56' 'php70' 'php71' 'php72' 'php73' 'php74' 'php80' 'php81' 'php82')
-  for container in "${containers[@]}"
-  do
-    if [ "$input" == "$container" ]; then
-      return 0
-    fi
-  done
-
-  return 1
 }
 
 # Check if the PHP container name input matches the current container
@@ -125,7 +107,10 @@ function is_php_container_current() {
 
 # Install composer dependencies when necessary
 function composer_install {
+  # Some Symfony projects has "bin/composer" binary which is sort of wrapper for composer
   if { [ -f "composer.lock" ] || [ -f "composer.json" ]; } && [ ! -d "vendor" ]; then
-    composer install && echo_success "Successfully installed dependencies!"
+    if { hash bin/composer && php bin/composer install; } || composer install; then
+      echo_success "Successfully installed dependencies!"
+    fi
   fi
 }

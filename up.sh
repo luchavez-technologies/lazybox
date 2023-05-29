@@ -1,70 +1,61 @@
 ###
-### Step 1: Declare functions
+### Step 0: Declare functions
 ###
 
-# Style the inputted string
-function style() {
-  end_code="\033[0m"
-  suffix=""
+source bash/extras/style.sh
+source bash/extras/text-replace.sh
+source bash/workflows/is-php-container-valid.sh
 
-  # set the first argument as the string
-  if [ -n "$1" ]; then
-    string=$1
-  else
-    exit
-  fi
+###
+### Step 1: Set Git Credentials
+###
 
-  # loop through the rest of the arguments
-  shift
+name=$(git config --global user.name)
+email=$(git config --global user.email)
 
-  styles=""
-  for arg in "$@"
-  do
-    case $arg in
-      # styles
-      bold) styles+="\033[1m" ;;
-      italic) styles+="\033[3m" ;;
-      underline) styles+="\033[4m" ;;
-      strike) styles+="\033[9m" ;;
-      # colors
-      red) styles+="\033[31m" ;;
-      green) styles+="\033[32m" ;;
-      yellow) styles+="\033[33m" ;;
-      blue) styles+="\033[34m" ;;
-      purple) styles+="\033[35m" ;;
-      cyan) styles+="\033[36m" ;;
-      white) styles+="\033[37m" ;;
-    esac
-  done
+if [ -z "$name" ] || [ -z "$email" ] ; then
+  style "🚨 Seems like you haven't fully configured your Git configs yet." red
+  style "😉 Let's set it up first. Don't worry since this is just a one-time setup." blue
+  echo
 
-  if [ -n "$styles" ]; then
-    suffix="$end_code"
-  fi
+  if [ -z "$name" ]; then
+    read -rp "👀 Please enter the Git name ➡️ " name
 
-  # in case the string contains formatted substring, replace all instance of end_code
-  string=$(echo "${string}" | awk -v new="$end_code$styles" '{gsub(/\033\[0m/,new)}1')
-
-  printf "$styles$string$suffix"
-}
-
-# Check if the PHP container name input is valid
-function is_php_container_valid() {
-  if [ -z "$1" ]; then
-    return 1
-  fi
-
-  input=$1
-
-  containers=('php' 'php54' 'php55' 'php56' 'php70' 'php71' 'php72' 'php73' 'php74' 'php80' 'php81' 'php82')
-  for container in "${containers[@]}"
-  do
-    if [ "$input" == "$container" ]; then
-      return 0
+    if [ -z "$name" ]; then
+      style "😔 Your name input is a blank. Please try again." red
+      exit
+    else
+      if git config --global user.name "$name"; then
+        style "✅  Your name is now set!" green bold
+      else
+        style "😔 For some reason, I can't set it correctly." red
+        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
+        exit
+      fi
     fi
-  done
+  fi
 
-  return 1
-}
+  if [ -z "$email" ]; then
+    read -rp "👀 Please enter the Git email ➡️ " email
+
+    if [ -z "$email" ]; then
+      style "😔 Your email input is a blank. Please try again." red
+      exit
+    else
+      if git config --global user.email "$email"; then
+        style "✅  Your email is now set!" green bold
+      else
+        style "😔 For some reason, I can't set it correctly." red
+        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
+        exit
+      fi
+    fi
+  fi
+
+  echo
+  style "🎉 Alright! Your Git config is now le-Git. Git it? 🥁😂🥹" green bold
+  echo
+fi
 
 ###
 ### Step 2: Prepare containers to boot up
@@ -74,7 +65,6 @@ declare -a args_php_containers args_non_php_containers detected_php_containers n
 
 required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog")
 required_php_containers=("php")
-
 
 # Count the number of PHP containers from arguments
 # If the count is equal to 1, save the PHP container to "shell" variable

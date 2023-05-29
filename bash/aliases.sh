@@ -1,208 +1,195 @@
-
-
-# This will replace a text with another text inside a file
-function text_replace() {
-  strict=1 # not strict
-  comment=1 # not comment
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter the search text:"
-    read -r search
-
-    if [ -z "$search" ]; then
-      echo_error "The search text is empty!"
-      stop_function
-    fi
-
-    echo "👀 Please enter the replace text:"
-    read -r replace
-
-    if [ -z "$replace" ]; then
-      echo_error "The replace text is empty!"
-      stop_function
-    fi
-
-    echo "👀 Please enter the file name:"
-    read -r file_name
-
-    if [ -z "$file_name" ]; then
-      echo_error "The file name is empty!"
-      stop_function
-    elif [ ! -f "$file_name" ]; then
-      echo_error "The file does not exist!"
-      stop_function
-    fi
-
-  else
-    if [ -n "$1" ]; then
-      search=$1
-    else
-      echo_error "The search text is empty!"
-      stop_function
-    fi
-
-    if [ -n "$2" ]; then
-      replace=$2
-    else
-      echo_error "The replace text is empty!"
-      stop_function
-    fi
-
-    if [ -n "$3" ]; then
-      if [ -f "$3" ]; then
-        file_name=$3
-      else
-        echo_error "The file does not exist!"
-        stop_function
-      fi
-    else
-      echo_error "The file name is empty!"
-      stop_function
-    fi
-
-    if [ -n "$4" ] && [ "$4" -lt 1 ]; then
-      strict=0
-    fi
-  fi
-
-  if [ "$strict" -eq 0 ]; then
-    pattern="^$search$"
-  else
-    pattern="$search"
-  fi
-
-  if [ "$comment" -eq 0 ]; then
-    replace="\#$search\n$replace"
-  fi
-
-  # check if text actually exists
-  if grep -q "$pattern" "$file_name" && sed -i "s/$pattern/$replace/g" "$file_name"; then
-    echo_success "Successfully replaced $(style "$search" bold blue) with $(style "$replace" bold blue)."
-  fi
-}
+# Import extras
+source /etc/bashrc-devilbox.d/extras/style.sh
+source /etc/bashrc-devilbox.d/extras/text-replace.sh
 
 # This will make a symbolic link that connects the project's "public" folder to vhost's "htdocs"
 function symlink() {
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter $(style "vhost" underline bold)"
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
+    echo "👀 Please enter $(style "vhost" underline bold):"
     read -r vhost
 
     if [ -z "$vhost" ]; then
       echo_error "The vhost is empty!"
       stop_function
     fi
+  fi
 
+  if [ -n "$2" ]; then
+    app=$2
+  else
     echo "👀 Please enter PHP $(style "app name" underline bold) (default: $(style "$vhost" bold blue)):"
     read -r app
 
     if [ -z "$app" ]; then
       app=$vhost
     fi
-  else
-    if [ -n "$1" ]; then
-      vhost=$1
+  fi
+
+  # Check if vhost and app exists
+  vhost_directory="/shared/httpd/$vhost"
+  app_directory="$vhost_directory/$app"
+  web_root=""
+  file=""
+  if [ -d "$app_directory" ]; then
+    cd "$vhost_directory" || stop_function
+
+    # If public folder does not exist, always ask until an existing directory is provided
+    roots=("public" "web" "webroot")
+    web_root=""
+    for root in "${roots[@]}"
+    do
+      if [ -d "$app_directory/$root" ]; then
+        web_root="$root"
+        break
+      fi
+    done
+
+    while [ -z "$web_root" ]; do
+      echo "👀 Please enter $(style "web root" underline bold) directory:"
+      read -r root
+
+      if [ -d "$app_directory/$root" ]; then
+        web_root="$root"
+        break
+      else
+        echo_error "The $(style "$root" underline bold) directory does not exist!"
+      fi
+    done
+
+    # Check if index files exist
+    indexes=("index.html" "index.htm" "index.php" "app.php")
+    for index in "${indexes[@]}"
+    do
+      if [ -f "$app_directory/$web_root/$index" ]; then
+        file="$index"
+        break
+      fi
+    done
+
+    while [ -z "$file" ]; do
+      echo "👀 Please enter $(style "entry point" underline bold) file:"
+      read -r index
+
+      if [ -f "$app_directory/$web_root/$index" ]; then
+        file="$index"
+        break
+      else
+        echo_error "The $(style "$index" underline bold) file does not exist!"
+      fi
+    done
+
+    # Do the symlink
+    if ln -s "$app_directory/$web_root" "$vhost_directory/htdocs" 2>/dev/null; then
+      echo_success "Successfully symlinked $(style "$app_directory/$web_root" bold blue) to $(style "$vhost_directory/htdocs" bold blue)."
     else
+      echo_error "Failed to symlink $(style "$app_directory/$web_root" bold blue) to $(style "$vhost_directory/htdocs" bold blue)."
+    fi
+
+    # Copy nginx yml to vhost if file is not index.php
+    cp_vhost_gen_yml "$vhost" "$app" "$web_root" "$file"
+  fi
+}
+
+function cp_vhost_gen_yml() {
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
+    echo "👀 Please enter $(style "vhost" underline bold):"
+    read -r vhost
+
+    if [ -z "$vhost" ]; then
       echo_error "The vhost is empty!"
       stop_function
     fi
-
-    if [ -n "$2" ]; then
-      app=$2
-    else
-      app=$1
-    fi
   fi
 
-  cd /shared/httpd || stop_function
-
-  directory="$vhost/$app/public"
-  if [ -d "$directory" ]; then
-    cd "$vhost" || stop_function
-
-    # symlink public folder of the new laravel app to htdocs
-    if ln -s "$app/public" htdocs 2>/dev/null; then
-      echo_success "Successfully symlinked $(style "$app/public" bold blue) to $(style "htdocs" bold blue)."
-    else
-      echo_error "Failed to symlink $(style "$app/public" bold blue) to $(style "htdocs" bold blue)."
-    fi
-  fi
-}
-
-# Display error message
-function echo_error() {
-  style "🚨 $1" red
-  return 1
-}
-
-# Display success message
-function echo_success() {
-  style "✅  $1" green
-  return 0
-}
-
-# Style the inputted string
-function style() {
-  end_code="\033[0m"
-  suffix=""
-
-  # set the first argument as the string
-  if [ -n "$1" ]; then
-    string=$1
+  if [ -n "$2" ]; then
+    app=$2
   else
-    stop_function
+    echo "👀 Please enter PHP $(style "app name" underline bold) (default: $(style "$vhost" bold blue)):"
+    read -r app
+
+    if [ -z "$app" ]; then
+      app=$vhost
+    fi
   fi
 
-  # loop through the rest of the arguments
-  shift
+  if [ -n "$3" ]; then
+      web_root=$3
+  else
+    echo "👀 Please enter $(style "web root" underline bold) directory:"
+    read -r web_root
 
-  styles=""
-  for arg in "$@"
-  do
-    case $arg in
-      # styles
-      bold) styles+="\033[1m" ;;
-      italic) styles+="\033[3m" ;;
-      underline) styles+="\033[4m" ;;
-      strike) styles+="\033[9m" ;;
-      # colors
-      red) styles+="\033[31m" ;;
-      green) styles+="\033[32m" ;;
-      yellow) styles+="\033[33m" ;;
-      blue) styles+="\033[34m" ;;
-      purple) styles+="\033[35m" ;;
-      cyan) styles+="\033[36m" ;;
-      white) styles+="\033[37m" ;;
-    esac
-  done
-
-  if [ -n "$styles" ]; then
-    suffix="$end_code"
+    if [ -z "$web_root" ]; then
+      web_root="public"
+    fi
   fi
 
-  # in case the string contains formatted substring, replace all instance of end_code
-  string=$(echo "${string}" | awk -v new="$end_code$styles" '{gsub(/\033\[0m/,new)}1')
+  if [ -n "$4" ]; then
+    file=$4
+  else
+    echo "👀 Please enter $(style "entry point" underline bold) file:"
+    read -r file
 
-  echo -e "$styles$string$suffix"
+    if [ -z "$file" ]; then
+      file="index.php"
+    fi
+  fi
+
+  # Check if vhost and app exists
+  vhost_directory="/shared/httpd/$vhost"
+  app_directory="$vhost_directory/$app"
+
+  if [ "$file" != "index.php" ]; then
+    # Make sure the .devilbox folder exists
+    mkdir "$vhost_directory/.devilbox" 2>/dev/null
+
+    yml_example=$(get_vhost_gen_yml vhost)
+    yml=${yml_example%%-example*}
+
+    if cp "/cfg/vhost-gen/$yml_example" "$vhost_directory/.devilbox/$yml"; then
+      echo_success "Successfully copied $(style "$yml_example" bold blue) to $(style "$vhost_directory/.devilbox/$yml" bold blue)."
+      text_replace "__INDEX__;" "$file __INDEX__;" "$vhost_directory/.devilbox/$yml"
+      text_replace "index.php" "$file" "$vhost_directory/.devilbox/$yml"
+    else
+      echo_error "Failed to copy $(style "$yml_example" bold blue) to $(style "$vhost_directory/.devilbox/$yml" bold blue)."
+    fi
+  fi
+}
+
+function get_vhost_gen_yml() {
+  if [ -n "$1" ]; then
+    type=$1
+  else
+    types=("vhost" "rproxy")
+    while true; do
+      echo "Here are the vhost types: $(style "${types[*]}" bold blue)"
+      echo "👀 Please enter $(style "vhost type" underline bold):"
+      read -r type
+
+      if [ -n "$type" ] && printf '%s\n' "${types[@]}" | grep -xq "$type"; then
+        break
+      fi
+
+      echo_error "Invalid vhost type!"
+    done
+  fi
+
+  declare -A ymls
+
+  ymls["apache-2.2"]="apache22.yml-example"
+  ymls["apache-2.4"]="apache24.yml-example"
+  ymls["nginx-stable"]="nginx.yml-example"
+  ymls["nginx-mainline"]="nginx.yml-example"
+
+  echo "${ymls[$HTTPD_SERVER]}-$type"
 }
 
 # Stop function execution
 function stop_function() {
   kill -INT $$
-}
-
-# Welcome user to new app
-function welcome_to_new_app_message() {
-  if [ -n "$1" ]; then
-    reload_watcherd_message
-    style "👋 Welcome to your new app ($(style "$1" bold blue))! Happy coding! 🎉" green
-    style "🚀 Here's your app URL: $(style "https://$1.dvl.to" underline bold blue)" green
-  else
-    echo_error "The vhost is empty!"
-  fi
-}
-
-# Reload watcherd message
-function reload_watcherd_message() {
-  style "🔄 Click $(style "Reload" bold blue) on $(style "watcherd" bold blue) daemon on C&C page: $(style "http://localhost/cnc.php" underline bold blue)" green
 }
 
 # Install project dependencies
@@ -231,58 +218,7 @@ function own_directory() {
 }
 
 ###
-### Step 1: Set Git Credentials
-###
-
-name=$(git config --global user.name)
-email=$(git config --global user.email)
-
-if [ -z "$name" ] || [ -z "$email" ] ; then
-  style "🚨 Seems like you haven't fully configured your Git configs yet." red
-  style "😉 Let's set it up first. Don't worry since this is just a one-time setup." blue
-  echo
-
-  if [ -z "$name" ]; then
-    read -rp "👀 Please enter the Git name ➡️ " name
-
-    if [ -z "$name" ]; then
-      style "😔 Your name input is a blank. Please try again." red
-      exit
-    else
-      if git config --global user.name "$name"; then
-        style "✅  Your name is now set!" green bold
-      else
-        style "😔 For some reason, I can't set it correctly." red
-        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
-        exit
-      fi
-    fi
-  fi
-
-  if [ -z "$email" ]; then
-    read -rp "👀 Please enter the Git email ➡️ " email
-
-    if [ -z "$email" ]; then
-      style "😔 Your email input is a blank. Please try again." red
-      exit
-    else
-      if git config --global user.email "$email"; then
-        style "✅  Your email is now set!" green bold
-      else
-        style "😔 For some reason, I can't set it correctly." red
-        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
-        exit
-      fi
-    fi
-  fi
-
-  echo
-  style "🎉 Alright! Your Git config is now le-Git. Git it? 🥁😂🥹" green bold
-  echo
-fi
-
-###
-### Step 2: Add my own Intro
+### Add my own Intro
 ###
 
 name=$(git config --global user.name || echo "stranger")
@@ -296,7 +232,7 @@ welcome_len=${#welcome}
 
 left_pad=$((45-(quote_len+welcome_len)/2))
 
-printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && style "$welcome$(style "$quote" blue)" bold green
+printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && style "$welcome$(style "$quote" blue)\n" bold green
 echo
 echo "                    | Available GUIs   | URL                          |"
 echo "                    |------------------|------------------------------|"

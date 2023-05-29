@@ -40,7 +40,7 @@ function vite_new() {
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project..." bold green
+  style "🚀 Creating your project...\n" bold green
 
   mkdir "$name"
 
@@ -116,7 +116,7 @@ function vite_clone() {
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project..." bold green
+  style "🚀 Creating your project...\n" bold green
 
   mkdir "$name"
 
