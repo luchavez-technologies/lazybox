@@ -123,11 +123,11 @@ function vite_clone() {
   cd "$name" || stop_function
 
   git clone "$url" "$name"
-  git checkout "$branch"
 
   port_change "$name" "$vite_port"
 
   cd "$name" || stop_function
+  git checkout "$branch" 2>/dev/null
 
   text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $vite_port\"" "package.json"
 

@@ -146,7 +146,6 @@ function symfony_clone() {
   cd "$name" || stop_function
 
   git clone "$url" "$name"
-  git checkout "$branch" 2>/dev/null
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -157,6 +156,7 @@ function symfony_clone() {
   fi
 
   cd "$name" || stop_function
+  git checkout "$branch" 2>/dev/null
 
   # copy .env.example to .env
   env=".env"

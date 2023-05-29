@@ -123,11 +123,11 @@ function next_clone() {
   cd "$name" || stop_function
 
   git clone "$url" "$name"
-  git checkout "$branch"
 
   port_change "$name" "$next_port"
 
   cd "$name" || stop_function
+  git checkout "$branch" 2>/dev/null
 
   text_replace "\"next dev\"" "\"next dev --port $next_port\"" "package.json"
 
