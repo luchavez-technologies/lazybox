@@ -1,58 +1,58 @@
-# Create and run a new ViteJS app
+# Create and run a new Vite app
 function vite_new() {
-  vite_version="latest"
-  vite_port=5173
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter ViteJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+  framework="ViteJS"
+  version="latest"
+  port=5173
+
+  if [ -n "$1" ]; then
+    name=$1
+  else
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
+  fi
 
-    echo "👀 Please enter ViteJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r version
-
-    if [ -n "$version" ]; then
-        vite_version=$version
-    fi
-
-    echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter ViteJS $(style "port number" underline bold) (default: $(style "$vite_port" bold blue)):"
-    read -r port
-
-    if [ -n "$port" ]; then
-        vite_port=$port
-    fi
+  if [ -n "$2" ]; then
+    version=$2
   else
-    if [ -n "$1" ]; then
-      name=$1
-    fi
+    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
+    read -r v
 
-    if [ -n "$2" ]; then
-      vite_version=$2
+    if [ -n "$v" ]; then
+        version=$v
     fi
+  fi
 
-    if [ -n "$3" ]; then
-      vite_port=$3
+  if [ -n "$3" ]; then
+    port=$3
+  else
+    echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
+    echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
+    read -r p
+
+    if [ -n "$p" ]; then
+        port=$p
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project...\n" bold green
+  echo_style "🚀 Creating your $framework project..." bold green
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
-  npx create-vite@"$vite_version" "$name" 2>/dev/null
+  npx create-vite@"$version" "$name" 2>/dev/null
 
-  port_change "$name" "$vite_port"
+  port_change "$name" "$port"
 
   cd "$name" || stop_function
 
-  text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $vite_port\"" "package.json"
+  text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $port\"" "package.json"
 
   project_install
 
@@ -61,62 +61,62 @@ function vite_new() {
   project_start
 }
 
-# Clone and run a ViteJS app
+# Clone and run a Vite app
 function vite_clone() {
+  framework="ViteJS"
   url=""
-  vite_port=5173
+  port=5173
   branch="develop"
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter $(style "Git URL" underline bold) of your ViteJS app:"
+
+  if [ -n "$1" ]; then
+    url=$1
+  else
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
       echo_error "You provided an empty Git URL."
       stop_function
     fi
+  fi
 
+  if [ -n "$2" ]; then
+    branch=$2
+  else
     echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
+  fi
 
-    echo "👀 Please enter ViteJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+  if [ -n "$3" ]; then
+    name=$3
+  else
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
+  fi
 
-    echo "Note: Make sure that the port $vite_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter ViteJS $(style "port number" underline bold) (default: $(style "$vite_port" bold blue)):"
-    read -r port
-
-    if [ -n "$port" ]; then
-        vite_port=$port
-    fi
+  if [ -n "$3" ]; then
+    port=$3
   else
-    if [ -n "$1" ]; then
-      url=$1
-    fi
+    echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
+    echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
+    read -r p
 
-    if [ -n "$2" ]; then
-      branch=$2
-    fi
-
-    if [ -n "$3" ]; then
-      name=$3
-    fi
-
-    if [ -n "$3" ]; then
-      vite_port=$3
+    if [ -n "$p" ]; then
+        port=$p
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project...\n" bold green
+  echo_style "🚀 Creating your $framework project..." bold green
 
   mkdir "$name"
 
@@ -124,12 +124,12 @@ function vite_clone() {
 
   git clone "$url" "$name"
 
-  port_change "$name" "$vite_port"
+  port_change "$name" "$port"
 
   cd "$name" || stop_function
   git checkout "$branch" 2>/dev/null
 
-  text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $vite_port\"" "package.json"
+  text_replace "\"dev\": \"vite\"" "\"dev\": \"vite --host --port $port\"" "package.json"
 
   project_install
 

@@ -100,7 +100,7 @@ services:
   # PHP
   # ------------------------------------------------------------
   php:
-    image: devilbox/php-fpm:${PHP_SERVER}-work-0.150
+    image: devilbox/php-fpm:${PHP_SERVER}-work-0.151
     hostname: php
 
     ##
@@ -223,6 +223,9 @@ services:
 
       # vhost-gen configuration files
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+
+      # Customized services
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
       # Users Composer Config
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}

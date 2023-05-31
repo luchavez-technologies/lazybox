@@ -1,4 +1,4 @@
-# Simple Devilbox for PHP and NodeJS Development
+# Simple Devilbox for Web Development
 
 This is just a fork of [Devilbox](https://github.com/cytopia/devilbox) so a huge thanks to the awesome team behind it! 🩷
 <br/>
@@ -34,6 +34,9 @@ Here's a list of apps that I planned to add workflows for:
 -[x] AstroJS
 -[ ] Strapi
 
+🐘 Python Apps
+-[ ] Django
+
 Unfortunately, you can't make a PR on this GitHub repo since this is just a mirrored copy from somewhere else. 😔<br/>
 Worry not because you can just create a "New Discussion" if you want to request a framework support. 😇<br/>
 <br/>
@@ -64,7 +67,7 @@ cd devilbox
 ./up.sh some-custom-container
 ```
 
-If everything works , you should be able to see this... ✨
+If everything works, you should be able to see this... ✨
 
 ![./up.sh](./images/devilbox-up.png)
 

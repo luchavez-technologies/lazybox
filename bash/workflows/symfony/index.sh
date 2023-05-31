@@ -158,10 +158,6 @@ function symfony_clone() {
   git checkout "$branch" 2>/dev/null
 
   # install dependencies
-  own_directory /var/lib
-  own_directory /var/cache
-  own_directory /var/log
-
   config_local_example="app/config/config_local.example.yml"
   config_local="app/config/config_local.yml"
 

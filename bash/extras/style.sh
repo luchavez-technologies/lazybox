@@ -2,12 +2,11 @@
 function style() {
   end_code="\033[0m"
   suffix=""
+  string=""
 
   # set the first argument as the string
   if [ -n "$1" ]; then
     string=$1
-  else
-    stop_function
   fi
 
   # loop through the rest of the arguments
@@ -43,23 +42,28 @@ function style() {
   printf "$styles$string$suffix"
 }
 
+# Display a styled message
+function echo_style() {
+  echo "$(style "$@")"
+}
+
 # Display error message
 function echo_error() {
-  style "🚨 $1\n" red
+  echo_style "🚨 $1" red
   return 1
 }
 
 # Display success message
 function echo_success() {
-  style "✅  $1\n" green
+  echo_style "✅  $1" green
   return 0
 }
 
 # Welcome user to new app
 function welcome_to_new_app_message() {
   if [ -n "$1" ]; then
-    style "👋 Welcome to your new app ($(style "$1" bold blue))! Happy coding! 🎉\n" green
-    style "🚀 Here's your app URL: $(style "https://$1.dvl.to" underline bold blue)\n" green
+    echo_style "👋 Welcome to your new app ($(style "$1" bold blue))! Happy coding! 🎉" green
+    echo_style "🚀 Here's your app URL: $(style "https://$1.dvl.to" underline bold blue)" green
   else
     echo_error "The vhost is empty!"
   fi
@@ -67,5 +71,5 @@ function welcome_to_new_app_message() {
 
 # Reload watcherd message
 function reload_watcherd_message() {
-  style "🔄 Click $(style "Reload" bold blue) on $(style "watcherd" bold blue) daemon on C&C page: $(style "http://localhost/cnc.php" underline bold blue)\n" green
+  echo_style "🔄 Click $(style "Reload" bold blue) on $(style "watcherd" bold blue) daemon on C&C page: $(style "http://localhost/cnc.php" underline bold blue)" green
 }

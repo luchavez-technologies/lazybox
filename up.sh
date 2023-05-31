@@ -14,22 +14,22 @@ name=$(git config --global user.name)
 email=$(git config --global user.email)
 
 if [ -z "$name" ] || [ -z "$email" ] ; then
-  style "🚨 Seems like you haven't fully configured your Git configs yet." red
-  style "😉 Let's set it up first. Don't worry since this is just a one-time setup." blue
+  echo_style "🚨 Seems like you haven't fully configured your Git configs yet." red
+  echo_style "😉 Let's set it up first. Don't worry since this is just a one-time setup." blue
   echo
 
   if [ -z "$name" ]; then
     read -rp "👀 Please enter the Git name ➡️ " name
 
     if [ -z "$name" ]; then
-      style "😔 Your name input is a blank. Please try again." red
+      echo_style "😔 Your name input is a blank. Please try again." red
       exit
     else
       if git config --global user.name "$name"; then
-        style "✅  Your name is now set!" green bold
+        echo_style "✅  Your name is now set!" green bold
       else
-        style "😔 For some reason, I can't set it correctly." red
-        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
+        echo_style "😔 For some reason, I can't set it correctly." red
+        echo_style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
         exit
       fi
     fi
@@ -39,31 +39,99 @@ if [ -z "$name" ] || [ -z "$email" ] ; then
     read -rp "👀 Please enter the Git email ➡️ " email
 
     if [ -z "$email" ]; then
-      style "😔 Your email input is a blank. Please try again." red
+      echo_style "😔 Your email input is a blank. Please try again." red
       exit
     else
       if git config --global user.email "$email"; then
-        style "✅  Your email is now set!" green bold
+        echo_style "✅  Your email is now set!" green bold
       else
-        style "😔 For some reason, I can't set it correctly." red
-        style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
+        echo_style "😔 For some reason, I can't set it correctly." red
+        echo_style "😔 Please set it yourself if you know how to or look for help. Really sorry." red
         exit
       fi
     fi
   fi
 
   echo
-  style "🎉 Alright! Your Git config is now le-Git. Git it? 🥁😂🥹" green bold
+  echo_style "🎉 Alright! Your Git config is now le-Git. Git it? 🥁😂🥹" green bold
   echo
 fi
 
 ###
-### Step 2: Prepare containers to boot up
+### Step 2: Choose from workspaces
+### Update the HOST_PATH_HTTPD_DATADIR=./data/www
+###
+
+env=".env"
+
+default_data_dir="./data/www"
+data_dir_variable="HOST_PATH_HTTPD_DATADIR="
+data_dir=$(grep "^$data_dir_variable*" "$env")
+
+# Get substring after ./data/www
+current_workspace="${data_dir#$data_dir_variable$default_data_dir}"
+current_workspace="${current_workspace#/}"
+default_workspace="default"
+
+# Set current space as default if empty
+if [ -z "$current_workspace" ]; then
+  current_workspace="$default_workspace"
+fi
+
+# Move non-workspaces to "default" workspace
+# Display all workspaces
+echo_style "========== 👔 AVAILABLE WORKSPACES ==========" bold green
+
+# Detect all PHP containers from projects folder
+for dir in "$default_data_dir"/*; do
+  folder="${dir#$default_data_dir/}"
+  if [ -d "$dir/htdocs" ] || [ -d "$dir/.devilbox" ]; then
+    mkdir "$default_data_dir/$default_workspace" 2>/dev/null
+    mv "$dir" "$default_data_dir/$default_workspace/$folder"
+  else
+    echo "🐳 $(style "$folder" bold green) ($dir)"
+  fi
+done
+
+# Ask user to choose from available workspaces with the "$current_workspace" as default
+echo
+read -rp "👀 Please enter the workspace name (default: $(style "$current_workspace" bold green)) ➡️ " chosen_workspace
+
+# Clean the workspace name by changing spaces and underscores to dashes and changing to lowercase
+if [ -n "$chosen_workspace" ]; then
+  chosen_workspace=$(echo "${chosen_workspace//[_ ]/-}" | tr '[:upper:]' '[:lower:]')
+elif [ -n "$current_workspace" ]; then
+  chosen_workspace="$current_workspace"
+else
+  chosen_workspace="$default_workspace"
+fi
+
+# Ask wether to create if does not exist yet
+if [ ! -d "$default_data_dir/$chosen_workspace" ]; then
+  echo
+  echo_error "The $(style "$chosen_workspace" bold green) workspace does not exist yet."
+  read -rp "👀 Create new workspace? (y/n) ➡️ " choice
+  case "$choice" in
+    y|Y )
+      mkdir "$default_data_dir/$chosen_workspace"
+      ;;
+    * )
+      echo_error "Create new workplace cancelled."
+      exit
+      ;;
+  esac
+fi
+
+# Replace
+text_replace "^$data_dir" "$data_dir_variable$default_data_dir/$chosen_workspace" "$env"
+
+###
+### Step 3: Prepare containers to boot up
 ###
 
 declare -a args_php_containers args_non_php_containers detected_php_containers non_php_containers
 
-required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog")
+required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog" "soketi")
 required_php_containers=("php")
 
 # Count the number of PHP containers from arguments
@@ -93,8 +161,8 @@ if [ -n "$shell" ] && [ "$count" -gt 1 ]; then
   shell=""
 fi
 
-# Get projects folder from .env
-data_dir=$(grep "^HOST_PATH_HTTPD_DATADIR=" ".env")
+# Get projects folder from $env
+data_dir=$(grep "^HOST_PATH_HTTPD_DATADIR=" "$env")
 data_dir=${data_dir#*=}
 
 # Detect all PHP containers from projects folder
@@ -127,20 +195,34 @@ echo "🔎 Detected PHP containers from your projects : $(style "${detected_php_
 echo "🚀 Containers to boot up                      : $(style "${boot_containers[*]}" bold green)"
 
 ###
-### Step 3: Boot up the containers and enter container terminal
+### Step 4: Boot up the containers and enter container terminal
 ###
 
 # Decide what program to use
 if hash docker-compose 2>/dev/null; then
-	prepend="docker-compose"
+	docker_compose="docker-compose"
 else
-	prepend="docker compose"
+	docker_compose="docker compose"
 fi
 
-if $prepend up "${boot_containers[@]}" -d; then
+###
+### Step 4.1 Ngrok Special Case
+###
+
+ngrok="ngrok"
+ngrok_token_variable="NGROK_AUTHTOKEN="
+ngrok_token=$(grep "^$ngrok_token_variable*" "$env")
+ngrok_token=${ngrok_token#*=}
+
+if [ -z "$ngrok_token" ]; then
+  $docker_compose stop "$ngrok"
+  boot_containers=($(echo "${boot_containers[@]/$ngrok}" | tr -s ' '))
+fi
+
+if $docker_compose up "${boot_containers[@]}" -d; then
   if [ -z "$shell" ]; then
     shell="php"
-    echo "👽 Available PHP container terminals: $(style "${php_containers[*]}" bold green)"
+    echo "🐘 Available PHP container terminals: $(style "${php_containers[*]}" bold green)"
     read -rp "👀 Please enter the container name (default: $(style "php" bold green)) ➡️ " container
 
     if [ -n "$container" ] && is_php_container_valid "$container"; then
@@ -148,5 +230,5 @@ if $prepend up "${boot_containers[@]}" -d; then
     fi
   fi
 
-  $prepend exec --user devilbox "$shell" /bin/sh -c "cd /shared/httpd; exec bash -l"
+  $docker_compose exec --user devilbox "$shell" /bin/sh -c "cd /shared/httpd; exec bash -l"
 fi

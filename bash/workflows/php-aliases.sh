@@ -1,6 +1,8 @@
 # This will change the PHP container where the vhost will run on
 function php_change() {
-  if [ $# -eq 0 ]; then
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
     echo "👀 Please enter $(style "vhost" underline bold)"
     read -r vhost
 
@@ -8,26 +10,16 @@ function php_change() {
       echo_error "The vhost is empty!"
       stop_function
     fi
+  fi
 
+  if [ -n "$2" ]; then
+    php_version=$2
+  else
     echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
     echo "👀 Please enter $(style "PHP container" underline bold) where the app should run:"
     read -r php_version
 
     if [ -z "$php_version" ]; then
-      echo_error "The container name is empty!"
-      stop_function
-    fi
-  else
-    if [ -n "$1" ]; then
-      vhost=$1
-    else
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-
-    if [ -n "$2" ]; then
-      php_version=$2
-    else
       echo_error "The container name is empty!"
       stop_function
     fi
@@ -49,17 +41,15 @@ function php_change() {
 
 # This will change back the PHP version of a vhost to the default one by remove the `backend.cfg` file
 function php_default() {
-  if [ $# -eq 0 ]; then
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
     echo "👀 Please enter $(style "vhost" underline bold)"
     read -r vhost
 
     if [ -z "$vhost" ]; then
       echo_error "The vhost is empty!"
       stop_function
-    fi
-  else
-    if [ -n "$1" ]; then
-      vhost=$1
     fi
   fi
 
@@ -76,8 +66,22 @@ function php_default() {
 
 # Get the current PHP container name
 function php_version() {
-  version=$PHP_VERSION
-  echo "php${version//./}"
+  declare -A versions
+  versions['172.16.238.10']='php'
+  versions['172.16.238.201']='php54'
+  versions['172.16.238.202']='php55'
+  versions['172.16.238.203']='php56'
+  versions['172.16.238.204']='php70'
+  versions['172.16.238.205']='php71'
+  versions['172.16.238.206']='php72'
+  versions['172.16.238.207']='php73'
+  versions['172.16.238.208']='php74'
+  versions['172.16.238.209']='php80'
+  versions['172.16.238.210']='php81'
+  versions['172.16.238.211']='php82'
+
+  ip=$(hostname -I | awk '{print $1}')
+  echo "${versions[$ip]}"
 }
 
 # Get the default PHP container name
@@ -94,11 +98,8 @@ function is_php_container_current() {
 
   input=$1
   current=$(php_version)
-  server=$(php_server)
 
-  # if the input is "php", compare "php_server" to "php_version"
-  # if the input is not "php", compare it with "php_version"
-  if [ "$input" == "php" ] && [ "$server" == "$current" ] || [ "$input" == "$current" ]; then
+  if [ "$input" == "$current" ]; then
     return 0
   fi
 

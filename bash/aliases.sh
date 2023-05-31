@@ -187,6 +187,82 @@ function get_vhost_gen_yml() {
   echo "${ymls[$HTTPD_SERVER]}-$type"
 }
 
+function env_text_replace() {
+  if [ -n "$1" ]; then
+    search=$1
+  else
+    echo "👀 Please enter the search text:"
+    read -r search
+
+    if [ -z "$search" ]; then
+      echo_error "The search text is empty!"
+      return 1
+    fi
+  fi
+
+  if [ -n "$2" ]; then
+    replace=$2
+  else
+    echo "👀 Please enter the replace text:"
+    read -r replace
+
+    if [ -z "$replace" ]; then
+      echo_error "The replace text is empty!"
+      return 1
+    fi
+  fi
+
+  env="/.env"
+  tmp="/tmp$env"
+
+  cp -f "$env" "$tmp"
+  text_replace "$search" "$replace" "$tmp"
+  cat "$tmp" > "$env"
+  rm "$tmp"
+}
+
+# Set Ngrok Settings
+function ngrok_set() {
+  env="/.env"
+  #NGROK_HTTP_TUNNELS=laravel.dvl.to:httpd:80
+  #NGROK_AUTHTOKEN=2QVMa1gQmwIluGDcht7KDExh4Vg_4przyoQd2JLizm6anPgJv
+  current_vhost_variable="NGROK_HTTP_TUNNELS="
+  vhost_suffix=".dvl.to:httpd:80"
+  current_token_variable="NGROK_AUTHTOKEN="
+  current_vhost=$(grep "^$current_vhost_variable*" "$env")
+  current_token=$(grep "^$current_token_variable*" "$env")
+
+  vhost="${current_vhost#$current_vhost_variable}"
+  token="${current_token#$current_token_variable}"
+
+  if [ -n "$vhost" ]; then
+    vhost="${vhost%$vhost_suffix}"
+  fi
+
+  echo "👀 Please enter $(style "vhost" underline bold) (default: $(style "$vhost" bold blue)):"
+  read -r v
+
+  if [ -n "$v" ]; then
+    if [ -d "/shared/httpd/$v" ]; then
+      vhost="$v"
+      env_text_replace "$current_vhost" "$current_vhost_variable$vhost$vhost_suffix"
+    else
+      echo_error "The vhost does not exist!"
+    fi
+  fi
+
+  echo "👀 Please enter $(style "token" underline bold) (default: $(style "$token" bold blue)):"
+  read -r t
+
+  if [ -n "$t" ]; then
+    token="$t"
+    env_text_replace "$current_token" "$current_token_variable$token$token_suffix"
+  fi
+
+  php_version=$(php_version)
+  echo "✋ If $(style "Ngrok settings" bold blue) has been changed, exit this container first then run $(style "./up.sh $php_version" bold blue)."
+}
+
 # Stop function execution
 function stop_function() {
   kill -INT $$
@@ -213,7 +289,26 @@ function own_directory() {
       fi
     fi
   else
-    echo_error "The directory does not exist!"
+    echo_error "The $directory directory does not exist!"
+  fi
+}
+
+# Make devilbox user the owner of a file
+function own_file() {
+  if [ -n "$1" ] && [ -f "$1" ]; then
+    file="$1"
+    owner="devilbox"
+    current_owner=$(stat -c '%U' "$file")
+
+    if [ "$owner" != "$current_owner" ]; then
+      if sudo chown "$owner":"$owner" "$file"; then
+        echo_success "Successfully set $(style "$owner" bold blue) as owner of $(style "$file" bold blue)."
+      else
+        echo_error "Failed to set $(style "$owner" bold blue) as owner of $(style "$file" bold blue)."
+      fi
+    fi
+  else
+    echo_error "The $file file does not exist!"
   fi
 }
 
@@ -221,23 +316,51 @@ function own_directory() {
 ### Add my own Intro
 ###
 
-name=$(git config --global user.name || echo "stranger")
+function intro() {
+  # Display current workspace
+  workspace="$HOST_PATH_HTTPD_DATADIR"
+  workspace=$(echo "[ 🐳 ${workspace##*/} workspace ]" | tr '[:lower:]' '[:upper:]')
 
-quotes=("Let's do this! 🔥" "Let's make money! 💸" "You matter, okay? 😉" "I know you can do it! 😊")
-quote=${quotes[$RANDOM % ${#quotes[@]}]}
-quote_len=${#quote}
+  workspace_len=${#workspace}
+  left_pad=$((45-(workspace_len)/2))
+  printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$workspace" bold
 
-welcome="Welcome, $name! "
-welcome_len=${#welcome}
+  # Display name and quote
+  name=$(git config --global user.name || echo "stranger")
 
-left_pad=$((45-(quote_len+welcome_len)/2))
+  quotes=("Let's do this! 🔥" "Let's make money! 💸" "You matter, okay? 😉" "I know you can do it! 😊")
+  quote=${quotes[$RANDOM % ${#quotes[@]}]}
+  quote_len=${#quote}
 
-printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && style "$welcome$(style "$quote" blue)\n" bold green
-echo
-echo "                    | Available GUIs   | URL                          |"
-echo "                    |------------------|------------------------------|"
-echo "                    | 🐖 Mailhog       | http://localhost:8025        |"
-echo "                    | 📦 Minio (S3)    | http://localhost:8900        |"
-echo "                    | 🌐 Ngrok         | http://localhost:4040        |"
-echo
-echo "------------------------------------------------------------------------------------------"
+  welcome="Welcome, $name! "
+  welcome_len=${#welcome}
+
+  left_pad=$((45-(quote_len+welcome_len)/2))
+  printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$welcome$(style "$quote" blue)" bold green
+  echo
+  echo "                    | Services           | URL                        |"
+  echo "                    |--------------------|----------------------------|"
+  echo "                    | 🐖 Mailhog         | https://mailhog.dvl.to     |"
+  echo "                    | 📦 Minio (Console) | https://minio.dvl.to       |"
+  echo "                    | 📦 Minio (API)     | https://api.minio.dvl.to   |"
+  echo "                    | 🌐 Ngrok           | http://localhost:4040     |"
+  echo "                    | 🔈 Soketi          | https://soketi.dvl.to      |"
+  echo
+  echo "------------------------------------------------------------------------------------------"
+}
+
+# Invoke intro
+intro
+
+# Own some directories
+own_directory /var/cache
+own_directory /var/log
+own_directory /var/lib
+
+# The loaded ".env" file cannot be edited using "sed" function.
+# It was found out that overriding the contents via "cat" function works.
+# Therefore, we just save a copy of ".env" to "/tmp" then override the original's contents.
+own_file /.env
+
+# Copy customized services
+cp -rf /services/* /shared/httpd

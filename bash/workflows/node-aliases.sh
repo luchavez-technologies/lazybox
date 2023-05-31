@@ -1,7 +1,10 @@
 # This will change the port where the node app will be expected to run on
 function port_change() {
   php_version=$(php_version)
-  if [ $# -eq 0 ]; then
+
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
     echo "👀 Please enter $(style "vhost" underline bold)"
     read -r vhost
 
@@ -9,7 +12,11 @@ function port_change() {
       echo_error "The vhost is empty!"
       stop_function
     fi
+  fi
 
+  if [ -n "$2" ]; then
+    port=$2
+  else
     echo "👀 Please enter $(style "port number" underline bold) where the app should run:"
     read -r port
 
@@ -17,31 +24,17 @@ function port_change() {
       echo_error "The port number is empty!"
       stop_function
     fi
+  fi
 
+  if [ -n "$3" ]; then
+    php_version=$3
+  else
     echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
     echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
 
     if [ -n "$version" ] && is_php_container_valid "$version"; then
       php_version=$version
-    fi
-  else
-    if [ -n "$1" ]; then
-      vhost=$1
-    else
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-
-    if [ -n "$2" ]; then
-      port=$2
-    else
-      echo_error "The port number is empty!"
-      stop_function
-    fi
-
-    if [ -n "$3" ]; then
-      php_version=$3
     fi
   fi
 

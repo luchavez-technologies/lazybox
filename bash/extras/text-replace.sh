@@ -44,8 +44,8 @@ function text_replace() {
     fi
   fi
 
-  # check if text actually exists
-  if text_exists "$search" "$file_name" && sed -i "s/$search/$replace/g" "$file_name"; then
+  # Check if text actually exists
+  if text_exists "$search" "$file_name" && { sed -i "s|$search|$replace|g" "$file_name" 2>/dev/null || sed -i "" "s|$search|$replace|g" "$file_name" 2>/dev/null; }; then
     replace=$(style "$replace" bold blue | tr '\n' ' ')
     echo_success "Successfully replaced $(style "$search" bold blue) with $replace."
     return 0

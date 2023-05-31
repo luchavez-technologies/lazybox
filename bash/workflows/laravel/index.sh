@@ -31,7 +31,7 @@ function laravel_new() {
     echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
 
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
+    if [ -n "$version" ]; then
       php_version=$version
     fi
   fi
@@ -194,12 +194,12 @@ function laravel_replace_env_variables() {
     fi
   fi
 
-  snake_name=${name//-/_}
+  alphanumeric_name=${name//[^[:alnum:]]/}
 
-  text_replace "^APP_NAME=Laravel$" "#APP_NAME=Laravel\nAPP_NAME=\"$name\"" "$file"
-  text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$name.dvl.to" "$file"
+  text_replace "^APP_NAME=Laravel$" "#APP_NAME=Laravel\nAPP_NAME=\"$alphanumeric_name\"" "$file"
+  text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$alphanumeric_name.dvl.to" "$file"
 
-  if text_exists "^APP_KEY=$"; then
+  if text_exists "^APP_KEY=$" "$file"; then
     php artisan key:generate 2>/dev/null
   fi
 
@@ -214,12 +214,12 @@ function laravel_replace_env_variables() {
   text_replace "^DB_PORT=3306$" "#DB_PORT=3306\nDB_PORT=\"\$\{HOST_PORT_MYSQL\}\"" "$file"
 
   # This is for DB_DATABASE
-  if text_replace "^DB_DATABASE=laravel$" "#DB_DATABASE=laravel\nDB_DATABASE=$snake_name" "$file"; then
+  if text_replace "^DB_DATABASE=laravel$" "#DB_DATABASE=laravel\nDB_DATABASE=$alphanumeric_name" "$file"; then
     password=$MYSQL_ROOT_PASSWORD
     if [ -z "$password" ]; then
-      mysql -u root -h mysql -e "create database $snake_name"
+      mysql -u root -h mysql -e "create database $alphanumeric_name"
     else
-      mysql -u root -h mysql -e "create database $snake_name" -p "$password"
+      mysql -u root -h mysql -e "create database $alphanumeric_name" -p "$password"
     fi
   fi
 
@@ -260,14 +260,15 @@ function laravel_replace_env_variables() {
   ###
 
   # This is for AWS_ACCESS_KEY_ID
-  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"http:\/\/minio:\$\{HOST_PORT_MINIO\}\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
+  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"http:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
 
   # This is for AWS_SECRET_ACCESS_KEY
   text_replace "^AWS_SECRET_ACCESS_KEY=$" "#AWS_SECRET_ACCESS_KEY=\nAWS_SECRET_ACCESS_KEY=\"\$\{MINIO_PASSWORD\}\"" "$file"
 
   # This is for AWS_BUCKET
-  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$snake_name\nAWS_URL=\"http:\/\/$1.dvl.to:\$\{HOST_PORT_MINIO\}\/\$\{AWS_BUCKET\}\"" "$file"; then
+  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$alphanumeric_name" "$file"; then
+    text_replace "^AWS_USE_PATH_STYLE_ENDPOINT=false$" "#AWS_USE_PATH_STYLE_ENDPOINT=false\nAWS_USE_PATH_STYLE_ENDPOINT=true" "$file"
     text_replace "^FILESYSTEM_DRIVER=local$" "#FILESYSTEM_DRIVER=local\nFILESYSTEM_DRIVER=s3" "$file"
-    text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DISK=local\nFILESYSTEM_DISK=s3" "$file"
+    text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DI:SK=local\nFILESYSTEM_DISK=s3" "$file"
   fi
 }

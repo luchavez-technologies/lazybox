@@ -1,58 +1,58 @@
 # Create and run a new AstroJS app
 function astro_new() {
-  astro_version="latest"
-  astro_port=3000
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter AstroJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+  framework="AstroJS"
+  version="latest"
+  port=3000
+
+  if [ -n "$1" ]; then
+    name=$1
+  else
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
+  fi
 
-    echo "👀 Please enter AstroJS $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r version
-
-    if [ -n "$version" ]; then
-        astro_version=$version
-    fi
-
-    echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter AstroJS $(style "port number" underline bold) (default: $(style "$astro_port" bold blue)):"
-    read -r port
-
-    if [ -n "$port" ]; then
-        astro_port=$port
-    fi
+  if [ -n "$2" ]; then
+    version=$2
   else
-    if [ -n "$1" ]; then
-      name=$1
-    fi
+    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
+    read -r v
 
-    if [ -n "$2" ]; then
-      astro_version=$2
+    if [ -n "$v" ]; then
+        version=$v
     fi
+  fi
 
-    if [ -n "$3" ]; then
-      astro_port=$3
+  if [ -n "$3" ]; then
+    port=$3
+  else
+    echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
+    echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
+    read -r p
+
+    if [ -n "$p" ]; then
+        port=$p
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project...\n" bold green
+  echo_style "🚀 Creating your $framework project..." bold green
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
-  npx create-astro@"$astro_version" "$name" 2>/dev/null
+  npx create-astro@"$version" "$name" 2>/dev/null
 
-  port_change "$name" "$astro_port"
+  port_change "$name" "$port"
 
   cd "$name" || stop_function
 
-  text_replace "\"astro dev\"" "\"astro dev --host --port $astro_port\"" "package.json"
+  text_replace "\"astro dev\"" "\"astro dev --host --port $port\"" "package.json"
 
   project_install
 
@@ -63,60 +63,60 @@ function astro_new() {
 
 # Clone and run a AstroJS app
 function astro_clone() {
+  framework="AstroJS"
   url=""
-  astro_port=3000
+  port=3000
   branch="develop"
-  if [ $# -eq 0 ]; then
-    echo "👀 Please enter $(style "Git URL" underline bold) of your AstroJS app:"
+
+  if [ -n "$1" ]; then
+    url=$1
+  else
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
       echo_error "You provided an empty Git URL."
       stop_function
     fi
+  fi
 
+  if [ -n "$2" ]; then
+    branch=$2
+  else
     echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
     read -r b
 
     if [ -n "$b" ]; then
       branch="$b"
     fi
+  fi
 
-    echo "👀 Please enter AstroJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+  if [ -n "$3" ]; then
+    name=$3
+  else
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
       name="app-$RANDOM"
     fi
+  fi
 
-    echo "Note: Make sure that the port $astro_port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter AstroJS $(style "port number" underline bold) (default: $(style "$astro_port" bold blue)):"
+  if [ -n "$4" ]; then
+    port=$4
+  else
+    echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
+    echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
     read -r port
 
     if [ -n "$port" ]; then
-        astro_port=$port
-    fi
-  else
-    if [ -n "$1" ]; then
-      url=$1
-    fi
-
-    if [ -n "$2" ]; then
-      branch=$2
-    fi
-
-    if [ -n "$3" ]; then
-      name=$3
-    fi
-
-    if [ -n "$4" ]; then
-      astro_port=$4
+        port=$port
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🚀 Creating your project...\n" bold green
+  echo_style "🚀 Creating your $framework project..." bold green
 
   mkdir "$name"
 
@@ -124,12 +124,12 @@ function astro_clone() {
 
   git clone "$url" "$name"
 
-  port_change "$name" "$astro_port"
+  port_change "$name" "$port"
 
   cd "$name" || stop_function
   git checkout "$branch" 2>/dev/null
 
-  text_replace "\"astro dev\"" "\"astro dev --host --port $astro_port\"" "package.json"
+  text_replace "\"astro dev\"" "\"astro dev --host --port $port\"" "package.json"
 
   project_install
 
