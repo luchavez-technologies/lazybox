@@ -219,7 +219,7 @@ if [ -z "$ngrok_token" ]; then
   boot_containers=($(echo "${boot_containers[@]/$ngrok}" | tr -s ' '))
 fi
 
-if $docker_compose up "${boot_containers[@]}" -d; then
+if $docker_compose up -d "${boot_containers[@]}"; then
   if [ -z "$shell" ]; then
     shell="php"
     echo "🐘 Available PHP container terminals: $(style "${php_containers[*]}" bold green)"
