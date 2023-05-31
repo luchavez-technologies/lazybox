@@ -16,26 +16,26 @@ Here's a list of apps that I planned to add workflows for:
 <br/>
 <br/>
 🐘 PHP Apps
--[x] Laravel
--[ ] Lumen
--[ ] Symfony
--[ ] CodeIgniter
--[ ] WordPress
--[ ] Drupal
--[x] Yii
--[ ] CakePHP
--[ ] Slim
--[ ] Framework X
+- [x] Laravel
+- [ ] Lumen
+- [ ] Symfony
+- [ ] CodeIgniter
+- [ ] WordPress
+- [ ] Drupal
+- [x] Yii
+- [ ] CakePHP
+- [ ] Slim
+- [ ] Framework X
 
 🍀 NodeJS Apps
--[x] Vite (which includes Vanilla, Vue, React, Preact, Lit, and Svelte)
--[x] NextJS
--[x] GatsbyJS
--[x] AstroJS
--[ ] Strapi
+- [x] Vite (which includes Vanilla, Vue, React, Preact, Lit, and Svelte)
+- [x] NextJS
+- [x] GatsbyJS
+- [x] AstroJS
+- [ ] Strapi
 
 🐘 Python Apps
--[ ] Django
+- [ ] Django
 
 Unfortunately, you can't make a PR on this GitHub repo since this is just a mirrored copy from somewhere else. 😔<br/>
 Worry not because you can just create a "New Discussion" if you want to request a framework support. 😇<br/>
