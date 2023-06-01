@@ -80,7 +80,7 @@ function php_version() {
   versions['172.16.238.210']='php81'
   versions['172.16.238.211']='php82'
 
-  ip=$(hostname -I | awk '{print $1}')
+  ip=$(ip_address)
   echo "${versions[$ip]}"
 }
 

@@ -312,13 +312,41 @@ function own_file() {
   fi
 }
 
+# Get current IP address
+function ip_address() {
+  hostname -I | awk '{print $1}'
+}
+
+# Get user's name from Git config
+function git_name() {
+  git config --global user.name || echo "stranger"
+}
+
+# Where am I?
+function whereami() {
+  local default="/shared/httpd"
+  local absolute=$(pwd)
+  local workspace=$HOST_PATH_HTTPD_DATADIR
+  local relative="not found"
+
+  if echo "$absolute" | grep -q "^$default"; then
+      relative=${absolute#$default}
+      relative="$workspace$relative"
+  fi
+
+  echo_style "👋 Hi, there, $(git_name)! 😉"
+  echo_style "👉 Your IP address is $(style "$(ip_address)" bold underline green) a.k.a. the $(style "$(php_version)" bold underline green) container."
+  echo_style "👉 Your current directory $(style "inside" bold green) the container is: $(style "$absolute" bold underline green)"
+  echo_style "👉 Your current directory $(style "outside" bold green) the container is: $(style "$relative" bold underline green)"
+}
+
 ###
 ### Add my own Intro
 ###
 
 function intro() {
   # Display current workspace
-  workspace="$HOST_PATH_HTTPD_DATADIR"
+  workspace=$HOST_PATH_HTTPD_DATADIR
   workspace=$(echo "[ 🐳 ${workspace##*/} workspace ]" | tr '[:lower:]' '[:upper:]')
 
   workspace_len=${#workspace}
@@ -326,7 +354,7 @@ function intro() {
   printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$workspace" bold
 
   # Display name and quote
-  name=$(git config --global user.name || echo "stranger")
+  name=$(git_name)
 
   quotes=("Let's do this! 🔥" "Let's make money! 💸" "You matter, okay? 😉" "I know you can do it! 😊")
   quote=${quotes[$RANDOM % ${#quotes[@]}]}
