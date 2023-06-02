@@ -91,11 +91,12 @@ function symlink() {
     fi
 
     # Copy nginx yml to vhost if file is not index.php
-    cp_vhost_gen_yml "$vhost" "$app" "$web_root" "$file"
+    cp_backend_web_server_yml "$vhost" "$app" "$web_root" "$file"
   fi
 }
 
-function cp_vhost_gen_yml() {
+# Copy nginx or apache yml to vhost (vhost)
+function cp_backend_web_server_yml() {
   if [ -n "$1" ]; then
     vhost=$1
   else
@@ -149,7 +150,7 @@ function cp_vhost_gen_yml() {
     # Make sure the .devilbox folder exists
     mkdir "$vhost_directory/.devilbox" 2>/dev/null
 
-    yml_example=$(get_vhost_gen_yml vhost)
+    yml_example=$(get_vhost_gen_yml_name vhost)
     yml=${yml_example%%-example*}
 
     if cp "/cfg/vhost-gen/$yml_example" "$vhost_directory/.devilbox/$yml"; then
@@ -162,7 +163,86 @@ function cp_vhost_gen_yml() {
   fi
 }
 
-function get_vhost_gen_yml() {
+# Copy nginx or apache yml to vhost (rproxy)
+function cp_frontend_web_server_yml() {
+  local vhost
+  local php_version=$(php_version)
+  local port
+
+  # VHost Name
+  if [ -n "$1" ]; then
+    vhost=$1
+  else
+    echo "👀 Please enter $(style "vhost" underline bold):"
+    read -r vhost
+
+    if [ -z "$vhost" ]; then
+      echo_error "The vhost is empty!"
+      stop_function
+    fi
+  fi
+
+  # PHP Version
+  if [ -n "$2" ]; then
+    php_version=$2
+  else
+    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
+    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
+    read -r version
+
+    if [ -n "$version" ]; then
+      php_version=$version
+    fi
+  fi
+
+  # Validate if "php_version" input matches the current PHP container
+  if ! is_php_container_valid "$php_version"; then
+    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
+    stop_function
+  fi
+
+  # Port Number
+  if [ -n "$3" ]; then
+    port=$3
+  else
+    echo "👀 Please enter $(style "port number" underline bold) where the app should run:"
+    read -r port
+  fi
+
+  if [ -z "$port" ]; then
+    echo_error "The port number is empty!"
+    stop_function
+  fi
+
+  # Check if vhost and app exists
+  local vhost_directory="/shared/httpd/$vhost"
+
+  # Make sure the .devilbox folder exists
+  mkdir "$vhost_directory/.devilbox" 2>/dev/null
+
+  local yml_example=$(get_vhost_gen_yml_name rproxy)
+  local yml=${yml_example%%-example*}
+
+  # Copy the vhost-gen yml to .devilbox
+  if [ ! -f "$vhost_directory/.devilbox/$yml" ] && cp "/cfg/vhost-gen/$yml_example" "$vhost_directory/.devilbox/$yml"; then
+    echo_success "Successfully copied $(style "$yml_example" bold blue) to $(style "$vhost_directory/.devilbox/$yml" bold blue)."
+    text_replace "php:8000" "$php_version:$port" "$vhost_directory/.devilbox/$yml"
+    return 0
+  fi
+
+  local key="proxy_pass http://"
+  local php_version_port=$(grep "$key" "$vhost_directory/.devilbox/$yml" | awk -F "$key" '{print $2}')
+
+  if [ -n "$php_version_port" ]; then
+    text_replace "$php_version_port" "$php_version:$port;" "$vhost_directory/.devilbox/$yml"
+    return 0
+  fi
+
+  return 1
+}
+
+
+function get_vhost_gen_yml_name() {
   if [ -n "$1" ]; then
     type=$1
   else

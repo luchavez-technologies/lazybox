@@ -2,6 +2,7 @@
 function port_change() {
   php_version=$(php_version)
 
+  # VHost Name
   if [ -n "$1" ]; then
     vhost=$1
   else
@@ -14,6 +15,7 @@ function port_change() {
     fi
   fi
 
+  # Port Number
   if [ -n "$2" ]; then
     port=$2
   else
@@ -26,16 +28,19 @@ function port_change() {
     fi
   fi
 
+  # PHP Version
   if [ -n "$3" ]; then
     php_version=$3
   else
     echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
     echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
+  fi
 
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
-      php_version=$version
-    fi
+  # Validate if "php_version" input matches the current PHP container
+  if ! is_php_container_valid "$php_version"; then
+    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
+    stop_function
   fi
 
   cd /shared/httpd || stop_function
@@ -43,12 +48,16 @@ function port_change() {
   if [ -d "$vhost" ]; then
     cd "$vhost" || stop_function
 
-    if [ -n "$port" ]; then
-      mkdir .devilbox 2>/dev/null
-      touch .devilbox/backend.cfg 2>/dev/null
-      echo "conf:rproxy:http:$php_version:$port" > .devilbox/backend.cfg
-      reload_watcherd_message
-    fi
+    mkdir .devilbox 2>/dev/null
+
+    # For backend.cfg
+    touch .devilbox/backend.cfg 2>/dev/null
+    echo "conf:rproxy:http:$php_version:$port" > .devilbox/backend.cfg
+
+    # For nginx.yml (or apache.yml)
+    cp_frontend_web_server_yml "$vhost" "$php_version" "$port"
+
+    reload_watcherd_message
   fi
 }
 

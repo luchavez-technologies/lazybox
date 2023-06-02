@@ -25,6 +25,12 @@ function php_change() {
     fi
   fi
 
+  # Validate if "php_version" input matches the current PHP container
+  if ! is_php_container_valid "$php_version"; then
+    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
+    stop_function
+  fi
+
   cd /shared/httpd || stop_function
 
   if [ -d "$vhost" ]; then
