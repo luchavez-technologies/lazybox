@@ -22,7 +22,7 @@ function astro_new() {
     read -r v
 
     if [ -n "$v" ]; then
-        version=$v
+      version=$v
     fi
   fi
 
@@ -34,7 +34,7 @@ function astro_new() {
     read -r p
 
     if [ -n "$p" ]; then
-        port=$p
+      port=$p
     fi
   fi
 
@@ -107,10 +107,10 @@ function astro_clone() {
   else
     echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
     echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
-    read -r port
+    read -r p
 
-    if [ -n "$port" ]; then
-        port=$port
+    if [ -n "$p" ]; then
+      port=$p
     fi
   fi
 

@@ -2,13 +2,13 @@ alias yii='php yii'
 
 # Create and run a new Yii app
 function yii_new() {
-  yii_version=""
-  php_version=$(php_version)
+  local framework="Yii"
+  local php_version=$(php_version)
 
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Yii $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -23,7 +23,7 @@ function yii_new() {
     echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
 
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
+    if [ -n "$version" ]; then
       php_version=$version
     fi
   fi
@@ -43,7 +43,7 @@ function yii_new() {
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now creating your awesome Yii app! 🔥🔥🔥\n" bold green
+  style "🤝 Now creating your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
@@ -63,13 +63,14 @@ function yii_new() {
   cd "$name" || stop_function
 
   yii_replace_env_variables "$name"
-  yii migrate
+  yii migrate 2>/dev/null
 
   welcome_to_new_app_message "$name"
 }
 
 # Clone and run a Yii app
 function yii_clone() {
+  local framework="Yii"
   url=""
   php_version=$(php_version)
   branch="develop"
@@ -77,7 +78,7 @@ function yii_clone() {
   if [ -n "$1" ]; then
     url=$1
   else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your Yii app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -122,7 +123,7 @@ function yii_clone() {
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now cloning your awesome Yii app! 🔥🔥🔥\n" bold green
+  style "🤝 Now cloning your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
@@ -152,10 +153,14 @@ function yii_clone() {
 
 # Replace all necessary env variables
 function yii_replace_env_variables() {
+  local framework="Yii"
+  local name
+  local snake_name
+
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Yii $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -163,17 +168,18 @@ function yii_replace_env_variables() {
     fi
   fi
 
+  name=$(clean_name "$name")
   snake_name=${name//-/_}
 
   ###
   ### DATABASE VARIABLES
   ###
+  local file="config/db.php"
 
   # This is for DB_PASSWORD
   password=$MYSQL_ROOT_PASSWORD
   text_replace "'password' => ''" "'password' => '$password'" "$file"
 
-  file="config/db.php"
   port=$HOST_PORT_MYSQL
 
   if text_replace "mysql:host=localhost;dbname=yii2basic" "mysql:host=mysql;dbname=$snake_name;port=$port" "$file"; then

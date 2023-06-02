@@ -2,6 +2,8 @@
 ### Step 0: Declare functions
 ###
 
+source bash/extras/arrays.sh
+source bash/extras/strings.sh
 source bash/extras/style.sh
 source bash/extras/text-replace.sh
 source bash/workflows/is-php-container-valid.sh
@@ -78,6 +80,11 @@ if [ -z "$current_workspace" ]; then
   current_workspace="$default_workspace"
 fi
 
+# Create the default workspace if not yet exists
+if [ ! -d "$default_data_dir/$default_workspace" ]; then
+  mkdir "$default_data_dir/$default_workspace"
+fi
+
 # Move non-workspaces to "default" workspace
 # Display all workspaces
 echo_style "========== 👔 AVAILABLE WORKSPACES ==========" bold green
@@ -86,7 +93,6 @@ echo_style "========== 👔 AVAILABLE WORKSPACES ==========" bold green
 for dir in "$default_data_dir"/*; do
   folder="${dir#$default_data_dir/}"
   if [ -d "$dir/htdocs" ] || [ -d "$dir/.devilbox" ]; then
-    mkdir "$default_data_dir/$default_workspace" 2>/dev/null
     mv "$dir" "$default_data_dir/$default_workspace/$folder"
   else
     echo "🐳 $(style "$folder" bold green) ($dir)"
@@ -97,16 +103,21 @@ done
 echo
 read -rp "👀 Please enter the workspace name (default: $(style "$current_workspace" bold green)) ➡️ " chosen_workspace
 
-# Clean the workspace name by changing spaces and underscores to dashes and changing to lowercase
+# Clean the workspace name by changing spaces and underscores to hyphen and changing to lowercase
 if [ -n "$chosen_workspace" ]; then
-  chosen_workspace=$(echo "${chosen_workspace//[_ ]/-}" | tr '[:upper:]' '[:lower:]')
-elif [ -n "$current_workspace" ]; then
-  chosen_workspace="$current_workspace"
-else
-  chosen_workspace="$default_workspace"
+  chosen_workspace=$(clean_name "$chosen_workspace")
 fi
 
-# Ask wether to create if does not exist yet
+# Choose a default workspace if the input is empty
+if [ -z "$chosen_workspace" ]; then
+  if [ -n "$current_workspace" ]; then
+    chosen_workspace="$current_workspace"
+  else
+    chosen_workspace="$default_workspace"
+  fi
+fi
+
+# Ask whether to create if does not exist yet
 if [ ! -d "$default_data_dir/$chosen_workspace" ]; then
   echo
   echo_error "The $(style "$chosen_workspace" bold green) workspace does not exist yet."
@@ -152,8 +163,8 @@ for arg in "$@" ; do
   fi
 done
 
-args_php_containers=( $(echo "${args_php_containers[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
-args_non_php_containers=( $(echo "${args_non_php_containers[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+args_php_containers=( $(array_unique "${args_php_containers[@]}") )
+args_non_php_containers=( $(array_unique "${args_non_php_containers[@]}") )
 
 count=${#args_php_containers[@]}
 
@@ -174,15 +185,15 @@ for dir in "$data_dir"/*; do
   fi
 done
 
-detected_php_containers=( $(echo "${detected_php_containers[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+detected_php_containers=( $(array_unique "${detected_php_containers[@]}") )
 
 # Merge the required, args, and detected PHP containers
 php_containers=("${required_php_containers[@]}" "${args_php_containers[@]}" "${detected_php_containers[@]}")
-php_containers=( $(echo "${php_containers[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+php_containers=( $(array_unique "${php_containers[@]}") )
 
 # Merge the required and args non-PHP containers
 non_php_containers=("${required_non_php_containers[@]}" "${args_non_php_containers[@]}")
-non_php_containers=( $(echo "${non_php_containers[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+non_php_containers=( $(array_unique "${non_php_containers[@]}") )
 
 # Merge all containers to boot up
 boot_containers=("${non_php_containers[@]}" "${php_containers[@]}")

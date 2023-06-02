@@ -1,12 +1,13 @@
 # Create and run a new Lumen app
 function lumen_new() {
-  lumen_version=""
-  php_version=$(php_version)
+  local framework="Lumen"
+  local version=""
+  local php_version=$(php_version)
 
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Lumen $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -15,10 +16,10 @@ function lumen_new() {
   fi
 
   if [ -n "$2" ]; then
-    lumen_version=$2
+    version=$2
   else
-    echo "👀 Please enter Lumen $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r lumen_version
+    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
+    read -r version
   fi
 
   if [ -n "$3" ]; then
@@ -28,7 +29,7 @@ function lumen_new() {
     echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
     read -r version
 
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
+    if [ -n "$version" ]; then
       php_version=$version
     fi
   fi
@@ -46,26 +47,26 @@ function lumen_new() {
     stop_function
   fi
 
-  version=""
-  if [ -n "$lumen_version" ]; then
-    version=":^$lumen_version"
+  v=""
+  if [ -n "$version" ]; then
+    v=":^$version"
 
     # check if the version does not have a period
-    if echo "$lumen_version" | grep -qv "\."; then
-      version+=".0"
+    if echo "$v" | grep -qv "\."; then
+      v+=".0"
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now creating your awesome Lumen app! 🔥🔥🔥\n" bold green
+  style "🤝 Now creating your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   # create project
-  composer create-project "laravel/lumen$version" "$name"
+  composer create-project "laravel/lumen$v" "$name"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -89,14 +90,15 @@ function lumen_new() {
 
 # Clone and run a Lumen app
 function lumen_clone() {
-  url=""
-  php_version=$(php_version)
-  branch="develop"
+  local framework="Lumen"
+  local url=""
+  local php_version=$(php_version)
+  local branch="develop"
 
   if [ -n "$1" ]; then
     url=$1
   else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your Lumen app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -141,7 +143,7 @@ function lumen_clone() {
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now cloning your awesome Lumen app! 🔥🔥🔥\n" bold green
+  style "🤝 Now cloning your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
@@ -166,24 +168,28 @@ function lumen_clone() {
   if [ ! -f $env ] && [ -f $env_example ] ; then
     if cp "$env_example" "$env"; then
       lumen_replace_env_variables "$name"
-      pa migrate --seed 2>/dev/null
     fi
   fi
 
   # install dependencies
   project_install
 
+  # migrate and seed
+  pa migrate --seed 2>/dev/null
+
   welcome_to_new_app_message "$name"
 }
 
 # Replace all necessary env variables
 function lumen_replace_env_variables() {
-  file=".env"
+  local framework="Lumen"
+  local file=".env"
+  local name
 
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Lumen $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -191,9 +197,10 @@ function lumen_replace_env_variables() {
     fi
   fi
 
+  name=$(clean_name "$name")
   snake_name=${name//-/_}
 
-  text_replace "^APP_NAME=Lumen$" "#APP_NAME=Lumen\nAPP_NAME=\"$name\"" "$file"
+  text_replace "^APP_NAME=$framework" "#APP_NAME=$framework\nAPP_NAME=\"$name\"" "$file"
   text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$name.dvl.to" "$file"
 
   if text_exists "^APP_KEY=$" "$file"; then
@@ -263,13 +270,14 @@ function lumen_replace_env_variables() {
   ###
 
   # This is for AWS_ACCESS_KEY_ID
-  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"http:\/\/minio:\$\{HOST_PORT_MINIO\}\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
+  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"https:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
 
   # This is for AWS_SECRET_ACCESS_KEY
   text_replace "^AWS_SECRET_ACCESS_KEY=$" "#AWS_SECRET_ACCESS_KEY=\nAWS_SECRET_ACCESS_KEY=\"\$\{MINIO_PASSWORD\}\"" "$file"
 
   # This is for AWS_BUCKET
-  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$snake_name\nAWS_URL=\"http:\/\/$1.dvl.to:\$\{HOST_PORT_MINIO\}\/\$\{AWS_BUCKET\}\"" "$file"; then
+  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$name" "$file"; then
+    text_replace "^AWS_USE_PATH_STYLE_ENDPOINT=false$" "#AWS_USE_PATH_STYLE_ENDPOINT=false\nAWS_USE_PATH_STYLE_ENDPOINT=true" "$file"
     text_replace "^FILESYSTEM_DRIVER=local$" "#FILESYSTEM_DRIVER=local\nFILESYSTEM_DRIVER=s3" "$file"
     text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DISK=local\nFILESYSTEM_DISK=s3" "$file"
   fi

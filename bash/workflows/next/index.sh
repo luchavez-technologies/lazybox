@@ -22,7 +22,7 @@ function next_new() {
     read -r v
 
     if [ -n "$v" ]; then
-        version=$v
+      version=$v
     fi
   fi
 
@@ -34,7 +34,7 @@ function next_new() {
     read -r p
 
     if [ -n "$p" ]; then
-        port=$p
+      port=$p
     fi
   fi
 

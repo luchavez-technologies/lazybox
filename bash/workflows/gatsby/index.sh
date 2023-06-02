@@ -71,7 +71,7 @@ function gatsby_clone() {
   if [ -n "$1" ]; then
     url=$1
   else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your GatsbyJS app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -94,7 +94,7 @@ function gatsby_clone() {
   if [ -n "$3" ]; then
     name=$3
   else
-    echo "👀 Please enter GatsbyJS $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -106,11 +106,11 @@ function gatsby_clone() {
     port=$4
   else
     echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
-    echo "👀 Please enter GatsbyJS $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
+    echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
     read -r p
 
     if [ -n "$p" ]; then
-        port=$p
+      port=$p
     fi
   fi
 

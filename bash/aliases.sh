@@ -1,4 +1,7 @@
 # Import extras
+
+source /etc/bashrc-devilbox.d/extras/arrays.sh
+source /etc/bashrc-devilbox.d/extras/strings.sh
 source /etc/bashrc-devilbox.d/extras/style.sh
 source /etc/bashrc-devilbox.d/extras/text-replace.sh
 

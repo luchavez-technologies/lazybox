@@ -3,13 +3,14 @@ alias pamfs='pa migrate:fresh --seed'
 
 # Create and run a new Laravel app
 function laravel_new() {
-  laravel_version=""
-  php_version=$(php_version)
+  local framework="Laravel"
+  local version=""
+  local php_version=$(php_version)
 
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Laravel $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -18,10 +19,10 @@ function laravel_new() {
   fi
 
   if [ -n "$2" ]; then
-    laravel_version=$2
+    version=$2
   else
-    echo "👀 Please enter Laravel $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r laravel_version
+    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
+    read -r version
   fi
 
   if [ -n "$3" ]; then
@@ -49,26 +50,26 @@ function laravel_new() {
     stop_function
   fi
 
-  version=""
-  if [ -n "$laravel_version" ]; then
-    version=":^$laravel_version"
+  v=""
+  if [ -n "$version" ]; then
+    v=":^$version"
 
     # check if the version does not have a period
-    if echo "$laravel_version" | grep -qv "\."; then
-      version+=".0"
+    if echo "$v" | grep -qv "\."; then
+      v+=".0"
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now creating your awesome Laravel app! 🔥🔥🔥\n" bold green
+  style "🤝 Now creating your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   # create project
-  composer create-project "laravel/laravel$version" "$name"
+  composer create-project "laravel/laravel$v" "$name"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -92,14 +93,15 @@ function laravel_new() {
 
 # Clone and run a Laravel app
 function laravel_clone() {
-  url=""
-  php_version=$(php_version)
-  branch="develop"
+  local framework="Laravel"
+  local url=""
+  local php_version=$(php_version)
+  local branch="develop"
 
   if [ -n "$1" ]; then
     url=$1
   else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your Laravel app:"
+    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
     read -r url
 
     if [ -z "$url" ]; then
@@ -144,7 +146,7 @@ function laravel_clone() {
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now cloning your awesome Laravel app! 🔥🔥🔥\n" bold green
+  style "🤝 Now cloning your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
@@ -169,24 +171,29 @@ function laravel_clone() {
   if [ ! -f $env ] && [ -f $env_example ] ; then
     if cp "$env_example" "$env"; then
       laravel_replace_env_variables "$name"
-      pa migrate --seed 2>/dev/null
     fi
   fi
 
   # install dependencies
   project_install
 
+  # migrate and seed
+  pa migrate --seed 2>/dev/null
+
   welcome_to_new_app_message "$name"
 }
 
 # Replace all necessary env variables
 function laravel_replace_env_variables() {
-  file=".env"
+  local framework="Laravel"
+  local file=".env"
+  local name
+  local snake_name
 
   if [ -n "$1" ]; then
     name=$1
   else
-    echo "👀 Please enter Laravel $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
+    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
     read -r name
 
     if [ -z "$name" ]; then
@@ -194,13 +201,14 @@ function laravel_replace_env_variables() {
     fi
   fi
 
-  alphanumeric_name=${name//[^[:alnum:]]/}
+  name=$(clean_name "$name")
+  snake_name=${name//-/_}
 
-  text_replace "^APP_NAME=Laravel$" "#APP_NAME=Laravel\nAPP_NAME=\"$alphanumeric_name\"" "$file"
-  text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$alphanumeric_name.dvl.to" "$file"
+  text_replace "^APP_NAME=$framework$" "#APP_NAME=$framework\nAPP_NAME=\"$name\"" "$file"
+  text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$name.dvl.to" "$file"
 
   if text_exists "^APP_KEY=$" "$file"; then
-    php artisan key:generate 2>/dev/null
+    pa key:generate 2>/dev/null
   fi
 
   ###
@@ -214,12 +222,12 @@ function laravel_replace_env_variables() {
   text_replace "^DB_PORT=3306$" "#DB_PORT=3306\nDB_PORT=\"\$\{HOST_PORT_MYSQL\}\"" "$file"
 
   # This is for DB_DATABASE
-  if text_replace "^DB_DATABASE=laravel$" "#DB_DATABASE=laravel\nDB_DATABASE=$alphanumeric_name" "$file"; then
+  if text_replace "^DB_DATABASE=laravel$" "#DB_DATABASE=laravel\nDB_DATABASE=$snake_name" "$file"; then
     password=$MYSQL_ROOT_PASSWORD
     if [ -z "$password" ]; then
-      mysql -u root -h mysql -e "create database $alphanumeric_name"
+      mysql -u root -h mysql -e "create database $snake_name"
     else
-      mysql -u root -h mysql -e "create database $alphanumeric_name" -p "$password"
+      mysql -u root -h mysql -e "create database $snake_name" -p "$password"
     fi
   fi
 
@@ -231,19 +239,19 @@ function laravel_replace_env_variables() {
   ###
 
   # This is for REDIS_HOST
-  text_replace "^REDIS_HOST=127.0.0.1$" "#REDIS_HOST=127.0.0.1\nREDIS_HOST=redis" "$file"
+  if text_replace "^REDIS_HOST=127.0.0.1$" "#REDIS_HOST=127.0.0.1\nREDIS_HOST=redis" "$file"; then
+    # This is for REDIS_PORT
+    text_replace "^REDIS_PORT=6379$" "#REDIS_PORT=6379\nREDIS_PORT=\"\$\{HOST_PORT_REDIS\}\"" "$file"
 
-  # This is for REDIS_PORT
-  text_replace "^REDIS_PORT=6379$" "#REDIS_PORT=6379\nREDIS_PORT=\"\$\{HOST_PORT_REDIS\}\"" "$file"
+    # This is for SESSION_DRIVER
+    text_replace "^SESSION_DRIVER=file$" "#SESSION_DRIVER=file\nSESSION_DRIVER=redis" "$file"
 
-  # This is for SESSION_DRIVER
-  text_replace "^SESSION_DRIVER=file$" "#SESSION_DRIVER=file\nSESSION_DRIVER=redis" "$file"
+    # This is for QUEUE_CONNECTION
+    text_replace "^QUEUE_CONNECTION=sync$" "#QUEUE_CONNECTION=sync\nQUEUE_CONNECTION=redis" "$file"
 
-  # This is for QUEUE_CONNECTION
-  text_replace "^QUEUE_CONNECTION=sync$" "#QUEUE_CONNECTION=sync\nQUEUE_CONNECTION=redis" "$file"
-
-  # This is for CACHE_DRIVER
-  text_replace "^CACHE_DRIVER=file$" "#CACHE_DRIVER=file\nCACHE_DRIVER=redis" "$file"
+    # This is for CACHE_DRIVER
+    text_replace "^CACHE_DRIVER=file$" "#CACHE_DRIVER=file\nCACHE_DRIVER=redis" "$file"
+  fi
 
   ###
   ### MAILHOG VARIABLES
@@ -260,15 +268,15 @@ function laravel_replace_env_variables() {
   ###
 
   # This is for AWS_ACCESS_KEY_ID
-  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"http:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
+  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"https:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
 
   # This is for AWS_SECRET_ACCESS_KEY
   text_replace "^AWS_SECRET_ACCESS_KEY=$" "#AWS_SECRET_ACCESS_KEY=\nAWS_SECRET_ACCESS_KEY=\"\$\{MINIO_PASSWORD\}\"" "$file"
 
   # This is for AWS_BUCKET
-  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$alphanumeric_name" "$file"; then
+  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$name" "$file"; then
     text_replace "^AWS_USE_PATH_STYLE_ENDPOINT=false$" "#AWS_USE_PATH_STYLE_ENDPOINT=false\nAWS_USE_PATH_STYLE_ENDPOINT=true" "$file"
     text_replace "^FILESYSTEM_DRIVER=local$" "#FILESYSTEM_DRIVER=local\nFILESYSTEM_DRIVER=s3" "$file"
-    text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DI:SK=local\nFILESYSTEM_DISK=s3" "$file"
+    text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DISK=local\nFILESYSTEM_DISK=s3" "$file"
   fi
 }

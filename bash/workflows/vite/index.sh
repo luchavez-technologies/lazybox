@@ -22,7 +22,7 @@ function vite_new() {
     read -r v
 
     if [ -n "$v" ]; then
-        version=$v
+      version=$v
     fi
   fi
 
@@ -34,7 +34,7 @@ function vite_new() {
     read -r p
 
     if [ -n "$p" ]; then
-        port=$p
+      port=$p
     fi
   fi
 
@@ -102,15 +102,15 @@ function vite_clone() {
     fi
   fi
 
-  if [ -n "$3" ]; then
-    port=$3
+  if [ -n "$4" ]; then
+    port=$4
   else
     echo "Note: Make sure that the port $port is not taken. If taken, specify a new port below."
     echo "👀 Please enter $framework $(style "port number" underline bold) (default: $(style "$port" bold blue)):"
     read -r p
 
     if [ -n "$p" ]; then
-        port=$p
+      port=$p
     fi
   fi
 
