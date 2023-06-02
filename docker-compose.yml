@@ -236,6 +236,9 @@ services:
       # .env file
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
 
+      # NVM
+      - devilbox-nvm:/opt/nvm
+
     depends_on:
       - bind
 
@@ -590,3 +593,8 @@ volumes:
   devilbox-mongo-4.4:
   devilbox-mongo-5.0:
   devilbox-mongo-latest:
+
+  # ------------------------------------------------------------
+  # NVM
+  # ------------------------------------------------------------
+  devilbox-nvm:

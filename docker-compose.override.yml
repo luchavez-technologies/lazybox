@@ -56,6 +56,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php55:
     <<: *default-php
@@ -81,6 +83,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php56:
     <<: *default-php
@@ -106,6 +110,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php70:
     <<: *default-php
@@ -131,6 +137,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php71:
     <<: *default-php
@@ -156,6 +164,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php72:
     <<: *default-php
@@ -181,6 +191,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php73:
     <<: *default-php
@@ -206,6 +218,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php74:
     <<: *default-php
@@ -231,6 +245,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php80:
     <<: *default-php
@@ -256,6 +272,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php81:
     <<: *default-php
@@ -281,6 +299,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   php82:
     <<: *default-php
@@ -306,6 +326,8 @@ services:
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
 
   # -----------------------------------------------------------------------------------------------
   # Ngrok
@@ -415,5 +437,10 @@ volumes:
   # Misc
   # ------------------------------------------------------------
   devilbox-minio:
+
+  # ------------------------------------------------------------
+  # NVM
+  # ------------------------------------------------------------
+  devilbox-nvm:
 
 
