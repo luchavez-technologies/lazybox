@@ -4,7 +4,7 @@ alias pamfs='pa migrate:fresh --seed'
 # Create and run a new Laravel app
 function laravel_new() {
   local framework="Laravel"
-  local version=""
+  local framework_version=""
   local php_version=$(php_version)
 
   if [ -n "$1" ]; then
@@ -19,10 +19,10 @@ function laravel_new() {
   fi
 
   if [ -n "$2" ]; then
-    version=$2
+    framework_version=$2
   else
     echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r version
+    read -r framework_version
   fi
 
   if [ -n "$3" ]; then
@@ -50,13 +50,12 @@ function laravel_new() {
     stop_function
   fi
 
-  v=""
-  if [ -n "$version" ]; then
-    v=":^$version"
+  if [ -n "$framework_version" ]; then
+    framework_version=":^$framework_version"
 
     # check if the version does not have a period
-    if echo "$v" | grep -qv "\."; then
-      v+=".0"
+    if echo "$framework_version" | grep -qv "\."; then
+      framework_version+=".0"
     fi
   fi
 
@@ -69,7 +68,7 @@ function laravel_new() {
   cd "$name" || stop_function
 
   # create project
-  composer create-project "laravel/laravel$v" "$name"
+  composer create-project "laravel/laravel$framework_version" "$name"
 
   # symlink and add devilbox config
   symlink "$name" "$name"

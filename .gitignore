@@ -108,6 +108,7 @@
 
 # Ignore custom PHP-FPM startup scripts
 /autostart/*.sh
+!/autostart/copy-or-replace-services.sh
 /cfg/php-startup-5.2/*.sh
 /cfg/php-startup-5.3/*.sh
 /cfg/php-startup-5.4/*.sh

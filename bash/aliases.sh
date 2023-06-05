@@ -2,6 +2,7 @@
 
 source /etc/bashrc-devilbox.d/extras/arrays.sh
 source /etc/bashrc-devilbox.d/extras/strings.sh
+source /etc/bashrc-devilbox.d/extras/ports.sh
 source /etc/bashrc-devilbox.d/extras/style.sh
 source /etc/bashrc-devilbox.d/extras/text-replace.sh
 
@@ -472,6 +473,3 @@ own_directory /var/lib
 # It was found out that overriding the contents via "cat" function works.
 # Therefore, we just save a copy of ".env" to "/tmp" then override the original's contents.
 own_file /.env
-
-# Copy customized services
-cp -rf /services/* /shared/httpd
