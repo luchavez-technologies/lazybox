@@ -1,30 +1,12 @@
 # Create and run a new Vite app
 function vite_new() {
-  framework="ViteJS"
-  version="latest"
-  port=5173
+  local framework="ViteJS"
+  local version="latest"
+  local port=5173
 
-  if [ -n "$1" ]; then
-    name=$1
-  else
-    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
+  name=$(ask_app_name "$framework" "" "$1")
 
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
-
-  if [ -n "$2" ]; then
-    version=$2
-  else
-    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r v
-
-    if [ -n "$v" ]; then
-      version=$v
-    fi
-  fi
+  framework_version=$(ask_framework_version "$framework" "$framework_version" "$2")
 
   port=$(port_suggest "$port")
 
@@ -36,7 +18,7 @@ function vite_new() {
 
   cd "$name" || stop_function
 
-  npx create-vite@"$version" "$name" 2>/dev/null
+  npx create-vite@"$framework_version" "$name" 2>/dev/null
 
   port_change "$name" "$port"
 
@@ -58,39 +40,11 @@ function vite_clone() {
   port=5173
   branch="develop"
 
-  if [ -n "$1" ]; then
-    url=$1
-  else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
-    read -r url
+  branch=$(ask_git_url $framework "$1")
 
-    if [ -z "$url" ]; then
-      echo_error "You provided an empty Git URL."
-      stop_function
-    fi
-  fi
+  branch=$(ask_branch_name "$2")
 
-  if [ -n "$2" ]; then
-    branch=$2
-  else
-    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
-    read -r b
-
-    if [ -n "$b" ]; then
-      branch="$b"
-    fi
-  fi
-
-  if [ -n "$3" ]; then
-    name=$3
-  else
-    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
-
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
+  name=$(ask_app_name $framework "$3")
 
   port=$(port_suggest "$port")
 

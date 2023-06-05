@@ -1,68 +1,34 @@
 # Create and run a new Symfony app
 function symfony_new() {
-  symfony_version=""
-  php_version=$(php_version)
+  local framework="Symfony"
+  local framework_version=""
+  local php_version
 
-  if [ -n "$1" ]; then
-    name=$1
-  else
-    echo "👀 Please enter Symfony $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
+  name=$(ask_app_name "$framework" "" "$1")
 
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
+  framework_version=$(ask_framework_version $framework "$framework_version" "$2")
 
-  if [ -n "$2" ]; then
-    symfony_version=$2
-  else
-    echo "👀 Please enter Symfony $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r symfony_version
-  fi
+  php_version=$(ask_php_version "$3")
 
-  if [ -n "$3" ]; then
-    php_version=$3
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
-    read -r version
+  ensure_current_php_container "$php_version"
 
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
-      php_version=$version
-    fi
-  fi
-
-  # Validate if "php_version" input matches the current PHP container
-  if ! is_php_container_valid "$php_version"; then
-    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
-    stop_function
-  fi
-
-  if ! is_php_container_current "$php_version"; then
-    current=$(php_version)
-    echo_error "PHP container mismatch! You are currently inside $(style "$current" bold blue) container."
-    echo "✋ To switch to $(style "$php_version" bold blue), exit this container first then run $(style "./up.sh $php_version" bold blue)."
-    stop_function
-  fi
-
-  if [ -n "$symfony_version" ]; then
-    # check if the version does not have a period
-    if echo "$symfony_version" | grep -qv "\*"; then
-      symfony_version+=".*"
+  if [ -n "$framework_version" ]; then
+    # check if the version does not have an asterisk
+    if echo "$framework_version" | grep -qv "\*"; then
+      framework_version+=".*"
     fi
   fi
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now creating your awesome Symfony app! 🔥🔥🔥\n" bold green
+  style "🤝 Now creating your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
   cd "$name" || stop_function
 
   # create project
-  composer create-project symfony/framework-standard-edition "$name" "$symfony_version"
+  composer create-project symfony/framework-standard-edition "$name" "$version"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -74,71 +40,29 @@ function symfony_new() {
 
   cd "$name" || stop_function
 
-#  env=".env"
-#  # run migrate:fresh --seed if .env exists
-#  if [ -f $env ]; then
-#    symfony_replace_env_variables "$name"
-#    pa migrate --seed 2>/dev/null
-#  fi
-
   welcome_to_new_app_message "$name"
 }
 
 # Clone and run a Symfony app
 function symfony_clone() {
-  url=""
-  php_version=$(php_version)
-  branch="develop"
+  local framework="Symfony"
+  local url=""
+  local branch="develop"
+  local php_version
 
-  if [ -n "$1" ]; then
-    url=$1
-  else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your Symfony app:"
-    read -r url
+  url=$(ask_git_url "$framework" "$1")
 
-    if [ -z "$url" ]; then
-      echo_error "You provided an empty Git URL."
-      stop_function
-    fi
-  fi
+  branch=$(ask_branch_name "$2")
 
-  if [ -n "$2" ]; then
-    branch=$2
-  else
-    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
-    read -r b
+  name=$(ask_app_name "$framework" "" "$3")
 
-    if [ -n "$b" ]; then
-      branch="$b"
-    fi
-  fi
+  php_version=$(ask_php_version "$4")
 
-  if [ -n "$3" ]; then
-    name=$3
-  else
-    echo "👀 Please enter $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
-
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
-
-  if [ -n "$4" ] && is_php_container_valid "$4"; then
-    php_version=$4
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
-    read -r version
-
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
-      php_version=$version
-    fi
-  fi
+  ensure_current_php_container "$php_version"
 
   cd /shared/httpd || stop_function
 
-  style "🤝 Now cloning your awesome Symfony app! 🔥🔥🔥\n" bold green
+  style "🤝 Now cloning your awesome $framework app! 🔥🔥🔥\n" bold green
 
   mkdir "$name"
 
@@ -170,27 +94,17 @@ function symfony_clone() {
 
 # Replace all necessary env variables
 function symfony_replace_env_variables() {
-  file=".env"
+  local framework="Symfony"
+  local file=".env"
+  local name
+  local snake_name
 
-  if [ -n "$1" ]; then
-    name=$1
-  else
-    echo "👀 Please enter Symfony $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
-
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
+  name=$(ask_app_name "$framework" "" "$1")
 
   snake_name=${name//-/_}
 
-  text_replace "^APP_NAME=Symfony$" "#APP_NAME=Symfony\nAPP_NAME=\"$name\"" "$file"
+  text_replace "^APP_NAME=$framework$" "#APP_NAME=$framework\nAPP_NAME=\"$name\"" "$file"
   text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$name.dvl.to" "$file"
-
-#  if text_exists "^APP_KEY=$" "$file"; then
-#    pa key:generate 2>/dev/null
-#  fi
 
   ###
   ### DATABASE VARIABLES
@@ -255,13 +169,13 @@ function symfony_replace_env_variables() {
   ###
 
   # This is for AWS_ACCESS_KEY_ID
-  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"http:\/\/minio:\$\{HOST_PORT_MINIO\}\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
+  text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"https:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
 
   # This is for AWS_SECRET_ACCESS_KEY
   text_replace "^AWS_SECRET_ACCESS_KEY=$" "#AWS_SECRET_ACCESS_KEY=\nAWS_SECRET_ACCESS_KEY=\"\$\{MINIO_PASSWORD\}\"" "$file"
 
   # This is for AWS_BUCKET
-  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$snake_name\nAWS_URL=\"http:\/\/$1.dvl.to:\$\{HOST_PORT_MINIO\}\/\$\{AWS_BUCKET\}\"" "$file"; then
+  if text_replace "^AWS_BUCKET=$" "#AWS_BUCKET=\nAWS_BUCKET=$name" "$file"; then
     text_replace "^FILESYSTEM_DRIVER=local$" "#FILESYSTEM_DRIVER=local\nFILESYSTEM_DRIVER=s3" "$file"
     text_replace "^FILESYSTEM_DISK=local$" "#FILESYSTEM_DISK=local\nFILESYSTEM_DISK=s3" "$file"
   fi

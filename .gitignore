@@ -151,6 +151,8 @@
 !/bash/workflows
 !/bash/extras
 !/bash/aliases.sh
+!/bash/ask.sh
+!/bash/intro.sh
 !/bash/workflows.sh
 !/bash/bashrc.sh-example
 !/bash/README.md

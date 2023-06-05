@@ -1,59 +1,22 @@
 # Create and run a new Lumen app
 function lumen_new() {
   local framework="Lumen"
-  local version=""
-  local php_version=$(php_version)
+  local framework_version=""
+  local php_version
 
-  if [ -n "$1" ]; then
-    name=$1
-  else
-    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
+  name=$(ask_app_name "$framework" "" "$1")
 
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
+  framework_version=$(ask_framework_version $framework "$framework_version" "$2")
 
-  if [ -n "$2" ]; then
-    version=$2
-  else
-    echo "👀 Please enter $framework $(style "version" underline bold) (default: $(style "latest" bold blue)):"
-    read -r version
-  fi
+  php_version=$(ask_php_version "$3")
 
-  if [ -n "$3" ]; then
-    php_version=$3
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
-    read -r version
+  ensure_current_php_container "$php_version"
 
-    if [ -n "$version" ]; then
-      php_version=$version
-    fi
-  fi
-
-  # Validate if "php_version" input matches the current PHP container
-  if ! is_php_container_valid "$php_version"; then
-    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
-    stop_function
-  fi
-
-  if ! is_php_container_current "$php_version"; then
-    current=$(php_version)
-    echo_error "PHP container mismatch! You are currently inside $(style "$current" bold blue) container."
-    echo "✋ To switch to $(style "$php_version" bold blue), exit this container first then run $(style "./up.sh $php_version" bold blue)."
-    stop_function
-  fi
-
-  v=""
-  if [ -n "$version" ]; then
-    v=":^$version"
-
+  if [ -n "$framework_version" ]; then
+    framework_version=":^$framework_version"
     # check if the version does not have a period
-    if echo "$v" | grep -qv "\."; then
-      v+=".0"
+    if echo "$framework_version" | grep -qv "\."; then
+      framework_version+=".0"
     fi
   fi
 
@@ -66,7 +29,7 @@ function lumen_new() {
   cd "$name" || stop_function
 
   # create project
-  composer create-project "laravel/lumen$v" "$name"
+  composer create-project "laravel/lumen$version" "$name"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
@@ -92,54 +55,18 @@ function lumen_new() {
 function lumen_clone() {
   local framework="Lumen"
   local url=""
-  local php_version=$(php_version)
   local branch="develop"
+  local php_version
 
-  if [ -n "$1" ]; then
-    url=$1
-  else
-    echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app:"
-    read -r url
+  url=$(ask_git_url "$framework" "$1")
 
-    if [ -z "$url" ]; then
-      echo_error "You provided an empty Git URL."
-      stop_function
-    fi
-  fi
+  branch=$(ask_branch_name "$2")
 
-  if [ -n "$2" ]; then
-    branch=$2
-  else
-    echo "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)):"
-    read -r b
+  name=$(ask_app_name "$framework" "" "$3")
 
-    if [ -n "$b" ]; then
-      branch="$b"
-    fi
-  fi
+  php_version=$(ask_php_version "$4")
 
-  if [ -n "$3" ]; then
-    name=$3
-  else
-    echo "👀 Please enter $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
-
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
-
-  if [ -n "$4" ] && is_php_container_valid "$4"; then
-    php_version=$4
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
-    read -r version
-
-    if [ -n "$version" ] && is_php_container_valid "$version"; then
-      php_version=$version
-    fi
-  fi
+  ensure_current_php_container "$php_version"
 
   cd /shared/httpd || stop_function
 
@@ -185,19 +112,10 @@ function lumen_replace_env_variables() {
   local framework="Lumen"
   local file=".env"
   local name
+  local snake_name
 
-  if [ -n "$1" ]; then
-    name=$1
-  else
-    echo "👀 Please enter $framework $(style "app name" underline bold) (default: $(style "app-random" bold blue)):"
-    read -r name
+  name=$(ask_app_name "$framework" "" "$1")
 
-    if [ -z "$name" ]; then
-      name="app-$RANDOM"
-    fi
-  fi
-
-  name=$(clean_name "$name")
   snake_name=${name//-/_}
 
   text_replace "^APP_NAME=$framework" "#APP_NAME=$framework\nAPP_NAME=\"$name\"" "$file"

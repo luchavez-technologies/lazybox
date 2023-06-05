@@ -1,11 +1,11 @@
 # Ask for port number input
-function port_ask() {
+function ask_port() {
   local port
 
   if [ -n "$1" ]; then
     port=$1
   else
-    read -rp "👀 Please enter $(style "port number" underline bold): " p
+    read -rp "👀 Please enter $(style "port number" underline bold) ➡️ " p
 
     if [ -n "$p" ]; then
       port=$p
@@ -15,7 +15,7 @@ function port_ask() {
   port=$(echo "$port" | grep -o '[0-9]\+')
 
   if [ -z "$port" ]; then
-    port_ask "$port"
+    ask_port "$port"
   else
     echo "$port"
     return 0
@@ -24,7 +24,7 @@ function port_ask() {
 
 # Check if the port is taken
 function port_check() {
-  local port=$(port_ask "$1")
+  local port=$(ask_port "$1")
 
   if (echo >/dev/tcp/localhost/"$port") &>/dev/null; then
     return 1;
@@ -35,7 +35,7 @@ function port_check() {
 
 # Get port suggestion based from inputted initial port
 function port_suggest() {
-  local port=$(port_ask "$1")
+  local port=$(ask_port "$1")
 
   if port_check "$port"; then
     echo "$port"

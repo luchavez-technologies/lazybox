@@ -8,34 +8,22 @@ source /etc/bashrc-devilbox.d/extras/text-replace.sh
 
 # This will make a symbolic link that connects the project's "public" folder to vhost's "htdocs"
 function symlink() {
-  if [ -n "$1" ]; then
-    vhost=$1
-  else
-    echo "👀 Please enter $(style "vhost" underline bold):"
-    read -r vhost
+  local vhost
+  local name
+  local vhost_directory
+  local app_directory
+  local web_root
+  local file
 
-    if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-  fi
-
-  if [ -n "$2" ]; then
-    app=$2
-  else
-    echo "👀 Please enter PHP $(style "app name" underline bold) (default: $(style "$vhost" bold blue)):"
-    read -r app
-
-    if [ -z "$app" ]; then
-      app=$vhost
-    fi
-  fi
+  vhost=$(ask_vhost_name "$1")
+  app=$(ask_app_name "PHP" "$vhost" "$2")
 
   # Check if vhost and app exists
   vhost_directory="/shared/httpd/$vhost"
   app_directory="$vhost_directory/$app"
   web_root=""
   file=""
+
   if [ -d "$app_directory" ]; then
     cd "$vhost_directory" || stop_function
 
@@ -98,38 +86,21 @@ function symlink() {
 
 # Copy nginx or apache yml to vhost (vhost)
 function cp_backend_web_server_yml() {
-  if [ -n "$1" ]; then
-    vhost=$1
-  else
-    echo "👀 Please enter $(style "vhost" underline bold):"
-    read -r vhost
+  local vhost
+  local app
 
-    if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-  fi
-
-  if [ -n "$2" ]; then
-    app=$2
-  else
-    echo "👀 Please enter PHP $(style "app name" underline bold) (default: $(style "$vhost" bold blue)):"
-    read -r app
-
-    if [ -z "$app" ]; then
-      app=$vhost
-    fi
-  fi
+  vhost=$(ask_vhost_name "$1")
+  app=$(ask_app_name "PHP" "$vhost" "$2")
 
   if [ -n "$3" ]; then
       web_root=$3
   else
     echo "👀 Please enter $(style "web root" underline bold) directory:"
     read -r web_root
+  fi
 
-    if [ -z "$web_root" ]; then
-      web_root="public"
-    fi
+  if [ -z "$web_root" ]; then
+    web_root="public"
   fi
 
   if [ -n "$4" ]; then
@@ -137,10 +108,10 @@ function cp_backend_web_server_yml() {
   else
     echo "👀 Please enter $(style "entry point" underline bold) file:"
     read -r file
+  fi
 
-    if [ -z "$file" ]; then
-      file="index.php"
-    fi
+  if [ -z "$file" ]; then
+    file="index.php"
   fi
 
   # Check if vhost and app exists
@@ -167,62 +138,31 @@ function cp_backend_web_server_yml() {
 # Copy nginx or apache yml to vhost (rproxy)
 function cp_frontend_web_server_yml() {
   local vhost
-  local php_version=$(php_version)
+  local php_version
   local port
+  local vhost_directory
+  local yml_example
+  local yml
+  local key
+  local php_version_port
 
   # VHost Name
-  if [ -n "$1" ]; then
-    vhost=$1
-  else
-    echo "👀 Please enter $(style "vhost" underline bold):"
-    read -r vhost
-
-    if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-  fi
+  vhost=$(ask_vhost_name "$1")
 
   # PHP Version
-  if [ -n "$2" ]; then
-    php_version=$2
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) to run the app on (default: $(style "$php_version" bold blue)):"
-    read -r version
-
-    if [ -n "$version" ]; then
-      php_version=$version
-    fi
-  fi
-
-  # Validate if "php_version" input matches the current PHP container
-  if ! is_php_container_valid "$php_version"; then
-    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
-    stop_function
-  fi
+  php_version=$(ask_php_version "$2")
 
   # Port Number
-  if [ -n "$3" ]; then
-    port=$3
-  else
-    echo "👀 Please enter $(style "port number" underline bold) where the app should run:"
-    read -r port
-  fi
-
-  if [ -z "$port" ]; then
-    echo_error "The port number is empty!"
-    stop_function
-  fi
+  port=$(port_ask "$3")
 
   # Check if vhost and app exists
-  local vhost_directory="/shared/httpd/$vhost"
+  vhost_directory="/shared/httpd/$vhost"
 
   # Make sure the .devilbox folder exists
   mkdir "$vhost_directory/.devilbox" 2>/dev/null
 
-  local yml_example=$(get_vhost_gen_yml_name rproxy)
-  local yml=${yml_example%%-example*}
+  yml_example=$(get_vhost_gen_yml_name rproxy)
+  yml=${yml_example%%-example*}
 
   # Copy the vhost-gen yml to .devilbox
   if [ ! -f "$vhost_directory/.devilbox/$yml" ] && cp "/cfg/vhost-gen/$yml_example" "$vhost_directory/.devilbox/$yml"; then
@@ -231,8 +171,9 @@ function cp_frontend_web_server_yml() {
     return 0
   fi
 
-  local key="proxy_pass http://"
-  local php_version_port=$(grep "$key" "$vhost_directory/.devilbox/$yml" | awk -F "$key" '{print $2}')
+  # Replace if the file already exists
+  key="proxy_pass http://"
+  php_version_port=$(grep "$key" "$vhost_directory/.devilbox/$yml" | awk -F "$key" '{print $2}')
 
   if [ -n "$php_version_port" ]; then
     text_replace "$php_version_port" "$php_version:$port;" "$vhost_directory/.devilbox/$yml"
@@ -242,7 +183,7 @@ function cp_frontend_web_server_yml() {
   return 1
 }
 
-
+# Get nginx/apache example yml name
 function get_vhost_gen_yml_name() {
   if [ -n "$1" ]; then
     type=$1
@@ -350,6 +291,7 @@ function ngrok_set() {
 # Stop function execution
 function stop_function() {
   kill -INT $$
+  return 1
 }
 
 # Install project dependencies
@@ -423,46 +365,6 @@ function whereami() {
   echo_style "👉 Your current directory $(style "inside" bold green) the container is: $(style "$absolute" bold underline green)"
   echo_style "👉 Your current directory $(style "outside" bold green) the container is: $(style "$relative" bold underline green)"
 }
-
-###
-### Add my own Intro
-###
-
-function intro() {
-  # Display current workspace
-  workspace=$HOST_PATH_HTTPD_DATADIR
-  workspace=$(echo "[ 🐳 ${workspace##*/} workspace ]" | tr '[:lower:]' '[:upper:]')
-
-  workspace_len=${#workspace}
-  left_pad=$((45-(workspace_len)/2))
-  printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$workspace" bold
-
-  # Display name and quote
-  name=$(git_name)
-
-  quotes=("Let's do this! 🔥" "Let's make money! 💸" "You matter, okay? 😉" "I know you can do it! 😊")
-  quote=${quotes[$RANDOM % ${#quotes[@]}]}
-  quote_len=${#quote}
-
-  welcome="Welcome, $name! "
-  welcome_len=${#welcome}
-
-  left_pad=$((45-(quote_len+welcome_len)/2))
-  printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$welcome$(style "$quote" blue)" bold green
-  echo
-  echo "                    | Services           | URL                        |"
-  echo "                    |--------------------|----------------------------|"
-  echo "                    | 🐖 Mailhog         | https://mailhog.dvl.to     |"
-  echo "                    | 📦 Minio (Console) | https://minio.dvl.to       |"
-  echo "                    | 📦 Minio (API)     | https://api.minio.dvl.to   |"
-  echo "                    | 🌐 Ngrok           | http://localhost:4040     |"
-  echo "                    | 🔈 Soketi          | https://soketi.dvl.to      |"
-  echo
-  echo "------------------------------------------------------------------------------------------"
-}
-
-# Invoke intro
-intro
 
 # Own some directories
 own_directory /var/cache

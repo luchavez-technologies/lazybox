@@ -112,6 +112,20 @@ function is_php_container_current() {
   return 1
 }
 
+# Make sure the PHP container is current before next steps
+function ensure_current_php_container() {
+  local php_version
+
+  php_version=$(ask_php_version "$1")
+
+  if ! is_php_container_current "$php_version"; then
+    current=$(php_version)
+    echo_error "PHP container mismatch! You are currently inside $(style "$current" bold blue) container."
+    echo "✋ To switch to $(style "$php_version" bold blue), exit this container first then run $(style "./up.sh $php_version" bold blue)."
+    stop_function
+  fi
+}
+
 # Install composer dependencies when necessary
 function composer_install {
   # Some Symfony projects has "bin/composer" binary which is sort of wrapper for composer
