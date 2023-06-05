@@ -1,73 +1,30 @@
 # This will change the PHP container where the vhost will run on
 function php_change() {
-  if [ -n "$1" ]; then
-    vhost=$1
-  else
-    echo "👀 Please enter $(style "vhost" underline bold)"
-    read -r vhost
+  local vhost
+  local php_version
 
-    if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-  fi
+  vhost=$(ask_vhost_name "$1")
+  php_version=$(ask_php_version "$2")
 
-  if [ -n "$2" ]; then
-    php_version=$2
-  else
-    echo "Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
-    echo "👀 Please enter $(style "PHP container" underline bold) where the app should run:"
-    read -r php_version
+  cd "/shared/httpd/$vhost" || stop_function
 
-    if [ -z "$php_version" ]; then
-      echo_error "The container name is empty!"
-      stop_function
-    fi
-  fi
-
-  # Validate if "php_version" input matches the current PHP container
-  if ! is_php_container_valid "$php_version"; then
-    echo_error "Invalid PHP container name: $(style "$php_version" bold)"
-    stop_function
-  fi
-
-  cd /shared/httpd || stop_function
-
-  if [ -d "$vhost" ]; then
-    cd "$vhost" || stop_function
-
-    if [ -n "$php_version" ]; then
-      mkdir .devilbox 2>/dev/null
-      touch .devilbox/backend.cfg 2>/dev/null
-      echo "conf:phpfpm:tcp:$php_version:9000" > .devilbox/backend.cfg
-      reload_watcherd_message
-    fi
-  fi
+  mkdir .devilbox 2>/dev/null
+  touch .devilbox/backend.cfg 2>/dev/null
+  echo "conf:phpfpm:tcp:$php_version:9000" > .devilbox/backend.cfg
+  reload_watcherd_message
 }
 
 # This will change back the PHP version of a vhost to the default one by remove the `backend.cfg` file
 function php_default() {
-  if [ -n "$1" ]; then
-    vhost=$1
-  else
-    echo "👀 Please enter $(style "vhost" underline bold)"
-    read -r vhost
+  local vhost
+  local php_version
 
-    if [ -z "$vhost" ]; then
-      echo_error "The vhost is empty!"
-      stop_function
-    fi
-  fi
+  vhost=$(ask_vhost_name "$1")
 
-  cd /shared/httpd || stop_function
+  cd "/shared/httpd/$vhost" || stop_function
 
-  if [ -d "$vhost" ]; then
-    cd "$vhost" || stop_function
-
-    # remove .devilbox/backend.cfg file
-    rm -f .devilbox/backend.cfg 2>/dev/null
-    reload_watcherd_message
-  fi
+  rm -f .devilbox/backend.cfg 2>/dev/null
+  reload_watcherd_message
 }
 
 # Get the current PHP container name
@@ -88,6 +45,11 @@ function php_version() {
 
   ip=$(ip_address)
   echo "${versions[$ip]}"
+}
+
+# List the available PHP containers
+function php_version_list() {
+  echo "👋 Here are the available PHP containers: $(style php blue bold), $(style php54 blue bold), $(style php55 blue bold), $(style php56 blue bold), $(style php70 blue bold), $(style php71 blue bold), $(style php72 blue bold), $(style php73 blue bold), $(style php74 blue bold), $(style php80 blue bold), $(style php81 blue bold), $(style php82 blue bold)"
 }
 
 # Get the default PHP container name

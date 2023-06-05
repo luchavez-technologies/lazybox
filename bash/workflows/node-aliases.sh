@@ -8,26 +8,24 @@ function port_change() {
   vhost=$(ask_vhost_name "$1")
 
   # Port Number
-  port=$(port_ask "$2")
+  port=$(ask_port "$2")
 
+  # PHP Version
+  php_version_list
   php_version=$(ask_php_version "$3")
 
-  cd /shared/httpd || stop_function
+  cd "/shared/httpd/$vhost" || stop_function
 
-  if [ -d "$vhost" ]; then
-    cd "$vhost" || stop_function
+  mkdir .devilbox 2>/dev/null
 
-    mkdir .devilbox 2>/dev/null
+  # For backend.cfg
+  touch .devilbox/backend.cfg 2>/dev/null
+  echo "conf:rproxy:http:$php_version:$port" > .devilbox/backend.cfg
 
-    # For backend.cfg
-    touch .devilbox/backend.cfg 2>/dev/null
-    echo "conf:rproxy:http:$php_version:$port" > .devilbox/backend.cfg
+  # For nginx.yml (or apache.yml)
+  cp_frontend_web_server_yml "$vhost" "$php_version" "$port"
 
-    # For nginx.yml (or apache.yml)
-    cp_frontend_web_server_yml "$vhost" "$php_version" "$port"
-
-    reload_watcherd_message
-  fi
+  reload_watcherd_message
 }
 
 # Execute npm or yarn commands

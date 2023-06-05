@@ -7,10 +7,11 @@ function laravel_new() {
   local framework_version=""
   local php_version
 
-  name=$(ask_app_name "$framework" "" "$1")
+  name=$(ask_app_name "$framework" "$1")
 
   framework_version=$(ask_framework_version $framework "$framework_version" "$2")
 
+  php_version_list
   php_version=$(ask_php_version "$3")
 
   ensure_current_php_container "$php_version"
@@ -36,11 +37,7 @@ function laravel_new() {
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  if [ -n "$php_version" ]; then
-    php_change "$name" "$php_version"
-  else
-    php_default "$name"
-  fi
+  php_change "$name" "$php_version"
 
   cd "$name" || stop_function
 
@@ -65,8 +62,9 @@ function laravel_clone() {
 
   branch=$(ask_branch_name "$2")
 
-  name=$(ask_app_name "$framework" "" "$3")
+  name=$(ask_app_name "$framework" "$3")
 
+  php_version_list
   php_version=$(ask_php_version "$4")
 
   ensure_current_php_container "$php_version"
@@ -83,11 +81,7 @@ function laravel_clone() {
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  if [ -n "$php_version" ]; then
-    php_change "$name" "$php_version"
-  else
-    php_default "$name"
-  fi
+  php_change "$name" "$php_version"
 
   cd "$name" || stop_function
   git checkout "$branch" 2>/dev/null
@@ -117,7 +111,7 @@ function laravel_replace_env_variables() {
   local name
   local snake_name
 
-  name=$(ask_app_name "$framework" "" "$1")
+  name=$(ask_app_name "$framework" "$1" "$1")
 
   snake_name=${name//-/_}
 

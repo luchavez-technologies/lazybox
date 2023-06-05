@@ -4,7 +4,7 @@ function next_new() {
   local framework_version="latest"
   local port=3000
 
-  name=$(ask_app_name "$framework" "" "$1")
+  name=$(ask_app_name "$framework" "$1")
 
   framework_version=$(ask_framework_version "$framework" "$framework_version" "$2")
 
@@ -12,15 +12,15 @@ function next_new() {
 
   cd /shared/httpd || stop_function
 
-  echo_style "🚀 Creating your $framework project..." bold green
-
   mkdir "$name"
 
   cd "$name" || stop_function
 
-  npx create-next-app@"$framework_version" "$name" 2>/dev/null
-
   port_change "$name" "$port"
+
+  echo_style "🚀 Creating your $framework project..." bold green
+
+  npx create-next-app@"$framework_version" "$name" 2>/dev/null
 
   cd "$name" || stop_function
 
@@ -40,7 +40,7 @@ function next_clone() {
   port=3000
   branch="develop"
 
-  url=$(ask_git_url $framework "$1")
+  url=$(ask_git_url "$framework" "$1")
 
   branch=$(ask_branch_name "$2")
 

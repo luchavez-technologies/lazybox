@@ -233,6 +233,7 @@ fi
 if $docker_compose up -d "${boot_containers[@]}"; then
   if [ -z "$shell" ]; then
     shell="php"
+    echo
     echo "🐘 Available PHP container terminals: $(style "${php_containers[*]}" bold green)"
     read -rp "👀 Please enter the container name (default: $(style "php" bold green)) ➡️ " container
 

@@ -5,8 +5,9 @@ function yii_new() {
   local framework="Yii"
   local php_version
 
-  name=$(ask_app_name "$framework" "" "$1")
+  name=$(ask_app_name "$framework" "$1")
 
+  php_version_list
   php_version=$(ask_php_version "$3")
 
   ensure_current_php_container "$php_version"
@@ -24,11 +25,7 @@ function yii_new() {
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  if [ -n "$php_version" ]; then
-    php_change "$name" "$php_version"
-  else
-    php_default "$name"
-  fi
+  php_change "$name" "$php_version"
 
   cd "$name" || stop_function
 
@@ -49,8 +46,9 @@ function yii_clone() {
 
   branch=$(ask_branch_name "$2")
 
-  name=$(ask_app_name "$framework" "" "$3")
+  name=$(ask_app_name "$framework" "$3")
 
+  php_version_list
   php_version=$(ask_php_version "$4")
 
   ensure_current_php_container "$php_version"
@@ -67,11 +65,7 @@ function yii_clone() {
 
   # symlink and add devilbox config
   symlink "$name" "$name"
-  if [ -n "$php_version" ]; then
-    php_change "$name" "$php_version"
-  else
-    php_default "$name"
-  fi
+  php_change "$name" "$php_version"
 
   cd "$name" || stop_function
   git checkout "$branch" 2>/dev/null
@@ -91,7 +85,7 @@ function yii_replace_env_variables() {
   local name
   local snake_name
 
-  name=$(ask_app_name "$framework" "" "$1")
+  name=$(ask_app_name "$framework" "$1" "$1")
 
   snake_name=${name//-/_}
 
