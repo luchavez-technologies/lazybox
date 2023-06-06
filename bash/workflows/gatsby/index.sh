@@ -56,12 +56,11 @@ function gatsby_clone() {
 
   cd "$name" || stop_function
 
-  git clone "$url" "$name"
+  git clone "$url" "$name" -b "$branch" 2>/dev/null
 
   port_change "$name" "$port"
 
   cd "$name" || stop_function
-  git checkout "$branch" 2>/dev/null
 
   text_replace "\"gatsby develop\"" "\"gatsby develop -H 0.0.0.0 --port $port\"" "package.json"
 

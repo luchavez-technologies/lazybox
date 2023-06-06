@@ -61,14 +61,13 @@ function yii_clone() {
 
   cd "$name" || stop_function
 
-  git clone "$url" "$name"
+  git clone "$url" "$name" -b "$branch" 2>/dev/null
 
   # symlink and add devilbox config
   symlink "$name" "$name"
   php_change "$name" "$php_version"
 
   cd "$name" || stop_function
-  git checkout "$branch" 2>/dev/null
 
   yii_replace_env_variables "$name"
   yii migrate

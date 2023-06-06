@@ -56,12 +56,11 @@ function astro_clone() {
 
   cd "$name" || stop_function
 
-  git clone "$url" "$name"
+  git clone "$url" "$name" -b "$branch" 2>/dev/null
 
   port_change "$name" "$port"
 
   cd "$name" || stop_function
-  git checkout "$branch" 2>/dev/null
 
   text_replace "\"astro dev\"" "\"astro dev --host --port $port\"" "package.json"
 

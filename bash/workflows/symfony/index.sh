@@ -66,14 +66,13 @@ function symfony_clone() {
 
   cd "$name" || stop_function
 
-  git clone "$url" "$name"
+  git clone "$url" "$name" -b "$branch"
 
   # symlink and add devilbox config
   symlink "$name" "$name"
   php_change "$name" "$php_version"
 
   cd "$name" || stop_function
-  git checkout "$branch" 2>/dev/null
 
   # install dependencies
   config_local_example="app/config/config_local.example.yml"

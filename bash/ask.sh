@@ -137,17 +137,19 @@ function ask_git_url() {
 # Ask for Git branch name
 function ask_branch_name() {
   local branch
-  local b
 
   if [ -n "$1" ]; then
     branch=$1
   else
-    read -rp "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)) ➡️ " b
-
-    if [ -n "$b" ]; then
-      branch="$b"
-    fi
+    read -rp "👀 Please enter $(style "branch name" underline bold) to checkout at (default: $(style "develop" bold blue)) ➡️ " branch
   fi
+
+  if [ -z "$branch" ]; then
+    ask_branch_name ""
+  fi
+
+  echo "$branch"
+  return 0
 }
 
 # Ask PHP version
