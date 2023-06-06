@@ -122,7 +122,7 @@ function ask_git_url() {
   if [ -n "$2" ]; then
     url=$2
   else
-    read -rp echo "👀 Please enter $(style "Git URL" underline bold) of your $framework app ➡️ " url
+    read -rp "👀 Please enter $(style "Git URL" underline bold) of your $framework app ➡️ " url
 
     if [ -z "$url" ]; then
       echo_error "You provided an empty Git URL."
