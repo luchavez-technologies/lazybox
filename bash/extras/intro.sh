@@ -1,8 +1,8 @@
 # Run own intro
 function intro() {
   # Display current workspace
-  local workspace=$HOST_PATH_HTTPD_DATADIR
-  workspace=$(echo "[ 🐳 ${workspace##*/} workspace ]" | tr '[:lower:]' '[:upper:]')
+  local workspace=$HOST_PATH_CURRENT_WORKSPACE
+  workspace=$(echo "[ 🐳 $workspace workspace ]" | tr '[:lower:]' '[:upper:]')
 
   local left_pad=$((45-(${#workspace})/2))
   printf '%0.s ' $(seq 1 $left_pad) | tr -d '\n' && echo_style "$workspace" bold
@@ -25,11 +25,8 @@ function intro() {
   echo "                    | 🐖 Mailhog         | https://mailhog.dvl.to     |"
   echo "                    | 📦 Minio (Console) | https://minio.dvl.to       |"
   echo "                    | 📦 Minio (API)     | https://api.minio.dvl.to   |"
-  echo "                    | 🌐 Ngrok           | http://localhost:4040     |"
+  echo "                    | 🌐 Ngrok           | http://localhost:4040      |"
   echo "                    | 🔈 Soketi          | https://soketi.dvl.to      |"
   echo
   echo "------------------------------------------------------------------------------------------"
 }
-
-# Invoke intro
-intro

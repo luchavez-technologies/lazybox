@@ -1,4 +1,4 @@
-# Simple Devilbox for Web Development
+# LAZYBOX, a Simplified Devilbox for Web Development
 
 This is just a fork of [Devilbox](https://github.com/cytopia/devilbox) so a huge thanks to the awesome team behind it! 🩷
 <br/>
@@ -17,8 +17,8 @@ Here's a list of apps that I planned to add workflows for:
 <br/>
 🐘 PHP Apps
 - [x] Laravel
-- [ ] Lumen
-- [ ] Symfony
+- [x] Lumen
+- [x] Symfony
 - [ ] CodeIgniter
 - [ ] WordPress
 - [ ] Drupal
@@ -46,10 +46,10 @@ If you want to read more about Devilbox, please take a look at the original [REA
 
 ```shell
 # Clone via HTTP
-git clone https://github.com/luchavez-technologies/simple-devilbox.git devilbox
+git clone https://github.com/luchavez-technologies/lazybox.git devilbox
 
 # Or, clone via SSH
-git clone git@github.com:luchavez-technologies/simple-devilbox.git devilbox
+git clone git@github.com:luchavez-technologies/lazybox.git devilbox
 
 # Change directory to Devilbox's folder
 cd devilbox
@@ -112,17 +112,65 @@ In this section, you can learn all the available commands that you can use to st
 
 #### Other Functions
 
-| Alias         | What does it do?                                                     |
-|---------------|----------------------------------------------------------------------|
-| `symlink`     | Symlinks the `public` folder of your app to your `vhost`'s `htdocs`. |
-| `php_change`  | Changes the PHP container of a `vhost`.                              |
-| `php_default` | Changes the PHP container of a `vhost` to `default`.                 |
-| `port_change` | Changes the port number of a `vhost` for reverse proxy.              |
+| Alias                | What does it do?                                                        |
+|----------------------|-------------------------------------------------------------------------|
+| `symlink`            | Symlinks the `public` directory of your app to your `vhost`'s `htdocs`. |
+| `php_change`         | Changes the PHP container of a `vhost`.                                 |
+| `php_default`        | Changes the PHP container of a `vhost` to `default`.                    |
+| `port_change`        | Changes the port number of a `vhost` for reverse proxy.                 |
+| `setup_ngrok`        | Set the Ngrok auth token and vhost to to expose to the web.             |
+| `setup_laravel_mix`  | Add a `Laravel Mix HMR` websocket and a guide for additional changes.   |
+| `setup_laravel_vite` | Add a `Laravel Vite HMR` websocket and a guide for additional changes.  |
+| `setup_laravel_vite` | Add a `Laravel Vite HMR` websocket and a guide for additional changes.  |
+| `setup_start_script` | Add a `Laravel Vite HMR` websocket and a guide for additional changes.  |
 
 **Note #1**: These bash aliases are only usable inside the Devilbox terminal.<br/>
 **Note #2**: These bash aliases can be found at the [bash folder](bash). You are free to add your own bash aliases or modify existing ones.<br/>
 **Note #3**: These bash aliases will ask for user input when no arguments are provided.<br/>
 **Note #4**: Make sure the PHP version of Devilbox terminal matches the to-be-created or to-be-cloned Laravel app.
+
+## Minio as S3
+
+Here's the bucket policy to make a `private-public` filesystem architecture on the Minio setup.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Deny",
+            "Principal": {
+                "AWS": [
+                    "*"
+                ]
+            },
+            "Action": [
+                "s3:GetBucketLocation",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::<your-bucket-name>"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "*"
+                ]
+            },
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::<your-bucket-name>/public/*"
+            ]
+        }
+    ]
+}
+```
 
 ## FAQs
 

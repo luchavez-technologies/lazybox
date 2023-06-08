@@ -109,6 +109,7 @@
 # Ignore custom PHP-FPM startup scripts
 /autostart/*.sh
 !/autostart/copy-or-replace-services.sh
+!/autostart/run-start-scripts.sh
 /cfg/php-startup-5.2/*.sh
 /cfg/php-startup-5.3/*.sh
 /cfg/php-startup-5.4/*.sh
@@ -152,7 +153,6 @@
 !/bash/extras
 !/bash/aliases.sh
 !/bash/ask.sh
-!/bash/intro.sh
 !/bash/workflows.sh
 !/bash/bashrc.sh-example
 !/bash/README.md
@@ -248,3 +248,7 @@ $RECYCLE.BIN/
 # data/www related
 /data/www/*
 !/data/www/.keepme
+
+# workspaces related
+/workspaces/*
+!/workspaces/.keepme

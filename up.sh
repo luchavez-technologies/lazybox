@@ -61,39 +61,50 @@ fi
 
 ###
 ### Step 2: Choose from workspaces
-### Update the HOST_PATH_HTTPD_DATADIR=./data/www
 ###
 
 env=".env"
 
 default_data_dir="./data/www"
-data_dir_variable="HOST_PATH_HTTPD_DATADIR="
-data_dir=$(grep "^$data_dir_variable*" "$env")
 
-# Get substring after ./data/www
-current_workspace="${data_dir#$data_dir_variable$default_data_dir}"
-current_workspace="${current_workspace#/}"
+workspace_dir_variable="HOST_PATH_WORKSPACE_DIR="
+workspace_dir=$(grep "^$workspace_dir_variable*" "$env")
+workspace_dir=${workspace_dir#$workspace_dir_variable}
+
+current_workspace_variable="HOST_PATH_CURRENT_WORKSPACE="
+current_workspace=$(grep "^$current_workspace_variable*" "$env")
+current_workspace_copy="$current_workspace"
+current_workspace=${current_workspace#$current_workspace_variable}
 default_workspace="default"
 
-# Set current space as default if empty
-if [ -z "$current_workspace" ]; then
+# Automatically move all directories from "./data/www" to the "./workspaces" directory
+for dir in "$default_data_dir"/*; do
+  folder="${dir#$default_data_dir/}"
+  if [ "$dir" != "$default_data_dir/*" ]; then
+    mv "$dir" "$workspace_dir/$folder"
+  fi
+done
+
+# Set current workspace as "default" if empty or if does not exist
+if [ -z "$current_workspace" ] || [ ! -d "$workspace_dir/$current_workspace" ]; then
   current_workspace="$default_workspace"
 fi
 
-# Create the default workspace if not yet exists
-if [ ! -d "$default_data_dir/$default_workspace" ]; then
-  mkdir "$default_data_dir/$default_workspace"
+# Create the default workspace if it does not exist yet
+if [ ! -d "$workspace_dir/$default_workspace" ]; then
+  mkdir "$workspace_dir/$default_workspace"
 fi
 
-# Move non-workspaces to "default" workspace
 # Display all workspaces
 echo_style "========== 👔 AVAILABLE WORKSPACES ==========" bold green
 
-# Detect all PHP containers from projects folder
-for dir in "$default_data_dir"/*; do
-  folder="${dir#$default_data_dir/}"
+# Display the workspaces
+for dir in "$workspace_dir"/*; do
+  folder="${dir#$workspace_dir/}"
+
+  # If the directory is a non-workspace, move to the "default" workspace
   if [ -d "$dir/htdocs" ] || [ -d "$dir/.devilbox" ]; then
-    mv "$dir" "$default_data_dir/$default_workspace/$folder"
+    mv "$dir" "$workspace_dir/$default_workspace/$folder" 2>/dev/null
   else
     echo "🐳 $(style "$folder" bold green) ($dir)"
   fi
@@ -118,13 +129,13 @@ if [ -z "$chosen_workspace" ]; then
 fi
 
 # Ask whether to create if does not exist yet
-if [ ! -d "$default_data_dir/$chosen_workspace" ]; then
+if [ ! -d "$workspace_dir/$chosen_workspace" ]; then
   echo
   echo_error "The $(style "$chosen_workspace" bold green) workspace does not exist yet."
   read -rp "👀 Create new workspace? (y/n) ➡️ " choice
   case "$choice" in
     y|Y )
-      mkdir "$default_data_dir/$chosen_workspace"
+      mkdir "$workspace_dir/$chosen_workspace" 2>/dev/null
       ;;
     * )
       echo_error "Create new workplace cancelled."
@@ -133,8 +144,10 @@ if [ ! -d "$default_data_dir/$chosen_workspace" ]; then
   esac
 fi
 
-# Replace
-text_replace "^$data_dir" "$data_dir_variable$default_data_dir/$chosen_workspace" "$env"
+# Replace workspace on the .env file
+if [ "$chosen_workspace" != "$current_workspace" ]; then
+  text_replace "^$current_workspace_copy" "$current_workspace_variable$chosen_workspace" "$env"
+fi
 
 ###
 ### Step 3: Prepare containers to boot up
@@ -172,12 +185,9 @@ if [ -n "$shell" ] && [ "$count" -gt 1 ]; then
   shell=""
 fi
 
-# Get projects folder from $env
-data_dir=$(grep "^HOST_PATH_HTTPD_DATADIR=" "$env")
-data_dir=${data_dir#*=}
-
-# Detect all PHP containers from projects folder
-for dir in "$data_dir"/*; do
+# Check if the vhost is already added to the local /etc/hosts
+# Detect all PHP containers from chosen workspace
+for dir in "$workspace_dir/$chosen_workspace"/*; do
   file="$dir/.devilbox/backend.cfg"
   if [ -f "$file" ]; then
     container=$(grep -m 1 -o ':php[0-9]*:' "$file" | sed 's/^.//;s/.$//')
@@ -221,11 +231,16 @@ fi
 ###
 
 ngrok="ngrok"
+
+ngrok_vhost_variable="NGROK_VHOST="
+ngrok_vhost=$(grep "^$ngrok_vhost_variable*" "$env")
+ngrok_vhost=${ngrok_vhost#*=}
+
 ngrok_token_variable="NGROK_AUTHTOKEN="
 ngrok_token=$(grep "^$ngrok_token_variable*" "$env")
 ngrok_token=${ngrok_token#*=}
 
-if [ -z "$ngrok_token" ]; then
+if [ -z "$ngrok_token" ] || [ -z "$ngrok_vhost" ] || [ ! -d "$workspace_dir/$chosen_workspace/$ngrok_vhost" ] ; then
   $docker_compose stop "$ngrok"
   boot_containers=($(echo "${boot_containers[@]/$ngrok}" | tr -s ' '))
 fi

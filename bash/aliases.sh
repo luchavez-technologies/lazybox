@@ -1,6 +1,7 @@
 # Import extras
 
 source /etc/bashrc-devilbox.d/extras/arrays.sh
+source /etc/bashrc-devilbox.d/extras/intro.sh
 source /etc/bashrc-devilbox.d/extras/strings.sh
 source /etc/bashrc-devilbox.d/extras/ports.sh
 source /etc/bashrc-devilbox.d/extras/style.sh
@@ -247,45 +248,68 @@ function env_text_replace() {
 }
 
 # Set Ngrok Settings
-function ngrok_set() {
+function setup_ngrok() {
   env="/.env"
-  #NGROK_HTTP_TUNNELS=laravel.dvl.to:httpd:80
-  #NGROK_AUTHTOKEN=2QVMa1gQmwIluGDcht7KDExh4Vg_4przyoQd2JLizm6anPgJv
-  current_vhost_variable="NGROK_HTTP_TUNNELS="
-  vhost_suffix=".dvl.to:httpd:80"
-  current_token_variable="NGROK_AUTHTOKEN="
+
+  current_vhost_variable="NGROK_VHOST="
   current_vhost=$(grep "^$current_vhost_variable*" "$env")
+
+  current_token_variable="NGROK_AUTHTOKEN="
   current_token=$(grep "^$current_token_variable*" "$env")
 
   vhost="${current_vhost#$current_vhost_variable}"
   token="${current_token#$current_token_variable}"
 
-  if [ -n "$vhost" ]; then
-    vhost="${vhost%$vhost_suffix}"
+  v=$(ask_vhost_name $1)
+
+  if [ "$vhost" != "$v" ]; then
+    vhost="$v"
+    env_text_replace "$current_vhost" "$current_vhost_variable$vhost"
   fi
 
-  echo "👀 Please enter $(style "vhost" underline bold) (default: $(style "$vhost" bold blue)):"
-  read -r v
+  if [ -n "$2" ]; then
+    t="$2"
+  else
+    read -rp "👀 Please enter $(style "auth token" underline bold) (default: $(style "$token" bold blue)) ➡️ " t
 
-  if [ -n "$v" ]; then
-    if [ -d "/shared/httpd/$v" ]; then
-      vhost="$v"
-      env_text_replace "$current_vhost" "$current_vhost_variable$vhost$vhost_suffix"
-    else
-      echo_error "The vhost does not exist!"
+    if [ -n "$t" ]; then
+      token="$t"
+      env_text_replace "$current_token" "$current_token_variable$token"
     fi
   fi
 
-  echo "👀 Please enter $(style "token" underline bold) (default: $(style "$token" bold blue)):"
-  read -r t
+  php_version=$(php_version)
 
-  if [ -n "$t" ]; then
-    token="$t"
-    env_text_replace "$current_token" "$current_token_variable$token$token_suffix"
+  echo
+  echo "✋ If $(style "Ngrok settings" bold blue) has been changed, exit this container first then run $(style "./up.sh $php_version" bold blue)."
+}
+
+function setup_start_script() {
+  local framework=""
+  local vhost
+  local app
+  local command
+
+  framework=$(ask_framework_name "$1")
+  vhost=$(ask_vhost_name "$2")
+  app=$(ask_app_name "$framework" "$3" "$vhost")
+
+  if [ -n "$4" ]; then
+    command="$4"
+  else
+    read -rp "👀 Please enter $(style "command" underline bold) to start the app ➡️ " command
   fi
 
-  php_version=$(php_version)
-  echo "✋ If $(style "Ngrok settings" bold blue) has been changed, exit this container first then run $(style "./up.sh $php_version" bold blue)."
+  if [ -z "$command" ]; then
+    echo_error "You provided an empty command."
+    setup_start_script "$framework" "$vhost" "$app"
+  fi
+
+  cd "/shared/httpd/$vhost" || stop_function
+
+  touch start.sh 2>/dev/null
+  chmod +x start.sh 2>/dev/null
+  echo "cd $app; pm2 delete '$framework | $app'; pm2 start '$command' --name='$framework | $app'" > start.sh
 }
 
 # Stop function execution
@@ -352,16 +376,18 @@ function git_name() {
 function whereami() {
   local default="/shared/httpd"
   local absolute=$(pwd)
-  local workspace=$HOST_PATH_HTTPD_DATADIR
+  local workspace_dir=$HOST_PATH_HTTPD_DATADIR
+  local workspace=$HOST_PATH_CURRENT_WORKSPACE
   local relative="not found"
 
   if echo "$absolute" | grep -q "^$default"; then
       relative=${absolute#$default}
-      relative="$workspace$relative"
+      relative="$workspace_dir$relative"
   fi
 
   echo_style "👋 Hi, there, $(git_name)! 😉"
-  echo_style "👉 Your IP address is $(style "$(ip_address)" bold underline green) a.k.a. the $(style "$(php_version)" bold underline green) container."
+  echo_style "👉 You are currently inside the $(style "$workspace" bold underline green) workspace."
+  echo_style "👉 Your current IP address is $(style "$(ip_address)" bold underline green) a.k.a. the $(style "$(php_version)" bold underline green) container."
   echo_style "👉 Your current directory $(style "inside" bold green) the container is: $(style "$absolute" bold underline green)"
   echo_style "👉 Your current directory $(style "outside" bold green) the container is: $(style "$relative" bold underline green)"
 }
@@ -375,3 +401,6 @@ own_directory /var/lib
 # It was found out that overriding the contents via "cat" function works.
 # Therefore, we just save a copy of ".env" to "/tmp" then override the original's contents.
 own_file /.env
+
+# Invoke intro
+intro
