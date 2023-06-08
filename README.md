@@ -46,13 +46,13 @@ If you want to read more about Devilbox, please take a look at the original [REA
 
 ```shell
 # Clone via HTTP
-git clone https://github.com/luchavez-technologies/lazybox.git devilbox
+git clone https://github.com/luchavez-technologies/lazybox.git lazybox
 
 # Or, clone via SSH
-git clone git@github.com:luchavez-technologies/lazybox.git devilbox
+git clone git@github.com:luchavez-technologies/lazybox.git lazybox
 
 # Change directory to Devilbox's folder
-cd devilbox
+cd lazybox
 
 # Invoke the "up" script to start Devilbox
 ./up.sh
@@ -76,8 +76,6 @@ Afterward, you should be able to see this welcome screen... ✨
 ![devilbox-cli](./images/devilbox-cli.png)
 
 ## Project Structure
-
-Since you already cloned, 
 
 ![skeleton](./images/devilbox-skeleton.png)
 
