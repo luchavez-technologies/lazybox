@@ -36,7 +36,7 @@ function ask_framework_version() {
     read -rp "👀 Please enter $framework $(style "version" underline bold) (default: $(style "$default_version_display" bold blue)) ➡️ " framework_version
   fi
 
-  if [ -n "$framework_version" ]; then
+  if [ -z "$framework_version" ]; then
     framework_version="$default_version"
   fi
 
