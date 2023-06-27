@@ -1,8 +1,10 @@
 # decide what program to use
 if hash docker-compose 2>/dev/null; then
-	prepend="docker-compose"
+	docker_compose="docker-compose"
 else
-	prepend="docker compose"
+	docker_compose="docker compose"
 fi
 
-$prepend stop
+docker_compose="$docker_compose --project-directory dvl"
+
+$docker_compose stop

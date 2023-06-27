@@ -1,0 +1,456 @@
+# vim: set ft=yaml:
+---
+version: '2.3'
+
+# ------------------------------------------------------------
+# Yaml Default
+# ------------------------------------------------------------
+
+###
+### Default PHP-FPM config
+###
+x-app: &default-php
+  env_file:
+    - ./.env
+  environment:
+    # Debug/Logging
+    - DEBUG_ENTRYPOINT=${DEBUG_ENTRYPOINT:-2}
+    - DOCKER_LOGS=1
+    # Enable/Disable PHP Modules
+    - ENABLE_MODULES=${PHP_MODULES_ENABLE}
+    - DISABLE_MODULES=${PHP_MODULES_DISABLE}
+    # Mail-catching
+    - ENABLE_MAIL=${PHP_MAIL_CATCH_ALL:-2}
+  dns:
+    - 172.16.238.100
+  depends_on:
+    - bind
+
+
+# ------------------------------------------------------------
+# PHP Services
+# ------------------------------------------------------------
+services:
+
+  php54:
+    <<: *default-php
+    image: devilbox/php-fpm:5.4-${PHP_FLAVOR}-0.151
+    hostname: php54
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.201
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-5.4:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-5.4:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-5.4:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php55:
+    <<: *default-php
+    image: devilbox/php-fpm:5.5-${PHP_FLAVOR}-0.151
+    hostname: php55
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.202
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-5.5:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-5.5:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-5.5:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php56:
+    <<: *default-php
+    image: devilbox/php-fpm:5.6-${PHP_FLAVOR}-0.151
+    hostname: php56
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.203
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-5.6:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-5.6:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-5.6:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php70:
+    <<: *default-php
+    image: devilbox/php-fpm:7.0-${PHP_FLAVOR}-0.151
+    hostname: php70
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.204
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-7.0:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-7.0:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-7.0:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php71:
+    <<: *default-php
+    image: devilbox/php-fpm:7.1-${PHP_FLAVOR}-0.151
+    hostname: php71
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.205
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-7.1:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-7.1:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-7.1:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php72:
+    <<: *default-php
+    image: devilbox/php-fpm:7.2-${PHP_FLAVOR}-0.151
+    hostname: php72
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.206
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-7.2:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-7.2:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-7.2:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php73:
+    <<: *default-php
+    image: devilbox/php-fpm:7.3-${PHP_FLAVOR}-0.151
+    hostname: php73
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.207
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-7.3:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-7.3:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-7.3:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php74:
+    <<: *default-php
+    image: devilbox/php-fpm:7.4-${PHP_FLAVOR}-0.151
+    hostname: php74
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.208
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-7.4:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-7.4:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-7.4:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php80:
+    <<: *default-php
+    image: devilbox/php-fpm:8.0-${PHP_FLAVOR}-0.151
+    hostname: php80
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.209
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-8.0:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-8.0:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-8.0:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php81:
+    <<: *default-php
+    image: devilbox/php-fpm:8.1-${PHP_FLAVOR}-0.151
+    hostname: php81
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.210
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-8.1:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-8.1:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-8.1:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  php82:
+    <<: *default-php
+    image: devilbox/php-fpm:8.2-${PHP_FLAVOR}-0.151
+    hostname: php82
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.211
+    volumes:
+      # Specific volumes
+      - ${DEVILBOX_PATH}/cfg/php-ini-8.2:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-fpm-8.2:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/php-startup-8.2:/startup.1.d:rw${MOUNT_OPTIONS}
+      # Generic volumes
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_MAIL_DIR}:/var/mail:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
+      - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
+      # NVM
+      - devilbox-nvm:/opt/nvm
+      # Services VHosts
+      - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
+
+  # -----------------------------------------------------------------------------------------------
+  # Ngrok
+  # -----------------------------------------------------------------------------------------------
+  ngrok:
+    image: devilbox/ngrok:${NGROK_SERVER}
+    hostname: ngrok
+    environment:
+      - HTTP_TUNNELS=${NGROK_HTTP_TUNNELS:-httpd:httpd:80}
+      - AUTHTOKEN=${NGROK_AUTHTOKEN:-}
+      - REGION=${NGROK_REGION:-us}
+    ports:
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_NGROK:-4040}:4040"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.200
+    depends_on:
+      - bind
+      - php
+      - httpd
+
+  # -----------------------------------------------------------------------------------------------
+  # Minio
+  # -----------------------------------------------------------------------------------------------
+  minio:
+    image: minio/minio:${MINIO_SERVER}
+    hostname: minio
+    ports:
+      - '${HOST_PORT_MINIO:-9000}:9000'
+      - '${HOST_PORT_MINIO_CONSOLE:-8900}:8900'
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USERNAME:-root}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD:-root}
+      - MINIO_BROWSER_REDIRECT_URL=https://minio.dvl.to
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.199
+    volumes:
+      - '${HOST_PATH_STORAGE_DIR}:/data'
+    command: minio server /data --console-address ":8900" --address 0.0.0.0:9000
+    # For ease of use always automatically start these:
+    depends_on:
+      - bind
+      - php
+      - httpd
+
+  # -----------------------------------------------------------------------------------------------
+  # MailHog
+  # -----------------------------------------------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog:${MAILHOG_SERVER:-latest}
+    hostname: mailhog
+    ports:
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MAILHOG_CONSOLE:-8025}:8025"
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MAILHOG:-1025}:1025"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.198
+    environment:
+      - MH_STORAGE=maildir
+      - MH_MAILDIR_PATH=maildir
+    volumes:
+      - '${HOST_PATH_MAIL_DIR}:/home/mailhog'
+    depends_on:
+      - bind
+      - php
+      - httpd
+
+  # -----------------------------------------------------------------------------------------------
+  # MailHog
+  # -----------------------------------------------------------------------------------------------
+  soketi:
+    image: quay.io/soketi/soketi:${SOKETI_SERVER}
+    hostname: soketi
+    ports:
+      - '${SOKETI_PORT:-6001}:6001'
+      - '${SOKETI_METRICS_SERVER_PORT:-9601}:9601'
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.197
+    environment:
+      - SOKETI_DEBUG=${SOKETI_DEBUG:-1}
+      - SOKETI_MODE=${SOKETI_MODE:-full}
+      - SOKETI_METRICS_ENABLED=${SOKETI_METRICS_ENABLED:-1}
+      - SOKETI_METRICS_DRIVER=${SOKETI_METRICS_DRIVER:-prometheus}
+      - SOKETI_METRICS_PROMETHEUS_PREFIX=${SOKETI_METRICS_PROMETHEUS_PREFIX:-soketi_prometheus_}
+      - SOKETI_METRICS_SERVER_PORT=${HOST_PORT_SOKETI:-9601}
+      - SOKETI_DB_REDIS_HOST=${SOKETI_DB_REDIS_HOST:-redis}
+      - SOKETI_DB_REDIS_PORT=${HOST_PORT_REDIS:-6379}
+      - SOKETI_DB_REDIS_DB=${SOKETI_DB_REDIS_DB:-3}
+      - SOKETI_CACHE_DRIVER=${SOKETI_CACHE_DRIVER:-redis}
+      - SOKETI_QUEUE_DRIVER=${SOKETI_QUEUE_DRIVER:-redis}
+      - SOKETI_RATE_LIMITER_DRIVER=${SOKETI_RATE_LIMITER_DRIVER:-redis}
+      - SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
+      - SOKETI_ADAPTER_REDIS_PREFIX=${SOKETI_ADAPTER_REDIS_PREFIX:-soketi_adapter_}
+      - SOKETI_DB_REDIS_KEY_PREFIX=${SOKETI_DB_REDIS_KEY_PREFIX:-soketi_}
+      - SOKETI_DEFAULT_APP_ID=${SOKETI_DEFAULT_APP_ID:-app-id}
+      - SOKETI_DEFAULT_APP_KEY=${SOKETI_DEFAULT_APP_KEY:-app-key}
+    volumes:
+      - ${DEVILBOX_PATH}/ca:/ca:ro${MOUNT_OPTIONS}
+    depends_on:
+      - bind
+      - php
+      - httpd
+
+################################################################################
+# VOLUMES
+################################################################################
+volumes:
+  # ------------------------------------------------------------
+  # NVM
+  # ------------------------------------------------------------
+  devilbox-nvm:
+
+

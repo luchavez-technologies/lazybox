@@ -8,171 +8,154 @@
 # $ git commit -m ".gitignore index rebuild"
 #
 
-
 ######################################
 # CUSTOM
 ######################################
 
 # Ignore variable data
 #/.env
-/backups/*
+/dvl/backups/*
 
 # Ignore Certificate Authority
-/ca/*
+/dvl/ca/*
 
 # Ignore compose override file
 #/docker-compose.override.yml
 
 # Ignore logs
-/log/apache-2.2/*
-/log/apache-2.4/*
-/log/mariadb-10.3/*
-/log/nginx-mainline/*
-/log/nginx-stable/*
-/log/php-fpm-5.2/*
-/log/php-fpm-5.3/*
-/log/php-fpm-5.4/*
-/log/php-fpm-5.5/*
-/log/php-fpm-5.6/*
-/log/php-fpm-7.0/*
-/log/php-fpm-7.1/*
-/log/php-fpm-7.2/*
-/log/php-fpm-7.3/*
-/log/php-fpm-7.4/*
-/log/php-fpm-8.0/*
-/log/php-fpm-8.1/*
-/log/php-fpm-8.2/*
-!/log/.keepme
-!/log/*/.keepme
+/dvl/log/apache-2.2/*
+/dvl/log/apache-2.4/*
+/dvl/log/mariadb-10.3/*
+/dvl/log/nginx-mainline/*
+/dvl/log/nginx-stable/*
+/dvl/log/php-fpm-5.2/*
+/dvl/log/php-fpm-5.3/*
+/dvl/log/php-fpm-5.4/*
+/dvl/log/php-fpm-5.5/*
+/dvl/log/php-fpm-5.6/*
+/dvl/log/php-fpm-7.0/*
+/dvl/log/php-fpm-7.1/*
+/dvl/log/php-fpm-7.2/*
+/dvl/log/php-fpm-7.3/*
+/dvl/log/php-fpm-7.4/*
+/dvl/log/php-fpm-8.0/*
+/dvl/log/php-fpm-8.1/*
+/dvl/log/php-fpm-8.2/*
+!/dvl/log/.keepme
+!/dvl/log/*/.keepme
 
 
 # Ignore custom global vhost gen templates
-/cfg/vhost-gen/apache22.yml
-/cfg/vhost-gen/apache24.yml
-/cfg/vhost-gen/nginx.yml
+/dvl/cfg/vhost-gen/apache22.yml
+/dvl/cfg/vhost-gen/apache24.yml
+/dvl/cfg/vhost-gen/nginx.yml
 
 # Ignore custom HTTPD configs
-/cfg/apache-2.2/*.conf
-/cfg/apache-2.4/*.conf
-/cfg/nginx-stable/*.conf
-/cfg/nginx-mainline/*.conf
+/dvl/cfg/apache-2.2/*.conf
+/dvl/cfg/apache-2.4/*.conf
+/dvl/cfg/nginx-stable/*.conf
+/dvl/cfg/nginx-mainline/*.conf
 
 # Ignore custom MySQL configs
-/cfg/mysql-5.5/*.cnf
-/cfg/mysql-5.6/*.cnf
-/cfg/mysql-5.7/*.cnf
-/cfg/mysql-8.0/*.cnf
-/cfg/mariadb-5.5/*.cnf
-/cfg/mariadb-10.0/*.cnf
-/cfg/mariadb-10.1/*.cnf
-/cfg/mariadb-10.2/*.cnf
-/cfg/mariadb-10.3/*.cnf
-/cfg/mariadb-10.4/*.cnf
-/cfg/mariadb-10.5/*.cnf
-/cfg/mariadb-10.6/*.cnf
-/cfg/mariadb-10.7/*.cnf
-/cfg/percona-5.5/*.cnf
-/cfg/percona-5.6/*.cnf
-/cfg/percona-5.7/*.cnf
-/cfg/percona-8.0/*.cnf
-
-# Ignore custom PHP.ini configs
-#/cfg/php-ini-5.2/*.ini
-#/cfg/php-ini-5.3/*.ini
-#/cfg/php-ini-5.4/*.ini
-#/cfg/php-ini-5.5/*.ini
-#/cfg/php-ini-5.6/*.ini
-#/cfg/php-ini-7.0/*.ini
-#/cfg/php-ini-7.1/*.ini
-#/cfg/php-ini-7.2/*.ini
-#/cfg/php-ini-7.3/*.ini
-#/cfg/php-ini-7.4/*.ini
-#/cfg/php-ini-8.0/*.ini
-#/cfg/php-ini-8.1/*.ini
-#/cfg/php-ini-8.2/*.ini
+/dvl/cfg/mysql-5.5/*.cnf
+/dvl/cfg/mysql-5.6/*.cnf
+/dvl/cfg/mysql-5.7/*.cnf
+/dvl/cfg/mysql-8.0/*.cnf
+/dvl/cfg/mariadb-5.5/*.cnf
+/dvl/cfg/mariadb-10.0/*.cnf
+/dvl/cfg/mariadb-10.1/*.cnf
+/dvl/cfg/mariadb-10.2/*.cnf
+/dvl/cfg/mariadb-10.3/*.cnf
+/dvl/cfg/mariadb-10.4/*.cnf
+/dvl/cfg/mariadb-10.5/*.cnf
+/dvl/cfg/mariadb-10.6/*.cnf
+/dvl/cfg/mariadb-10.7/*.cnf
+/dvl/cfg/percona-5.5/*.cnf
+/dvl/cfg/percona-5.6/*.cnf
+/dvl/cfg/percona-5.7/*.cnf
+/dvl/cfg/percona-8.0/*.cnf
 
 # Ignore custom PHP-FPM configs
-/cfg/php-fpm-5.2/php-fpm.xml
-/cfg/php-fpm-5.3/*.conf
-/cfg/php-fpm-5.4/*.conf
-/cfg/php-fpm-5.5/*.conf
-/cfg/php-fpm-5.6/*.conf
-/cfg/php-fpm-7.0/*.conf
-/cfg/php-fpm-7.1/*.conf
-/cfg/php-fpm-7.2/*.conf
-/cfg/php-fpm-7.3/*.conf
-/cfg/php-fpm-7.4/*.conf
-/cfg/php-fpm-8.0/*.conf
-/cfg/php-fpm-8.1/*.conf
-/cfg/php-fpm-8.2/*.conf
+/dvl/cfg/php-fpm-5.2/php-fpm.xml
+/dvl/cfg/php-fpm-5.3/*.conf
+/dvl/cfg/php-fpm-5.4/*.conf
+/dvl/cfg/php-fpm-5.5/*.conf
+/dvl/cfg/php-fpm-5.6/*.conf
+/dvl/cfg/php-fpm-7.0/*.conf
+/dvl/cfg/php-fpm-7.1/*.conf
+/dvl/cfg/php-fpm-7.2/*.conf
+/dvl/cfg/php-fpm-7.3/*.conf
+/dvl/cfg/php-fpm-7.4/*.conf
+/dvl/cfg/php-fpm-8.0/*.conf
+/dvl/cfg/php-fpm-8.1/*.conf
+/dvl/cfg/php-fpm-8.2/*.conf
 
 # Ignore custom PHP-FPM startup scripts
-/autostart/*.sh
-!/autostart/copy-or-replace-services.sh
-!/autostart/run-start-scripts.sh
-/cfg/php-startup-5.2/*.sh
-/cfg/php-startup-5.3/*.sh
-/cfg/php-startup-5.4/*.sh
-/cfg/php-startup-5.5/*.sh
-/cfg/php-startup-5.6/*.sh
-/cfg/php-startup-7.0/*.sh
-/cfg/php-startup-7.1/*.sh
-/cfg/php-startup-7.2/*.sh
-/cfg/php-startup-7.3/*.sh
-/cfg/php-startup-7.4/*.sh
-/cfg/php-startup-8.0/*.sh
-/cfg/php-startup-8.1/*.sh
-/cfg/php-startup-8.2/*.sh
+/dvl/autostart/*.sh
+!/dvl/autostart/copy-or-replace-services.sh
+!/dvl/autostart/run-start-scripts.sh
+/dvl/cfg/php-startup-5.2/*.sh
+/dvl/cfg/php-startup-5.3/*.sh
+/dvl/cfg/php-startup-5.4/*.sh
+/dvl/cfg/php-startup-5.5/*.sh
+/dvl/cfg/php-startup-5.6/*.sh
+/dvl/cfg/php-startup-7.0/*.sh
+/dvl/cfg/php-startup-7.1/*.sh
+/dvl/cfg/php-startup-7.2/*.sh
+/dvl/cfg/php-startup-7.3/*.sh
+/dvl/cfg/php-startup-7.4/*.sh
+/dvl/cfg/php-startup-8.0/*.sh
+/dvl/cfg/php-startup-8.1/*.sh
+/dvl/cfg/php-startup-8.2/*.sh
 
 # Ignorecustom Varnish configs
-/cfg/varnish-4/*.vcl
-/cfg/varnish-5/*.vcl
-/cfg/varnish-6/*.vcl
+/dvl/cfg/varnish-4/*.vcl
+/dvl/cfg/varnish-5/*.vcl
+/dvl/cfg/varnish-6/*.vcl
 
 # Ignore custom PHP-FPM modules
-/mod/php-fpm-5.2/*.so
-/mod/php-fpm-5.3/*.so
-/mod/php-fpm-5.4/*.so
-/mod/php-fpm-5.5/*.so
-/mod/php-fpm-5.6/*.so
-/mod/php-fpm-7.0/*.so
-/mod/php-fpm-7.1/*.so
-/mod/php-fpm-7.2/*.so
-/mod/php-fpm-7.3/*.so
-/mod/php-fpm-7.4/*.so
-/mod/php-fpm-8.0/*.so
-/mod/php-fpm-8.1/*.so
-/mod/php-fpm-8.2/*.so
+/dvl/mod/php-fpm-5.2/*.so
+/dvl/mod/php-fpm-5.3/*.so
+/dvl/mod/php-fpm-5.4/*.so
+/dvl/mod/php-fpm-5.5/*.so
+/dvl/mod/php-fpm-5.6/*.so
+/dvl/mod/php-fpm-7.0/*.so
+/dvl/mod/php-fpm-7.1/*.so
+/dvl/mod/php-fpm-7.2/*.so
+/dvl/mod/php-fpm-7.3/*.so
+/dvl/mod/php-fpm-7.4/*.so
+/dvl/mod/php-fpm-8.0/*.so
+/dvl/mod/php-fpm-8.1/*.so
+/dvl/mod/php-fpm-8.2/*.so
 
 # Ignore supervisord configs
-/supervisor/*.conf
+/dvl/supervisor/*.conf
 
 # Ignore custom bash and other confi files
-/bash/*
-!/bash/workflows
-!/bash/extras
-!/bash/aliases.sh
-!/bash/ask.sh
-!/bash/workflows.sh
-!/bash/bashrc.sh-example
-!/bash/README.md
+/dvl/bash/*
+!/dvl/bash/workflows
+!/dvl/bash/extras
+!/dvl/bash/aliases.sh
+!/dvl/bash/ask.sh
+!/dvl/bash/workflows.sh
+!/dvl/bash/bashrc.sh-example
+!/dvl/bash/README.md
 
 # Ignore documentation sphinx build
-/docs/_build/
-/docs/make.bat
-/docs/linkcheck
-/docs/venv
-*.rst.todo
+/dvl/docs/_build/
+/dvl/docs/make.bat
+/dvl/docs/linkcheck
+/dvl/docs/venv
+/dvl/*.rst.todo
 
 # Ignore vhost-gen files in test dir (copied on the fly)
-/.tests/tmp/*
-/.tests/www/*
-!/.tests/www/modules
-!/.tests/www/rproxy/js/index.js
+/dvl/.tests/tmp/*
+/dvl/.tests/www/*
+!/dvl/.tests/www/modules
+!/dvl/.tests/www/rproxy/js/index.js
 
 # Keep folders
 !.keepme
-
 
 ######################################
 # GENERIC
@@ -246,9 +229,29 @@ $RECYCLE.BIN/
 /.vscode
 
 # data/www related
-/data/www/*
-!/data/www/.keepme
+/dvl/data/www/*
+!/dvl/data/www/.keepme
 
 # workspaces related
 /workspaces/*
 !/workspaces/.keepme
+
+# minio related
+/storage/*
+!/storage/.keepme
+
+# database related
+/database/*
+!/database/.keepme
+
+# mail related
+/mail/*
+!/mail/.keepme
+
+# logs related
+/log/*
+!/log/.keepme
+
+# backups related
+/backup/*
+!/backup/.keepme

@@ -17,22 +17,22 @@ trim_trailing_whitespace = true
 # Devilbox Intranet
 # -------------------------------------------------------------------------------------------------
 # Intranet CSS
-[.devilbox/www/htdocs/assets/css/*.css]
+[dvl/.devilbox/www/htdocs/assets/css/*.css]
 indent_style = tab
 indent_size = 4
 
 # Intranet config
-[.devilbox/www/config.php]
+[dvl/.devilbox/www/config.php]
 indent_style = tab
 indent_size = 4
 
 # Intranet libs
-[.devilbox/www/include/lib/**.php]
+[dvl/.devilbox/www/include/lib/**.php]
 indent_style = tab
 indent_size = 4
 
 # Intranet pages
-[.devilbox/www/htdocs/*.php]
+[dvl/.devilbox/www/htdocs/*.php]
 indent_style = tab
 indent_size = 4
 
@@ -43,7 +43,7 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 
-[.tests/**.{php,sh}]
+[dvl/.tests/**.{php,sh}]
 indent_style = tab
 indent_size = 4
 
@@ -58,11 +58,11 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 
-[compose/docker-compose.override.yml-*]
+[dvl/compose/docker-compose.override.yml-*]
 indent_style = space
 indent_size = 2
 
-[cfg/vhost-gen/*.yml-*]
+[dvl/cfg/vhost-gen/*.yml-*]
 indent_style = space
 indent_size = 2
 
@@ -70,12 +70,11 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-[{shell.sh,update-docker.sh}]
+[*.sh]
 indent_style = tab
 indent_size = 4
 
-[shell.bat]
-end_of_line = crlf
+[{shell.sh,update-docker.sh}]
 indent_style = tab
 indent_size = 4
 
@@ -87,10 +86,24 @@ indent_style = space
 trim_trailing_whitespace = false
 indent_size = 2
 
-[docs/**.py]
+[dvl/docs/**.py]
 indent_style = space
 indent_size = 4
 
-[docs/**.rst]
+[dvl/docs/**.rst]
 indent_style = space
+indent_size = 4
+
+# -------------------------------------------------------------------------------------------------
+# Lazybox Configuration and Scripts
+# -------------------------------------------------------------------------------------------------
+
+# Bash scripts
+[dvl/bash/**.sh]
+indent_style = tab
+indent_size = 4
+
+# Bash scripts
+[dvl/autostart/**.sh]
+indent_style = tab
 indent_size = 4
