@@ -15,7 +15,7 @@ function next_new() {
 
 	mkdir "$vhost"
 	cd "$vhost" || stop_function
-	port_change "$vhost" "$port"
+	port_change "$vhost" "$port" 1
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
@@ -25,7 +25,8 @@ function next_new() {
 
 	# no need to install dependencies
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
-	npm_pkg_add_lazybox "$framework" "$vhost" "$app" "--port $port"
+	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "--port $port"
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }
@@ -53,14 +54,15 @@ function next_clone() {
 
 	cd "$app" || stop_function
 
-	git clone "$url" "$app" -b "$branch" 2>/dev/null
-	port_change "$app" "$port"
+	execute "git clone $url $app -b $branch 2>/dev/null"
+	port_change "$vhost" "$port" 1
 
 	cd "$app" || stop_function
 
-	npm_yarn_install "$vhost" "$app"
+	npm_yarn_install "$vhost" "$app" "$node_version"
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
-	npm_pkg_add_lazybox "$framework" "$vhost" "$app" "--port $port"
+	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "--port $port"
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }

@@ -3,11 +3,12 @@ function port_change() {
 	local php_version
 	local vhost
 	local port
+	local show_message
 
 	vhost=$(ask_vhost_name "$1")
 	port=$(ask_port "$2")
-	echo_php_versions
 	php_version=$(ask_php_version "$3")
+	show_message=${3:-0}
 
 	cd "/shared/httpd/$vhost" || stop_function
 
@@ -20,7 +21,9 @@ function port_change() {
 	# For nginx.yml (or apache.yml)
 	cp_frontend_web_server_yml "$vhost" "$php_version" "$port"
 
-	reload_watcherd_message
+	if [ $show_message ]; then
+		reload_watcherd_message
+	fi
 }
 
 # Get the current node version
@@ -30,54 +33,43 @@ function node_version() {
 	version=$(node --version)
 
 	echo "${version#v}"
-}
-
-# Execute npm or yarn commands
-function npm_yarn() {
-	local vhost
-	local app
-	local command
-
-	vhost=$(ask_vhost_name "$1")
-	app=$(ask_app_name "JS" "$2" "$vhost")
-
-	if [ $# -ge 2 ]; then
-		shift 2
-	fi
-
-	command=$(echo_npm_yarn "$vhost" "$app" "$@")
-
-	if [ -n "$command" ]; then
-		echo_ongoing "$command"
-		eval "$command"
-	fi
+	return 0
 }
 
 # Echo npm or yarn commands
 function echo_npm_yarn() {
 	local vhost
 	local app
+	local node_version
 
 	vhost=$(ask_vhost_name "$1")
 	app=$(ask_app_name "JS" "$2" "$vhost")
-	path="/shared/httpd/$vhost/$app"
+	node_version=$(npm_pkg_get_node_engine "$vhost" "$app")
 
-	if [ $# -ge 2 ]; then
-		shift 2
+	if [ -z "$node_version" ] || ! nvm install "$node_version" &>/dev/null; then
+		node_version=$(ask_node_version "$3")
 	fi
 
-	prepend=""
+	path="/shared/httpd/$vhost/$app"
+
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
+	fi
+
+	manager=""
 	cwd=""
 	if [ -f "$path/yarn.lock" ]; then
-		prepend=yarn
+		manager=yarn
 		cwd="cwd"
 	elif [ -f "$path/package-lock.json" ] || [ -f "$path/package.json" ]; then
-		prepend=npm
+		manager=npm
 		cwd="prefix"
 	fi
 
-	if [ -n "$prepend" ]; then
-		echo "$prepend --$cwd $path $*"
+	if [ -n "$manager" ]; then
+		echo "nvm exec $node_version $manager --$cwd $path $*"
 		return 0
 	fi
 
@@ -85,20 +77,49 @@ function echo_npm_yarn() {
 	return 1
 }
 
+# Execute npm or yarn commands
+function npm_yarn() {
+	local vhost
+	local app
+	local node_version
+	local command
+
+	vhost=$1
+	app=$2
+	node_version=$3
+
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
+	fi
+
+	command=$(echo_npm_yarn "$vhost" "$app" "$node_version" "$@")
+
+	if [ -n "$command" ]; then
+		echo_ongoing "$command"
+		eval "$command"
+	fi
+}
+
 # Install NPM dependencies
 function npm_yarn_install() {
 	local vhost
 	local app
+	local node_version
 
-	vhost=$(ask_vhost_name "$1")
-	app=$(ask_app_name "JS" "$2" "$vhost")
+	vhost=$1
+	app=$2
+	node_version=$3
 
-	if [ $# -ge 2 ]; then
-		shift 2
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
 	fi
 
 	if [ ! -d node_modules ]; then
-		npm_yarn "$vhost" "$app" install "$@"
+		npm_yarn "$vhost" "$app" "$node_version" install "$@"
 	else
 		echo_error "Dependencies are already installed."
 	fi
@@ -108,28 +129,36 @@ function npm_yarn_install() {
 function npm_yarn_install_production() {
 	local vhost
 	local app
+	local node_version
 
-	vhost=$(ask_vhost_name "$1")
-	app=$(ask_app_name "JS" "$2" "$vhost")
+	vhost=$1
+	app=$2
+	node_version=$3
 
-	npm_yarn_install "$vhost" "$app" --production
+	npm_yarn_install "$vhost" "$app" "$node_version" --production
 }
 
 # Execute npm or yarn commands
 function npm_yarn_run() {
 	local vhost
 	local app
+	local node_version
+	local path
 
 	vhost=$(ask_vhost_name "$1")
 	app=$(ask_app_name "JS" "$2" "$vhost")
+	node_version=$3
+
 	path="/shared/httpd/$vhost/$app"
 
-	if [ $# -ge 2 ]; then
-		shift 2
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
 	fi
 
 	if [ -d "$path/node_modules" ]; then
-		npm_yarn "$vhost" "$app" run "$@"
+		npm_yarn "$vhost" "$app" "$node_version" run "$@"
 	else
 		echo_error "Dependencies are not yet installed."
 	fi
@@ -238,16 +267,30 @@ function npm_pkg_add_node_engine() {
 
 	vhost=$(ask_vhost_name "$1")
 	app=$(ask_app_name "JS" "$2" "$vhost")
-
 	value=$(npm_pkg_get "$vhost" "$app" "$key")
 
 	if [ -n "$value" ]; then
-		echo_warning "Skipping since the $(style " $key " bg-white bold) is already set: $value"
+		echo_warning "The $(style " $key " bg-white bold) is already set: $value"
 		return 1
 	fi
 
 	version=$(ask_node_version "$3")
 	npm_pkg_set "$vhost" "$app" "$key" ">=$version"
+}
+
+# Get node engine version from package.json
+function npm_pkg_get_node_engine() {
+	local vhost
+	local app
+	local version
+	local key="engines.node"
+
+	vhost=$(ask_vhost_name "$1")
+	app=$(ask_app_name "JS" "$2" "$vhost")
+
+	version=$(npm_pkg_get "$vhost" "$app" "$key" | grep -oE '[0-9.]+')
+
+	echo "${version:-$(node_version)}"
 }
 
 # Add a "lazybox" script to package.json
@@ -259,41 +302,39 @@ function npm_pkg_add_lazybox() {
 	local value
 	local key="lazybox"
 
-	vhost=$(ask_vhost_name "$2")
-	app=$(ask_app_name "JS" "$3" "$vhost")
-
-	if [ -n "$4" ]; then
-		args="$4"
-	else
-		args=$(ask "Enter script arguments")
+	vhost=$(ask_vhost_name "$1")
+	app=$(ask_app_name "JS" "$2" "$vhost")
+	node_version=$(npm_pkg_get_node_engine "$vhost" "$app")
+	if [ -z "$node_version" ] || ! nvm install "$node_version" &>/dev/null; then
+		node_version=$(ask_node_version "$3")
 	fi
+	args=${4:-$(ask "Enter script arguments")}
 
 	# Check if lazybox script already exists
 	value=$(npm_pkg_get_script "$vhost" "$app" "$key")
 
 	if [ -n "$value" ]; then
-		echo_warning "Skipping since the $(style " $key " bg-white bold) script is already set: $value"
-		return 1
-	fi
+		echo_warning "The $(style " $key " bg-white bold) script is already set: $value"
+	else
+		for script in "${start_scripts[@]}"; do
+			# Find and get the script
+			value=$(npm_pkg_get_script "$vhost" "$app" "$script" | tr -d '"')
+			if [ -n "$value" ]; then
+				# Append the args if does not exist
+				if ! echo "$value" | grep -q -- "$args$"; then
+					value="${value} ${args}"
+				fi
 
-	for script in "${start_scripts[@]}"; do
-		# Find and get the script
-		value=$(npm_pkg_get_script "$vhost" "$app" "$script" | tr -d '"')
-		if [ -n "$value" ]; then
-			# Append the args if does not exist
-			if ! echo "$value" | grep -q -- "$args$"; then
-				value="${value} ${args}"
+				npm_pkg_set_script "$vhost" "$app" "$key" "$value"
+				break
 			fi
-
-			npm_pkg_set_script "$vhost" "$app" "$key" "$value"
-			break
-		fi
-	done
+		done
+	fi
 
 	# Create the start.sh script
 	if [ -n "$value" ]; then
-		command=$(echo_npm_yarn "$vhost" "$app" run $key)
-		setup_start_script "$vhost" "$command"
+		command=$(echo_npm_yarn "$vhost" "$app" "$node_version" run "$key")
+		setup_start_script "$vhost" "source /opt/nvm/nvm.sh; $command"
 		return 0
 	fi
 

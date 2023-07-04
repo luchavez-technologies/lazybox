@@ -9,7 +9,6 @@ function yii_new() {
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
 
-	echo_php_versions
 	php_version=$(ask_php_version "$3")
 
 	ensure_current_php_container "$php_version"
@@ -27,13 +26,14 @@ function yii_new() {
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
 
 	yii_replace_env_variables "$app"
 	yii migrate 2>/dev/null
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 
@@ -50,7 +50,6 @@ function yii_clone() {
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
-	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -62,11 +61,11 @@ function yii_clone() {
 
 	cd "$vhost" || stop_function
 
-	git clone "$url" "$app" -b "$branch" 2>/dev/null
+	execute "git clone $url $app -b $branch 2>/dev/null"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
 
@@ -75,8 +74,10 @@ function yii_clone() {
 
 	# install dependencies
 	composer_install
+	npm_pkg_add_node_engine "$vhost" "$app"
 	npm_yarn_install "$vhost" "$app"
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 

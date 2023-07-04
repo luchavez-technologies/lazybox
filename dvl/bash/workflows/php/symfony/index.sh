@@ -7,10 +7,7 @@ function symfony_new() {
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
-
 	framework_version=$(ask_framework_version $framework "$framework_version" "$2")
-
-	echo_php_versions
 	php_version=$(ask_php_version "$3")
 
 	ensure_current_php_container "$php_version"
@@ -31,14 +28,15 @@ function symfony_new() {
 	cd "$vhost" || stop_function
 
 	# create project
-	composer create-project symfony/framework-standard-edition "$app" "$version"
+	composer create-project symfony/framework-standard-edition "$app" "$framework_version"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 
@@ -55,7 +53,6 @@ function symfony_clone() {
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
-	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -67,11 +64,11 @@ function symfony_clone() {
 
 	cd "$vhost" || stop_function
 
-	git clone "$url" "$app" -b "$branch" 2>/dev/null
+	execute "git clone $url $app -b $branch 2>/dev/null"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
 
@@ -85,8 +82,9 @@ function symfony_clone() {
 
 	# install dependencies
 	composer_install
-	# npm_yarn_install "$vhost" "$app"
+	# npm_yarn_install "$vhost" "$app" "$node_version"
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 

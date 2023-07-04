@@ -40,12 +40,7 @@ function setup_start_script() {
 	local command
 
 	vhost=$(ask_vhost_name "$1")
-
-	if [ -n "$2" ]; then
-		command="$2"
-	else
-		command=$(ask "Please enter $(style "command" underline bold) to start the app")
-	fi
+	command=${2:-$(ask "Please enter $(style "command" underline bold) to start the app")}
 
 	if [ -z "$command" ]; then
 		echo_error "You provided an empty command."

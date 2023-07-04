@@ -15,7 +15,7 @@ function gatsby_new() {
 
 	mkdir "$vhost"
 	cd "$vhost" || stop_function
-	port_change "$vhost" "$port"
+	port_change "$vhost" "$port" 1
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
@@ -23,9 +23,10 @@ function gatsby_new() {
 
 	cd "$app" || stop_function
 
-	npm_yarn_install "$vhost" "$app"
+	npm_yarn_install "$vhost" "$app" "$node_version"
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
-	npm_pkg_add_lazybox "$framework" "$vhost" "$app" "-H 0.0.0.0 --port $port"
+	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "-H 0.0.0.0 --port $port"
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }
@@ -53,14 +54,15 @@ function gatsby_clone() {
 
 	cd "$app" || stop_function
 
-	git clone "$url" "$app" -b "$branch" 2>/dev/null
-	port_change "$app" "$port"
+	execute "git clone $url $app -b $branch 2>/dev/null"
+	port_change "$vhost" "$port" 1
 
 	cd "$app" || stop_function
 
-	npm_yarn_install "$vhost" "$app"
+	npm_yarn_install "$vhost" "$app" "$node_version"
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
-	npm_pkg_add_lazybox "$framework" "$vhost" "$app" "-H 0.0.0.0 --port $port"
+	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "-H 0.0.0.0 --port $port"
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }

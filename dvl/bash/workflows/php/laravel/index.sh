@@ -10,11 +10,8 @@ function laravel_new() {
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
-
 	framework_version=$(ask_framework_version $framework "$framework_version" "$2")
-
-	echo_php_versions
-	php_version=$(ask_php_version "$3")
+	php_version=$(ask_php_version "$3" | tee /dev/fd/2 | tail -n 1)
 
 	ensure_current_php_container "$php_version"
 
@@ -36,10 +33,12 @@ function laravel_new() {
 
 	# create project
 	composer create-project "laravel/laravel$framework_version" "$app"
+	npm_pkg_add_node_engine "$vhost" "$app"
+	npm_yarn_install "$vhost" "$app"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
 
@@ -50,6 +49,7 @@ function laravel_new() {
 		pa migrate --seed 2>/dev/null
 	fi
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 
@@ -66,7 +66,6 @@ function laravel_clone() {
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
-	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -78,13 +77,17 @@ function laravel_clone() {
 
 	cd "$vhost" || stop_function
 
-	git clone "$url" "$app" -b "$branch" 2>/dev/null
+	execute "git clone $url $app -b $branch 2>/dev/null"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
-	php_change "$vhost" "$php_version"
+	php_change "$vhost" "$php_version" 1
 
 	cd "$app" || stop_function
+
+	# install dependencies
+	composer_install
+	npm_yarn_install "$vhost" "$app"
 
 	# copy .env.example to .env
 	env=".env"
@@ -95,13 +98,10 @@ function laravel_clone() {
 		fi
 	fi
 
-	# install dependencies
-	composer_install
-	npm_yarn_install "$vhost" "$app"
-
 	# migrate and seed
 	pa migrate --seed 2>/dev/null
 
+	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 }
 
