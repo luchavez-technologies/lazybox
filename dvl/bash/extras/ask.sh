@@ -135,12 +135,7 @@ function ask_php_version() {
 
 	current=$(php_version)
 
-	if [ -n "$1" ]; then
-		version=$1
-	else
-		echo_php_versions
-		version=$(ask "Please enter $(style "PHP container" underline bold) to run the app on (default: $(style " $current " bg-white bold))")
-	fi
+	version=${1:-$(ask "Please enter $(style "PHP container" underline bold) to run the app on (default: $(style " $current " bg-white bold))")}
 
 	if [ -z "$version" ] || ! is_php_container_valid "$version"; then
 		version="$current"

@@ -10,6 +10,7 @@ function cp_frontend_web_server_yml() {
 	local php_version_port
 
 	vhost=$(ask_vhost_name "$1")
+	echo_php_versions
 	php_version=$(ask_php_version "$2")
 	port=$(ask_port "$3")
 
@@ -44,7 +45,6 @@ function cp_frontend_web_server_yml() {
 # Copy nginx or apache yml to vhost (vhost)
 function cp_backend_web_server_yml() {
 	local vhost
-	local app
 	local web_root
 	local file
 	local vhost_directory
@@ -52,7 +52,7 @@ function cp_backend_web_server_yml() {
 	local yml
 
 	vhost=$(ask_vhost_name "$1")
-	app=$(ask_app_name "PHP" "$vhost" "$2")
+	ask_app_name "PHP" "$vhost" "$2"
 
 	web_root=${3:-$(ask "Please enter $(style "web root" underline bold) directory")}
 

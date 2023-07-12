@@ -165,7 +165,7 @@ fi
 
 declare -a args_php_containers args_non_php_containers detected_php_containers non_php_containers
 
-required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog")
+required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog" "soketi")
 required_php_containers=("php")
 
 # Count the number of PHP containers from arguments
@@ -186,8 +186,8 @@ for arg in "$@"; do
 	fi
 done
 
-args_php_containers=($(array_unique "${args_php_containers[@]}"))
-args_non_php_containers=($(array_unique "${args_non_php_containers[@]}"))
+read -a args_php_containers <<<"$(array_unique "${args_php_containers[@]}")"
+read -a args_non_php_containers <<<"$(array_unique "${args_non_php_containers[@]}")"
 
 count=${#args_php_containers[@]}
 
@@ -206,15 +206,15 @@ for dir in "$chosen_workspace"/*; do
 done
 
 # Get unique detected PHP containers
-detected_php_containers=($(array_unique "${detected_php_containers[@]}"))
+read -a detected_php_containers <<<"$(array_unique "${detected_php_containers[@]}")"
 
 # Merge the required, args, and detected PHP containers
 php_containers=("${required_php_containers[@]}" "${args_php_containers[@]}" "${detected_php_containers[@]}")
-php_containers=($(array_unique "${php_containers[@]}"))
+read -a php_containers <<<"$(array_unique "${php_containers[@]}")"
 
 # Merge the required and args non-PHP containers
 non_php_containers=("${required_non_php_containers[@]}" "${args_non_php_containers[@]}")
-non_php_containers=($(array_unique "${non_php_containers[@]}"))
+read -a non_php_containers <<<"$(array_unique "${non_php_containers[@]}")"
 
 # Merge all containers to boot up
 boot_containers=("${non_php_containers[@]}" "${php_containers[@]}")
@@ -257,7 +257,7 @@ ngrok_token=${ngrok_token#*=}
 # Stop Ngrok service if the token is empty or if the vhost is empty or if the vhost does not exist
 if [ -z "$ngrok_token" ] || [ -z "$ngrok_vhost" ] || [ ! -d "$chosen_workspace/$ngrok_vhost" ]; then
 	$docker_compose stop "$ngrok"
-	boot_containers=($(echo "${boot_containers[@]/$ngrok/}" | tr -s ' '))
+	read -ar boot_containers <<<"$(echo "${boot_containers[@]/$ngrok/}" | tr -s ' ')"
 fi
 
 if execute "$docker_compose up -d ${boot_containers[*]}"; then

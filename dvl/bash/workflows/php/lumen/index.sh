@@ -4,12 +4,13 @@ function lumen_new() {
 	local framework_version=""
 	local php_version
 	local vhost
+	local app
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
 	framework_version=$(ask_framework_version $framework "$framework_version" "$2")
+	echo_php_versions
 	php_version=$(ask_php_version "$3")
-
 	ensure_current_php_container "$php_version"
 
 	if [ -n "$framework_version" ]; then
@@ -29,7 +30,9 @@ function lumen_new() {
 	cd "$vhost" || stop_function
 
 	# create project
-	composer create-project "laravel/lumen$framework_version" "$app"
+	execute "composer create-project laravel/lumen$framework_version $app"
+	#npm_pkg_add_node_engine "$vhost" "$app" "$4"
+	#npm_yarn_install "$vhost" "$app" "$4"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
@@ -56,11 +59,14 @@ function lumen_clone() {
 	local php_version
 	local app
 	local vhost
+	local env
+	local env_example
 
 	url=$(ask_git_url "$framework" "$1")
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
+	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -80,19 +86,20 @@ function lumen_clone() {
 
 	cd "$app" || stop_function
 
+	# install dependencies
+	composer_install
+	#npm_pkg_add_node_engine "$vhost" "$app" "$5"
+	#npm_yarn_install "$vhost" "$app" "$5"
+
 	# copy .env.example to .env
 	env=".env"
 	env_example=".env.example"
-	if [ ! -f $env ] && [ -f $env_example ]; then
+
+	if [ ! -f "$env" ] && [ -f "$env_example" ]; then
 		if cp "$env_example" "$env"; then
 			lumen_replace_env_variables "$app"
 		fi
 	fi
-
-	# install dependencies
-	composer_install
-	npm_pkg_add_node_engine "$vhost" "$app"
-	npm_yarn_install "$vhost" "$app"
 
 	# migrate and seed
 	pa migrate --seed 2>/dev/null

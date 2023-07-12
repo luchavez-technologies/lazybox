@@ -11,6 +11,12 @@ function gatsby_new() {
 	port=$(port_suggest "$port")
 	node_version=$(ask_node_version "$3")
 
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
+	fi
+
 	cd /shared/httpd || stop_function
 
 	mkdir "$vhost"
@@ -19,11 +25,12 @@ function gatsby_new() {
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
-	npx gatsby@"$framework_version" new "$app" 2>/dev/null
+	# Reference: https://github.com/gatsbyjs/gatsby/discussions/32112
+	execute "npx --legacy-peer-deps gatsby@$framework_version new $app $* 2>/dev/null"
 
 	cd "$app" || stop_function
 
-	npm_yarn_install "$vhost" "$app" "$node_version"
+	# no need to install dependencies (no option to skip npm install on "gatsby")
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
 	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "-H 0.0.0.0 --port $port"
 	reload_watcherd_message
@@ -59,7 +66,8 @@ function gatsby_clone() {
 
 	cd "$app" || stop_function
 
-	npm_yarn_install "$vhost" "$app" "$node_version"
+	# Reference: https://github.com/gatsbyjs/gatsby/discussions/32112
+	npm_yarn_install "$vhost" "$app" "$node_version" --legacy-peer-deps
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
 	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "-H 0.0.0.0 --port $port"
 	reload_watcherd_message

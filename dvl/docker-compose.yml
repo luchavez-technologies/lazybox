@@ -86,9 +86,9 @@ services:
 
     # MacOS and Windows have this by default, this hack also allows it for Linux
     extra_hosts:
-      docker.for.lin.host.internal: 172.16.238.1
-      docker.for.lin.localhost: 172.16.238.1
-      host.docker.internal: host-gateway
+      - "docker.for.lin.host.internal:172.16.238.1"
+      - "docker.for.lin.localhost:172.16.238.1"
+      - "host.docker.internal:host-gateway"
 
     networks:
       app_net:
@@ -169,10 +169,9 @@ services:
 
     # MacOS and Windows have this by default, this hack also allows it for Linux
     extra_hosts:
-      docker.for.lin.host.internal: 172.16.238.1
-      docker.for.lin.localhost: 172.16.238.1
-      host.docker.internal: host-gateway
-      minio.dvl.to: 172.16.238.10
+      - "docker.for.lin.host.internal:172.16.238.1"
+      - "docker.for.lin.localhost:172.16.238.1"
+      - "host.docker.internal:host-gateway"
 
     networks:
       app_net:
@@ -226,6 +225,9 @@ services:
 
       # Users Composer Config
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
+
+      # Users NPM Config
+      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
 
       # Users Git Config
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}

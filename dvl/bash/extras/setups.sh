@@ -55,5 +55,5 @@ function setup_start_script() {
 
 	echo_success "Successfully created $(style " /shared/httpd/$vhost/start.sh " bg-white bold)."
 	echo_message "If you restart all the containers, this start script will automatically run."
-	echo_message "To restart, $(style " exit " bg-white bold) this container first, then run $(style " ./stop.sh && ./up.sh " bg-white bold)."
+	echo_message "To restart, $(style " exit " bg-white bold) this container first, then run $(style " ./restart.sh " bg-white bold)."
 }

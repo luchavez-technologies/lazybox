@@ -4,12 +4,13 @@ function symfony_new() {
 	local framework_version=""
 	local php_version
 	local vhost
+	local app
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
 	framework_version=$(ask_framework_version $framework "$framework_version" "$2")
+	echo_php_versions
 	php_version=$(ask_php_version "$3")
-
 	ensure_current_php_container "$php_version"
 
 	if [ -n "$framework_version" ]; then
@@ -28,7 +29,9 @@ function symfony_new() {
 	cd "$vhost" || stop_function
 
 	# create project
-	composer create-project symfony/framework-standard-edition "$app" "$framework_version"
+	execute "composer create-project symfony/framework-standard-edition $app $framework_version"
+	#npm_pkg_add_node_engine "$vhost" "$app" "$4"
+	#npm_yarn_install "$vhost" "$app" "$4"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
@@ -48,11 +51,14 @@ function symfony_clone() {
 	local php_version
 	local app
 	local vhost
+	local env
+	local env_example
 
 	url=$(ask_git_url "$framework" "$1")
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
+	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -73,16 +79,17 @@ function symfony_clone() {
 	cd "$app" || stop_function
 
 	# install dependencies
-	config_local_example="app/config/config_local.example.yml"
-	config_local="app/config/config_local.yml"
-
-	if [ ! -f "$config_local" ] && [ -f "$config_local_example" ]; then
-		cp "$config_local_example" "$config_local"
-	fi
-
-	# install dependencies
 	composer_install
-	# npm_yarn_install "$vhost" "$app" "$node_version"
+	#npm_pkg_add_node_engine "$vhost" "$app" "$5"
+	#npm_yarn_install "$vhost" "$app" "$5"
+
+	# copy config_local.example.yml to config_local.yml
+	env="app/config/config_local.yml"
+	env_example="app/config/config_local.example.yml"
+
+	if [ ! -f "$env" ] && [ -f "$env_example" ]; then
+		cp "$env_example" "$env"
+	fi
 
 	reload_watcherd_message
 	welcome_to_new_app_message "$app"

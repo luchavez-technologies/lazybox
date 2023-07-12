@@ -1,4 +1,5 @@
 # Create and run a new AstroJS app
+# Templates: https://github.com/withastro/astro/tree/latest/examples
 function astro_new() {
 	local framework="AstroJS"
 	local framework_version="latest"
@@ -11,6 +12,12 @@ function astro_new() {
 	port=$(port_suggest "$port")
 	node_version=$(ask_node_version "$3")
 
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
+	fi
+
 	cd /shared/httpd || stop_function
 
 	mkdir "$vhost"
@@ -19,12 +26,12 @@ function astro_new() {
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
-	npx create-astro@"$framework_version" "$app" 2>/dev/null
+	execute "npx create-astro@$framework_version $app --no-install --no-git $* 2>/dev/null"
 
 	cd "$app" || stop_function
 
-	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
 	npm_yarn_install "$vhost" "$app" "$node_version"
+	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
 	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "--host --port $port"
 	reload_watcherd_message
 	welcome_to_new_app_message "$app"

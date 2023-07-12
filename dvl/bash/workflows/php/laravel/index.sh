@@ -7,12 +7,13 @@ function laravel_new() {
 	local framework_version=""
 	local php_version
 	local vhost
+	local app
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
 	framework_version=$(ask_framework_version $framework "$framework_version" "$2")
-	php_version=$(ask_php_version "$3" | tee /dev/fd/2 | tail -n 1)
-
+	echo_php_versions
+	php_version=$(ask_php_version "$3")
 	ensure_current_php_container "$php_version"
 
 	if [ -n "$framework_version" ]; then
@@ -32,9 +33,9 @@ function laravel_new() {
 	cd "$vhost" || stop_function
 
 	# create project
-	composer create-project "laravel/laravel$framework_version" "$app"
-	npm_pkg_add_node_engine "$vhost" "$app"
-	npm_yarn_install "$vhost" "$app"
+	execute "composer create-project laravel/laravel$framework_version $app"
+	npm_pkg_add_node_engine "$vhost" "$app" "$4"
+	npm_yarn_install "$vhost" "$app" "$4"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
@@ -61,11 +62,14 @@ function laravel_clone() {
 	local php_version
 	local app
 	local vhost
+	local env
+	local env_example
 
 	url=$(ask_git_url "$framework" "$1")
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
+	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -87,12 +91,14 @@ function laravel_clone() {
 
 	# install dependencies
 	composer_install
-	npm_yarn_install "$vhost" "$app"
+	npm_pkg_add_node_engine "$vhost" "$app" "$5"
+	npm_yarn_install "$vhost" "$app" "$5"
 
 	# copy .env.example to .env
 	env=".env"
 	env_example=".env.example"
-	if [ ! -f $env ] && [ -f $env_example ]; then
+
+	if [ ! -f "$env" ] && [ -f "$env_example" ]; then
 		if cp "$env_example" "$env"; then
 			laravel_replace_env_variables "$app"
 		fi

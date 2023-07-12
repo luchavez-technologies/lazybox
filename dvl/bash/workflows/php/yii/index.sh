@@ -5,12 +5,12 @@ function yii_new() {
 	local framework="Yii"
 	local php_version
 	local vhost
+	local app
 
 	app=$(ask_app_name "$framework" "$1")
 	vhost="$app"
-
-	php_version=$(ask_php_version "$3")
-
+	echo_php_versions
+	php_version=$(ask_php_version "$2")
 	ensure_current_php_container "$php_version"
 
 	cd /shared/httpd || stop_function
@@ -22,7 +22,9 @@ function yii_new() {
 	cd "$vhost" || stop_function
 
 	# create project
-	composer create-project yiisoft/yii2-app-basic "$app"
+	execute "composer create-project yiisoft/yii2-app-basic $app"
+	#npm_pkg_add_node_engine "$vhost" "$app" "$3"
+	#npm_yarn_install "$vhost" "$app" "$3"
 
 	# symlink and add devilbox config
 	symlink "$vhost" "$app"
@@ -50,6 +52,7 @@ function yii_clone() {
 	branch=$(ask_branch_name "$2")
 	app=$(ask_app_name "$framework" "$3")
 	vhost="$app"
+	echo_php_versions
 	php_version=$(ask_php_version "$4")
 	ensure_current_php_container "$php_version"
 
@@ -69,13 +72,13 @@ function yii_clone() {
 
 	cd "$app" || stop_function
 
-	yii_replace_env_variables "$app"
-	yii migrate
-
 	# install dependencies
 	composer_install
-	npm_pkg_add_node_engine "$vhost" "$app"
-	npm_yarn_install "$vhost" "$app"
+	#npm_pkg_add_node_engine "$vhost" "$app" "$5"
+	#npm_yarn_install "$vhost" "$app" "$5"
+
+	yii_replace_env_variables "$app"
+	yii migrate
 
 	reload_watcherd_message
 	welcome_to_new_app_message "$app"

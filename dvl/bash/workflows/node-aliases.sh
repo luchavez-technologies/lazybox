@@ -7,6 +7,7 @@ function port_change() {
 
 	vhost=$(ask_vhost_name "$1")
 	port=$(ask_port "$2")
+	echo_php_versions
 	php_version=$(ask_php_version "$3")
 	show_message=${3:-0}
 

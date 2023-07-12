@@ -11,6 +11,12 @@ function next_new() {
 	port=$(port_suggest "$port")
 	node_version=$(ask_node_version "$3")
 
+	if [ $# -ge 3 ]; then
+		shift 3
+	else
+		shift $#
+	fi
+
 	cd /shared/httpd || stop_function
 
 	mkdir "$vhost"
@@ -19,11 +25,11 @@ function next_new() {
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
-	npx create-next-app@"$framework_version" "$app" 2>/dev/null
+	execute "npx create-next-app@$framework_version $app $* 2>/dev/null"
 
 	cd "$app" || stop_function
 
-	# no need to install dependencies
+	# no need to install dependencies (no option to skip npm install on "create-next-app")
 	npm_pkg_add_node_engine "$vhost" "$app" "$node_version"
 	npm_pkg_add_lazybox "$vhost" "$app" "$node_version" "--port $port"
 	reload_watcherd_message
