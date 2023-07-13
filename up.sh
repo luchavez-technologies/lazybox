@@ -257,7 +257,7 @@ ngrok_token=${ngrok_token#*=}
 # Stop Ngrok service if the token is empty or if the vhost is empty or if the vhost does not exist
 if [ -z "$ngrok_token" ] || [ -z "$ngrok_vhost" ] || [ ! -d "$chosen_workspace/$ngrok_vhost" ]; then
 	$docker_compose stop "$ngrok"
-	read -ar boot_containers <<<"$(echo "${boot_containers[@]/$ngrok/}" | tr -s ' ')"
+	boot_containers=("$(echo "${boot_containers[@]/$ngrok/}" | tr -s ' ')")
 fi
 
 if execute "$docker_compose up -d ${boot_containers[*]}"; then
