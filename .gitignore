@@ -94,6 +94,7 @@
 /dvl/autostart/*.sh
 !/dvl/autostart/copy-or-replace-services.sh
 !/dvl/autostart/run-start-scripts.sh
+!/dvl/autostart/own-files-and-directories.sh
 /dvl/cfg/php-startup-5.2/*.sh
 /dvl/cfg/php-startup-5.3/*.sh
 /dvl/cfg/php-startup-5.4/*.sh

@@ -165,7 +165,7 @@ fi
 
 declare -a args_php_containers args_non_php_containers detected_php_containers non_php_containers
 
-required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog" "soketi")
+required_non_php_containers=("httpd" "bind" "mysql" "redis" "minio" "ngrok" "mailhog")
 required_php_containers=("php")
 
 # Count the number of PHP containers from arguments

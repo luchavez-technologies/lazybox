@@ -368,7 +368,6 @@ services:
         ipv4_address: 172.16.238.200
     depends_on:
       - bind
-      - php
       - httpd
 
   # -----------------------------------------------------------------------------------------------
@@ -393,7 +392,6 @@ services:
     # For ease of use always automatically start these:
     depends_on:
       - bind
-      - php
       - httpd
 
   # -----------------------------------------------------------------------------------------------
@@ -415,7 +413,6 @@ services:
       - '${HOST_PATH_MAIL_DIR}:/home/mailhog'
     depends_on:
       - bind
-      - php
       - httpd
 
   # -----------------------------------------------------------------------------------------------
@@ -452,7 +449,6 @@ services:
       - ${DEVILBOX_PATH}/ca:/ca:ro${MOUNT_OPTIONS}
     depends_on:
       - bind
-      - php
       - httpd
 
 ################################################################################

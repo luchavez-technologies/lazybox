@@ -34,18 +34,5 @@ function git_name() {
 # Invoke intro
 intro
 
-# Own some directories
-own_directory /var/cache
-own_directory /var/log
-own_directory /var/lib
-
-# Own NVM automatically by devilbox user
-own_nvm
-
-# The loaded ".env" file cannot be edited using "sed" function.
-# It was found out that overriding the contents via "cat" function works.
-# Therefore, we just save a copy of ".env" to "/tmp" then override the original's contents.
-own_file /.env
-
-# Symlink the available services
-symlink_services
+# Wait for HTTPD to be available
+echo_curl_httpd

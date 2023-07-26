@@ -1,3 +1,46 @@
+# CURL request to a service
+function curl_service() {
+	local container
+
+	container=$(ask_container_name "$1")
+
+	curl --write-out "%{http_code}\n" --silent --output /dev/null "$container"
+}
+
+# Loop until CURL is successful
+function echo_curl_service() {
+    local container
+    local seconds
+
+	container=$(ask_container_name "$1")
+	seconds=${2:-5}
+
+	while true; do
+	    response=$(curl_service "$container")
+
+	    if [ "$response" -ge 200 ] && [ "$response" -le 300 ]; then
+	        echo_success "$container is $(style "accessible" bold)"
+	        break
+	    else
+	    	echo_error "$container is $(style "not accessible" bold)"
+	    	sleep "$seconds"
+	    fi
+	done
+}
+
+# Loop until CURL is successful
+function echo_curl_httpd() {
+    local container="httpd"
+    local seconds
+
+	seconds=${1:-5}
+
+	echo_info "The $(style " httpd " bold bg-white) service might take some time to recover."
+	echo_message "In the meantime, please rest or do some stretching."
+	echo_curl_service "$container" "$seconds"
+	echo_success "The Devilbox UI is now ready: https://localhost"
+}
+
 # Ping a service/container
 function ping_service() {
 	local container

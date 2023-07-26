@@ -6,7 +6,7 @@ function own_directory() {
 		current_owner=$(stat -c '%U' "$directory")
 
 		if [ "$owner" != "$current_owner" ]; then
-			if sudo chown "$owner":"$owner" "$directory"; then
+			if sudo chown "$owner":"$owner" "$directory" && sudo chmod 0755 "$directory"; then
 				echo_success "Successfully set $(style "$owner" bold blue) as owner of $(style "$directory" bold blue)."
 			else
 				echo_error "Failed to set $(style "$owner" bold blue) as owner of $(style "$directory" bold blue)."
