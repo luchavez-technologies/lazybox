@@ -19,10 +19,10 @@ function echo_curl_service() {
 	    response=$(curl_service "$container")
 
 	    if [ "$response" -ge 200 ] && [ "$response" -le 300 ]; then
-	        echo_success "$container is $(style "accessible" bold)"
+	        echo_success "$container is $(style "now accessible" bold)"
 	        break
 	    else
-	    	echo_error "$container is $(style "not accessible" bold)"
+	    	echo_ongoing "$container is $(style "not yet accessible" bold)"
 	    	sleep "$seconds"
 	    fi
 	done
