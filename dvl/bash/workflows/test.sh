@@ -88,7 +88,7 @@ function test_laravel_new_workflow() {
 
 # Test Laravel New Workflow
 function test_laravel_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/laravel-10-test.git"
+	local url="https://github.com/lazybox-examples/laravel-10-test.git"
 	local branch="develop"
 	local name="laravel-clone-$RANDOM"
 	local php_version
@@ -119,7 +119,7 @@ function test_lumen_new_workflow() {
 
 # Test Lumen New Workflow
 function test_lumen_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/lumen-10-test.git"
+	local url="https://github.com/lazybox-examples/lumen-10-test.git"
 	local branch="develop"
 	local name="lumen-clone-$RANDOM"
 	local php_version
@@ -147,7 +147,7 @@ function test_yii_new_workflow() {
 
 # Test Yii New Workflow
 function test_yii_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/yii-test.git"
+	local url="https://github.com/lazybox-examples/yii-test.git"
 	local branch="develop"
 	local name="yii-clone-$RANDOM"
 	local php_version
@@ -165,7 +165,7 @@ function test_yii_clone_workflow() {
 
 # Test ViteJS New Workflow
 function test_vite_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/vite-react-test.git"
+	local url="https://github.com/lazybox-examples/vite-react-test.git"
 	local branch="develop"
 	local name="vite-clone-$RANDOM"
 	local php_version
@@ -356,7 +356,7 @@ function test_next_new_workflow() {
 
 # Test NextJS New Workflow
 function test_next_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/next-test.git"
+	local url="https://github.com/lazybox-examples/next-test.git"
 	local branch="develop"
 	local name="next-clone-$RANDOM"
 	local node_version
@@ -383,7 +383,7 @@ function test_astro_new_workflow() {
 
 # Test AstroJS New Workflow
 function test_astro_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/astro-test.git"
+	local url="https://github.com/lazybox-examples/astro-test.git"
 	local branch="develop"
 	local name="astro-clone-$RANDOM"
 	local node_version
@@ -410,7 +410,7 @@ function test_gatsby_new_workflow() {
 
 # Test GatsbyJS New Workflow
 function test_gatsby_clone_workflow() {
-	local url="https://github.com/luchavez-technologies/gatsby-test.git"
+	local url="https://github.com/lazybox-examples/gatsby-test.git"
 	local branch="develop"
 	local name="gatsby-clone-$RANDOM"
 	local node_version

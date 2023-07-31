@@ -13,8 +13,6 @@ source dvl/bash/extras/execute.sh
 
 env="./dvl/.env"
 
-default_data_dir="./dvl/data/www"
-
 workspace_dir_variable="HOST_PATH_WORKSPACE_DIR="
 workspace_dir=$(grep "^$workspace_dir_variable*" "$env")
 workspace_dir=${workspace_dir#$workspace_dir_variable}
@@ -46,7 +44,6 @@ for dir in "$workspace_dir"/*; do
 done
 
 # Ask user to choose from available workspaces with the "$current_workspace" as default
-echo
 echo
 inputted_workspace=$(ask "Please enter the workspace name to delete")
 echo

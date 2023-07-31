@@ -34,5 +34,8 @@ function git_name() {
 # Invoke intro
 intro
 
+# Sync services
+sync_services_vhosts
+
 # Wait for HTTPD to be available
 echo_curl_httpd

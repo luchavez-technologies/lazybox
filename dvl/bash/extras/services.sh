@@ -14,6 +14,7 @@ function echo_curl_service() {
 
 	container=$(ask_container_name "$1")
 	seconds=${2:-5}
+	elapsed=0
 
 	while true; do
 	    response=$(curl_service "$container")
@@ -22,8 +23,9 @@ function echo_curl_service() {
 	        echo_success "$container is $(style "now accessible" bold)"
 	        break
 	    else
-	    	echo_ongoing "$container is $(style "not yet accessible" bold)"
 	    	sleep "$seconds"
+	    	((elapsed=elapsed+seconds))
+	    	echo_ongoing "$container is $(style "not yet accessible" bold) ($elapsed s)"
 	    fi
 	done
 }
@@ -72,9 +74,16 @@ function echo_test_service() {
 	fi
 }
 
-# Create symlink to services based on its availability
-function symlink_services() {
-	local services=( "mailhog" "memcd" "minio" "mongo" "mysql" "ngrok" "pgsql" "redis" "soketi" )
+# List all addon services
+function services() {
+    echo mailhog memcd minio mongo mysql ngrok pgsql redis soketi
+}
+
+# Sync services' vhosts based on their availability
+function sync_services_vhosts() {
+	local services
+
+	read -a services<<<"$(services)"
 
 	cd /shared/httpd || stop_function
 

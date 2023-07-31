@@ -60,6 +60,16 @@ if [ -z "$name" ] || [ -z "$email" ]; then
 	echo
 fi
 
+# Decide what program to use
+if hash docker-compose 2>/dev/null; then
+	docker_compose="docker-compose"
+else
+	docker_compose="docker compose"
+fi
+
+# Set docker-compose working directory
+docker_compose="$docker_compose --project-directory=dvl"
+
 ###
 ### Step 2: Choose from workspaces
 ###
@@ -104,7 +114,6 @@ echo " $(style "     💻 AVAILABLE WORKSPACES     " bg-cyan white bold)"
 echo
 
 # Display the workspaces
-ctr=0
 for dir in "$workspace_dir"/*; do
 	folder="${dir#$workspace_dir/}"
 
@@ -112,12 +121,9 @@ for dir in "$workspace_dir"/*; do
 	if [ -d "$dir/htdocs" ] || [ -d "$dir/.devilbox" ]; then
 		mv "$dir" "$workspace_dir/$default_workspace/$folder" 2>/dev/null
 	else
-		((ctr++))
-		echo " $ctr. $(style " $folder " bg-cyan white bold)$(style " $dir ")"
+		echo " $(style " $folder " bg-cyan white bold)$(style " $dir ")"
 	fi
 done
-
-echo
 
 # Ask user to choose from available workspaces with the "$current_workspace" as default
 echo
@@ -219,31 +225,7 @@ read -a non_php_containers <<<"$(array_unique "${non_php_containers[@]}")"
 # Merge all containers to boot up
 boot_containers=("${non_php_containers[@]}" "${php_containers[@]}")
 
-echo "📝 Args PHP containers                        : $(style "${args_php_containers[*]}" bold green)"
-echo "📝 Args Non-PHP containers                    : $(style "${args_non_php_containers[*]}" bold green)"
-echo "🔒 Required PHP containers                    : $(style "${required_php_containers[*]}" bold green)"
-echo "🔒 Required Non-PHP containers                : $(style "${required_non_php_containers[*]}" bold green)"
-echo "🔎 Detected PHP containers from your projects : $(style "${detected_php_containers[*]}" bold green)"
-echo "🚀 Containers to boot up                      : $(style "${boot_containers[*]}" bold green)"
-
-###
-### Step 4: Boot up the containers and enter container terminal
-###
-
-# Decide what program to use
-if hash docker-compose 2>/dev/null; then
-	docker_compose="docker-compose"
-else
-	docker_compose="docker compose"
-fi
-
-# Set docker-compose working directory
-docker_compose="$docker_compose --project-directory dvl"
-
-###
-### Step 4.1 Ngrok Special Case
-###
-
+# Ngrok Special Case
 ngrok="ngrok"
 
 ngrok_vhost_variable="NGROK_VHOST="
@@ -257,8 +239,19 @@ ngrok_token=${ngrok_token#*=}
 # Stop Ngrok service if the token is empty or if the vhost is empty or if the vhost does not exist
 if [ -z "$ngrok_token" ] || [ -z "$ngrok_vhost" ] || [ ! -d "$chosen_workspace/$ngrok_vhost" ]; then
 	$docker_compose stop "$ngrok"
-	boot_containers=("$(echo "${boot_containers[@]/$ngrok/}" | tr -s ' ')")
+	boot_containers=("$(array_forget ngrok "${boot_containers[@]}")")
 fi
+
+echo "📝 Args PHP containers                        : $(style "${args_php_containers[*]}" bold green)"
+echo "📝 Args Non-PHP containers                    : $(style "${args_non_php_containers[*]}" bold green)"
+echo "🔒 Required PHP containers                    : $(style "${required_php_containers[*]}" bold green)"
+echo "🔒 Required Non-PHP containers                : $(style "${required_non_php_containers[*]}" bold green)"
+echo "🔎 Detected PHP containers from your projects : $(style "${detected_php_containers[*]}" bold green)"
+echo "🚀 Containers to boot up                      : $(style "${boot_containers[*]}" bold green)"
+
+###
+### Step 4: Boot up the containers and enter container terminal
+###
 
 if execute "$docker_compose up -d ${boot_containers[*]}"; then
 	if [ -z "$shell" ]; then
