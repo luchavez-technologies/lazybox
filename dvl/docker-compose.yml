@@ -226,9 +226,6 @@ services:
       # Users Composer Config
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
 
-      # Users NPM Config
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
-
       # Users Git Config
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
 

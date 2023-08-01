@@ -52,7 +52,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -81,7 +80,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -110,7 +108,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -139,7 +136,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -168,7 +164,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -197,7 +192,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -226,7 +220,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -255,7 +248,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -284,7 +276,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -313,7 +304,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
@@ -342,7 +332,6 @@ services:
       - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/cfg/vhost-gen:/cfg/vhost-gen:ro${MOUNT_OPTIONS}
       - ${HOST_PATH_COMPOSER_DIR}:/home/devilbox/.composer:rw${MOUNT_OPTIONS}
-      - ${HOST_PATH_NPM_DIR}:/home/devilbox/.npm:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:rw${MOUNT_OPTIONS}
       - ${HOST_PATH_GIT_DIR}:/home/devilbox/.gitconfig:rw${MOUNT_OPTIONS}
       - ${DEVILBOX_PATH}/.env:/.env:rw${MOUNT_OPTIONS}
