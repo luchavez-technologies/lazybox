@@ -21,7 +21,7 @@ function next_new() {
 
 	mkdir "$vhost"
 	cd "$vhost" || stop_function
-	port_change "$vhost" "$port" 1
+	port_change "$vhost" "$port"
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
@@ -61,7 +61,7 @@ function next_clone() {
 	cd "$app" || stop_function
 
 	execute "git clone $url $app -b $branch 2>/dev/null"
-	port_change "$vhost" "$port" 1
+	port_change "$vhost" "$port"
 
 	cd "$app" || stop_function
 

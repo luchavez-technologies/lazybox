@@ -150,3 +150,28 @@ fi
 ### Step 4: Move vhost from source to destination
 
 execute "mv $src_vhost $dest_workspace"
+
+# Remove the associated resources of the deleted workspace
+# Todo: move backup to another workspace
+# Todo: move database data to another workspace
+# Todo: move logs to another workspace
+# Todo: move storage data to another workspace
+
+
+#declare -a resources=( "backup" "log" "database")
+#
+#for resource in "${resources[@]}"; do
+#	echo_message "Moving $(style " $resource " bg-white bold) resources..."
+#	resource_src_path="$resource/$inputted_src_workspace/$inputted_vhost"
+#	resource_dest_path="$resource/$inputted_dest_workspace"
+#	if [ -d "$resource_src_path" ]; then
+#		if [ -d "$resource_dest_path/$inputted_vhost" ]; then
+#			echo_warning "The $(style " $resource_dest_path/$inputted_vhost " bg-white bold) directory already exists."
+#		else
+#			execute "mv $resource_src_path $resource_dest_path"
+#		fi
+#	else
+#		echo_warning "The $(style " $resource_src_path " bg-white bold) directory does not exist."
+#	fi
+#	echo
+#done

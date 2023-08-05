@@ -9,7 +9,7 @@ function port_change() {
 	port=$(ask_port "$2")
 	echo_php_versions
 	php_version=$(ask_php_version "$3")
-	show_message=${3:-0}
+	show_message=${4:-0}
 
 	cd "/shared/httpd/$vhost" || stop_function
 
