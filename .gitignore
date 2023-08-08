@@ -136,6 +136,7 @@
 /dvl/bash/*
 !/dvl/bash/workflows
 !/dvl/bash/extras
+!/dvl/bash/files
 !/dvl/bash/aliases.sh
 !/dvl/bash/ask.sh
 !/dvl/bash/workflows.sh

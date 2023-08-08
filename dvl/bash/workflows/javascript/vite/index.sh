@@ -394,3 +394,10 @@ function vite_qwik_ts_new() {
 
 	execute "vite_new $app latest $node_version qwik-ts"
 }
+
+# Publish AWS CodeBuild configs
+function vite_aws_codebuild_publish() {
+	local framework="Vite"
+
+	node_aws_codebuild_publish "$framework" "$@"
+}

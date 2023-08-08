@@ -74,3 +74,10 @@ function gatsby_clone() {
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }
+
+# Publish AWS CodeBuild configs
+function gatsby_aws_codebuild_publish() {
+	local framework="Gatsby"
+
+	node_aws_codebuild_publish "$framework" "$@"
+}
