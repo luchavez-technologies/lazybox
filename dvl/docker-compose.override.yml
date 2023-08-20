@@ -59,7 +59,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -90,7 +90,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -121,7 +121,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -152,7 +152,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -183,7 +183,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -214,7 +214,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -245,7 +245,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -276,7 +276,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -307,7 +307,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -338,7 +338,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 
@@ -369,7 +369,7 @@ services:
       # NVM
       - devilbox-nvm:/opt/nvm
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
 

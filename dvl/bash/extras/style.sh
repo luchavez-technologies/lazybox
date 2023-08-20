@@ -119,7 +119,7 @@ function echo_input() {
 function welcome_to_new_app_message() {
 	if [ -n "$1" ]; then
 		echo_message "👋 Welcome to your new app called $(style " $1 " bg-white bold)! Happy coding! 🎉"
-		echo_message "🚀 Here's your app URL: $(style "https://$1.dvl.to" underline bold blue)"
+		echo_message "🚀 Here's your app URL: $(style "https://$1.$TLD_SUFFIX" underline bold blue)"
 	else
 		echo_error "The vhost is empty!"
 	fi

@@ -107,7 +107,7 @@ function symfony_replace_env_variables() {
 	snake_name=${name//-/_}
 
 	text_replace "^APP_NAME=$framework$" "#APP_NAME=$framework\nAPP_NAME=\"$app\"" "$file"
-	text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$app.dvl.to" "$file"
+	text_replace "^APP_URL=http:\/\/localhost$" "#APP_URL=http:\/\/localhost\nAPP_URL=https:\/\/$app.$TLD_SUFFIX" "$file"
 
 	###
 	### DATABASE VARIABLES
@@ -172,7 +172,7 @@ function symfony_replace_env_variables() {
 	###
 
 	# This is for AWS_ACCESS_KEY_ID
-	text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"https:\/\/api.minio.dvl.to\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
+	text_replace "^AWS_ACCESS_KEY_ID=$" "#AWS_ACCESS_KEY_ID=\nAWS_ENDPOINT=\"https:\/\/api.minio.$TLD_SUFFIX\"\nAWS_ACCESS_KEY_ID=\"\$\{MINIO_USERNAME\}\"" "$file"
 
 	# This is for AWS_SECRET_ACCESS_KEY
 	text_replace "^AWS_SECRET_ACCESS_KEY=$" "#AWS_SECRET_ACCESS_KEY=\nAWS_SECRET_ACCESS_KEY=\"\$\{MINIO_PASSWORD\}\"" "$file"

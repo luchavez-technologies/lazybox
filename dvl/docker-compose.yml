@@ -236,7 +236,7 @@ services:
       - devilbox-nvm:/opt/nvm
 
       # NPM
-      - devilbox-npm:/home/devilbox/.npm
+      #- devilbox-npm:/home/devilbox/.npm
 
       # Services VHosts
       - ${DEVILBOX_PATH}/services:/services:ro${MOUNT_OPTIONS}
@@ -527,5 +527,5 @@ volumes:
   # NVM
   # ------------------------------------------------------------
   devilbox-nvm:
-  devilbox-npm:
+  #devilbox-npm:
   devilbox-composer:
