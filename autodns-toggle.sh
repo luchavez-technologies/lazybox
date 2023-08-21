@@ -35,13 +35,15 @@ tld_suffix=${tld_suffix#$tld_suffix_variable}
 if [ "$bind_port" == "$target_bind_port" ]; then
 	autodns="ONLINE"
 	todo="REMOVE"
+	preposition="from"
 	bind_port="$default_bind_port"
 	tld_suffix="$default_tld_suffix"
 else
 	autodns="LOCAL"
+	todo="ADD"
+	preposition="to"
 	bind_port="$target_bind_port"
 	tld_suffix="$target_tld_suffix"
-	todo="ADD"
 fi
 
 # Ask user for confirmation
@@ -50,7 +52,7 @@ if ask_confirmation "Are you sure you want to turn on $(style " $autodns AUTO-DN
 	./stop.sh
     text_replace "^$bind_port_copy" "$bind_port_variable$bind_port" "$env"
     text_replace "^$tld_suffix_copy" "$tld_suffix_variable$tld_suffix" "$env"
-    echo_todo "Please manually $(style " $todo $default_dns_server " bold bg-white) from DNS servers."
+    echo_todo "Please manually $(style " $todo $default_dns_server " bold bg-white) $preposition DNS servers."
 else
 	echo
 	echo_error "Failed to toggle auto-DNS."
