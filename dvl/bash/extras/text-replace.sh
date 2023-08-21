@@ -33,8 +33,45 @@ function text_replace() {
 	if text_exists "$search" "$file_name"; then
 		content=$(sed "s|$search|$replace|g" "$file_name")
 		if [ -n "$content" ] && echo "$content" > "$file_name"; then
+			search=$(style "$search" bold blue)
 		    replace=$(style "$replace" bold blue | tr '\n' ' ')
-			echo_success "Successfully replaced $(style "$search" bold blue) with $replace."
+			echo_success "Successfully replaced $search with $replace."
+			return 0
+		fi
+	fi
+
+	return 1
+}
+
+# This will remove a text with another text inside a file
+function text_remove() {
+	local search
+	local file_name
+	local content
+
+	search=${1:-$(ask "Please enter the search text")}
+
+	if [ -z "$search" ]; then
+		echo_error "The search text is empty!"
+		return 1
+	fi
+
+	file_name=${2:-$(ask "Please enter the file name")}
+
+	if [ -z "$file_name" ]; then
+		echo_error "The file name is empty!"
+		return 1
+	elif [ ! -f "$file_name" ]; then
+		echo_error "The file does not exist!"
+		return 1
+	fi
+
+	# Check if text actually exists
+	if text_exists "$search" "$file_name"; then
+		content=$(sed "\|$search|d" "$file_name")
+		if [ -n "$content" ] && echo "$content" > "$file_name"; then
+			search=$(style "$search" bold blue)
+		    echo_success "Successfully removed $search."
 			return 0
 		fi
 	fi
