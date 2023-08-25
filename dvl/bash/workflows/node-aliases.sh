@@ -70,7 +70,7 @@ function echo_npm_yarn() {
 	fi
 
 	if [ -n "$manager" ]; then
-		echo "nvm exec $node_version $manager --$cwd $path $*"
+		echo "nvm install $node_version; nvm exec $node_version $manager --$cwd $path $*"
 		return 0
 	fi
 
