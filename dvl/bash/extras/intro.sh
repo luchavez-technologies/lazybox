@@ -25,7 +25,7 @@ function intro() {
 	echo "                  | 📊 Dashboard       | https://localhost               |"
 	echo "                  | 🌐 Virtual Hosts   | https://localhost/vhosts.php    |"
 	echo "                  | ⚙️ C&C             | https://localhost/cnc.php       |"
-	echo "                  | 📝 Workflows Docs  | https://localhost/workflows.php |"
+	#echo "                  | 📝 Workflows Docs  | https://localhost/workflows.php |"
 	echo "                  | 🧰 Services        | https://localhost/services.php  |"
 	echo
 	echo "------------------------------------------------------------------------------------------"

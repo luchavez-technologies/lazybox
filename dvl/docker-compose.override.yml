@@ -438,7 +438,7 @@ services:
       - httpd
 
   # -----------------------------------------------------------------------------------------------
-  # MailHog
+  # Soketi
   # -----------------------------------------------------------------------------------------------
   soketi:
     image: quay.io/soketi/soketi:${SOKETI_SERVER}
@@ -453,24 +453,46 @@ services:
       - SOKETI_DEBUG=${SOKETI_DEBUG:-1}
       - SOKETI_MODE=${SOKETI_MODE:-full}
       - SOKETI_METRICS_ENABLED=${SOKETI_METRICS_ENABLED:-1}
-      - SOKETI_METRICS_DRIVER=${SOKETI_METRICS_DRIVER:-prometheus}
-      - SOKETI_METRICS_PROMETHEUS_PREFIX=${SOKETI_METRICS_PROMETHEUS_PREFIX:-soketi_prometheus_}
-      - SOKETI_METRICS_SERVER_PORT=${HOST_PORT_SOKETI:-9601}
-      - SOKETI_DB_REDIS_HOST=${SOKETI_DB_REDIS_HOST:-redis}
-      - SOKETI_DB_REDIS_PORT=${HOST_PORT_REDIS:-6379}
-      - SOKETI_DB_REDIS_DB=${SOKETI_DB_REDIS_DB:-3}
-      - SOKETI_CACHE_DRIVER=${SOKETI_CACHE_DRIVER:-redis}
-      - SOKETI_QUEUE_DRIVER=${SOKETI_QUEUE_DRIVER:-redis}
-      - SOKETI_RATE_LIMITER_DRIVER=${SOKETI_RATE_LIMITER_DRIVER:-redis}
-      - SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
-      - SOKETI_ADAPTER_REDIS_PREFIX=${SOKETI_ADAPTER_REDIS_PREFIX:-soketi_adapter_}
-      - SOKETI_DB_REDIS_KEY_PREFIX=${SOKETI_DB_REDIS_KEY_PREFIX:-soketi_}
       - SOKETI_DEFAULT_APP_ID=${SOKETI_DEFAULT_APP_ID:-app-id}
       - SOKETI_DEFAULT_APP_KEY=${SOKETI_DEFAULT_APP_KEY:-app-key}
+      - SOKETI_DEFAULT_APP_SECRET=${SOKETI_DEFAULT_APP_SECRET:-app-secret}
+      - SOKETI_METRICS_SERVER_PORT=${HOST_PORT_SOKETI:-9601}
+      #- SOKETI_METRICS_DRIVER=${SOKETI_METRICS_DRIVER:-prometheus}
+      #- SOKETI_METRICS_PROMETHEUS_PREFIX=${SOKETI_METRICS_PROMETHEUS_PREFIX:-soketi_prometheus_}
+      #- SOKETI_DB_REDIS_HOST=${SOKETI_DB_REDIS_HOST:-redis}
+      #- SOKETI_DB_REDIS_PORT=${HOST_PORT_REDIS:-6379}
+      #- SOKETI_DB_REDIS_DB=${SOKETI_DB_REDIS_DB:-3}
+      #- SOKETI_CACHE_DRIVER=${SOKETI_CACHE_DRIVER:-redis}
+      #- SOKETI_QUEUE_DRIVER=${SOKETI_QUEUE_DRIVER:-redis}
+      #- SOKETI_RATE_LIMITER_DRIVER=${SOKETI_RATE_LIMITER_DRIVER:-redis}
+      #- SOKETI_ADAPTER_DRIVER=${SOKETI_ADAPTER_DRIVER:-redis}
+      #- SOKETI_ADAPTER_REDIS_PREFIX=${SOKETI_ADAPTER_REDIS_PREFIX:-soketi_adapter_}
+      #- SOKETI_DB_REDIS_KEY_PREFIX=${SOKETI_DB_REDIS_KEY_PREFIX:-soketi_}
     volumes:
       - ${DEVILBOX_PATH}/ca:/ca:ro${MOUNT_OPTIONS}
     depends_on:
       - bind
+      - httpd
+
+  # -----------------------------------------------------------------------------------------------
+  # Meilisearch
+  # -----------------------------------------------------------------------------------------------
+  meilisearch:
+    image: getmeili/meilisearch:${MEILI_SERVER:-latest}
+    hostname: meilisearch
+    command: meilisearch
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-password}
+    ports:
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MEILI:-7700}:7700"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.196
+    volumes:
+      - '${HOST_PATH_MEILISEARCH_DIR}:/meili_data'
+    depends_on:
+      - bind
+      - php
       - httpd
 
 ################################################################################

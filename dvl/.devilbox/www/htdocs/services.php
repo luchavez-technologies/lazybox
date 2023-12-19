@@ -25,6 +25,8 @@
 
 		<?php
 
+		$tld = loadClass('Helper')->getEnv('TLD_SUFFIX');
+
 		$services = [
 			'MySQL' => [
 				'emoji' => '💾',
@@ -60,7 +62,7 @@
 			'MinIO' => [
 				'emoji' => '🪣',
 				'class' => 'Minio',
-				'url' => 'https://minio.dvl.to',
+				'url' => "https://minio.$tld",
 				'variables' => [
 					'MINIO_SERVER',
 					'HOST_PORT_MINIO',
@@ -91,7 +93,7 @@
 			'ngrok' => [
 				'emoji' => '🌏',
 				'class' => 'Ngrok',
-				'url' => 'https://ngrok.dvl.to',
+				'url' => "https://ngrok.$tld",
 				'variables' => [
 					'NGROK_SERVER',
 					'HOST_PORT_NGROK',
@@ -104,7 +106,7 @@
 			'MailHog' => [
 				'emoji' => '🐷',
 				'class' => 'Mailhog',
-				'url' => 'https://mailhog.dvl.to',
+				'url' => "https://mailhog.$tld",
 				'variables' => [
 					'MAILHOG_SERVER',
 					'HOST_PORT_MAILHOG_CONSOLE',
@@ -114,31 +116,42 @@
 			'Soketi' => [
 				'emoji' => '🔈',
 				'class' => 'Soketi',
-				'url' => 'https://soketi.dvl.to/metrics',
+				'url' => "https://soketi.$tld/metrics",
 				'variables' => [
 					'SOKETI_SERVER',
 					'HOST_PORT_SOKETI',
 					'SOKETI_DEFAULT_APP_ID',
 					'SOKETI_DEFAULT_APP_KEY',
+					'SOKETI_DEFAULT_APP_SECRET',
 					'SOKETI_DEBUG',
 					'SOKETI_MODE',
 					'SOKETI_METRICS_ENABLED',
-					'SOKETI_METRICS_DRIVER',
-					'SOKETI_METRICS_PROMETHEUS_PREFIX',
-					'SOKETI_DB_REDIS_HOST',
-					'SOKETI_DB_REDIS_DB',
-					'SOKETI_CACHE_DRIVER',
-					'SOKETI_QUEUE_DRIVER',
-					'SOKETI_RATE_LIMITER_DRIVER',
-					'SOKETI_ADAPTER_DRIVER',
-					'SOKETI_ADAPTER_REDIS_PREFIX',
-					'SOKETI_DB_REDIS_KEY_PREFIX',
+					#'SOKETI_METRICS_DRIVER',
+					#'SOKETI_METRICS_PROMETHEUS_PREFIX',
+					#'SOKETI_DB_REDIS_HOST',
+					#'SOKETI_DB_REDIS_DB',
+					#'SOKETI_CACHE_DRIVER',
+					#'SOKETI_QUEUE_DRIVER',
+					#'SOKETI_RATE_LIMITER_DRIVER',
+					#'SOKETI_ADAPTER_DRIVER',
+					#'SOKETI_ADAPTER_REDIS_PREFIX',
+					#'SOKETI_DB_REDIS_KEY_PREFIX',
 				]
-			]
+			],
+			'Meilisearch' => [
+				'emoji' => '🔎',
+				'class' => 'Meilisearch',
+				'url' => "https://meilisearch.$tld",
+				'variables' => [
+					'MEILI_SERVER',
+					'MEILI_MASTER_KEY',
+					'HOST_PORT_MEILI'
+				]
+			],
 		];
 
 		foreach ($services as $service => $arr) {
-			echo loadClass('Html')->getServiceCard($arr['class'], $arr['emoji']." ".$service, $arr['url'], $arr['variables']);
+			echo loadClass('Html')->getServiceCard($arr['class'], $arr['emoji'] . " " . $service, $arr['url'], $arr['variables']);
 		}
 
 		?>

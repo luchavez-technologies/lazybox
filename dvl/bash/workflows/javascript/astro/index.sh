@@ -73,10 +73,3 @@ function astro_clone() {
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
 }
-
-# Publish AWS CodeBuild configs
-function astro_aws_codebuild_publish() {
-	local framework="Astro"
-
-	node_aws_codebuild_publish "$framework" "$@"
-}

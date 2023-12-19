@@ -20,55 +20,56 @@ $DEVILBOX_API_PAGE = 'devilbox-api/status.json';
 //
 // Set Directories
 //
-$CONF_DIR	= dirname(__FILE__);
-$LIB_DIR	= $CONF_DIR . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR .'lib';
-$VEN_DIR	= $CONF_DIR . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR .'vendor';
-$LOG_DIR	= dirname(dirname($CONF_DIR)) . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'devilbox';
+$CONF_DIR = dirname(__FILE__);
+$LIB_DIR = $CONF_DIR . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'lib';
+$VEN_DIR = $CONF_DIR . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'vendor';
+$LOG_DIR = dirname(dirname($CONF_DIR)) . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'devilbox';
 
 
 //
 // Load Base classes
 //
-require $LIB_DIR . DIRECTORY_SEPARATOR . 'container' . DIRECTORY_SEPARATOR .'BaseClass.php';
-require $LIB_DIR . DIRECTORY_SEPARATOR . 'container' . DIRECTORY_SEPARATOR .'BaseInterface.php';
-
+require $LIB_DIR . DIRECTORY_SEPARATOR . 'container' . DIRECTORY_SEPARATOR . 'BaseClass.php';
+require $LIB_DIR . DIRECTORY_SEPARATOR . 'container' . DIRECTORY_SEPARATOR . 'BaseInterface.php';
 
 
 //
 // Set Docker addresses
 //
-$DNS_HOST_NAME		= 'bind';
-$PHP_HOST_NAME		= 'php';
-$HTTPD_HOST_NAME	= 'httpd';
-$MYSQL_HOST_NAME	= 'mysql';
-$PGSQL_HOST_NAME	= 'pgsql';
-$REDIS_HOST_NAME	= 'redis';
-$MEMCD_HOST_NAME	= 'memcd';
-$MONGO_HOST_NAME	= 'mongo';
+$DNS_HOST_NAME = 'bind';
+$PHP_HOST_NAME = 'php';
+$HTTPD_HOST_NAME = 'httpd';
+$MYSQL_HOST_NAME = 'mysql';
+$PGSQL_HOST_NAME = 'pgsql';
+$REDIS_HOST_NAME = 'redis';
+$MEMCD_HOST_NAME = 'memcd';
+$MONGO_HOST_NAME = 'mongo';
 
 // Additional Services
-$MINIO_HOST_NAME	= 'minio';
-$NGROK_HOST_NAME	= 'ngrok';
-$MAILHOG_HOST_NAME	= 'mailhog';
-$SOKETI_HOST_NAME	= 'soketi';
+$MINIO_HOST_NAME = 'minio';
+$NGROK_HOST_NAME = 'ngrok';
+$MAILHOG_HOST_NAME = 'mailhog';
+$SOKETI_HOST_NAME = 'soketi';
+$MEILI_HOST_NAME = 'meilisearch';
 
 // Additional PHP containers
-$PHP54_HOST_NAME	= 'php54';
-$PHP55_HOST_NAME	= 'php55';
-$PHP56_HOST_NAME	= 'php56';
-$PHP70_HOST_NAME	= 'php70';
-$PHP71_HOST_NAME	= 'php71';
-$PHP72_HOST_NAME	= 'php72';
-$PHP73_HOST_NAME	= 'php73';
-$PHP74_HOST_NAME	= 'php74';
-$PHP80_HOST_NAME	= 'php80';
-$PHP81_HOST_NAME	= 'php81';
-$PHP82_HOST_NAME	= 'php82';
+$PHP54_HOST_NAME = 'php54';
+$PHP55_HOST_NAME = 'php55';
+$PHP56_HOST_NAME = 'php56';
+$PHP70_HOST_NAME = 'php70';
+$PHP71_HOST_NAME = 'php71';
+$PHP72_HOST_NAME = 'php72';
+$PHP73_HOST_NAME = 'php73';
+$PHP74_HOST_NAME = 'php74';
+$PHP80_HOST_NAME = 'php80';
+$PHP81_HOST_NAME = 'php81';
+$PHP82_HOST_NAME = 'php82';
 
 //
 // Lazy Container Loader
 //
-function loadFile($class, $base_path) {
+function loadFile($class, $base_path)
+{
 	static $_LOADED_FILE;
 
 	if (isset($_LOADED_FILE[$class])) {
@@ -79,7 +80,9 @@ function loadFile($class, $base_path) {
 	$_LOADED_FILE[$class] = true;
 	return;
 }
-function loadClass($class) {
+
+function loadClass($class)
+{
 
 	static $_LOADED_LIBS;
 
@@ -90,7 +93,7 @@ function loadClass($class) {
 		$lib_dir = $GLOBALS['LIB_DIR'];
 		$cnt_dir = $GLOBALS['LIB_DIR'] . DIRECTORY_SEPARATOR . 'container';
 
-		switch($class) {
+		switch ($class) {
 			//
 			// Lib Classes
 			//
@@ -157,7 +160,7 @@ function loadClass($class) {
 				$_REDIS_PASS = array();
 				preg_match_all('/--requirepass\s+("|\')?(?(1)(.*)|([^\s]*))(?(1)\1|)/', $_REDIS_ARGS, $_REDIS_PASS, PREG_SET_ORDER);
 
-				if (! empty($_REDIS_PASS)) {
+				if (!empty($_REDIS_PASS)) {
 					/*
 					 * In case the option is specified multiple times, use the last effective one.
 					 *
@@ -224,6 +227,14 @@ function loadClass($class) {
 					'version_variable' => 'SOKETI_SERVER',
 				]);
 				break;
+			case 'Meilisearch':
+				loadFile('AddonService', $cnt_dir);
+				$_LOADED_LIBS[$class] = \devilbox\AddonService::getInstance($GLOBALS['MEILI_HOST_NAME'], [
+					'port' => 7700,
+					'endpoint' => null,
+					'version_variable' => 'MEILI_SERVER',
+				]);
+				break;
 			case 'Php54':
 				loadFile('PhpService', $cnt_dir);
 				$_LOADED_LIBS[$class] = \devilbox\PhpService::getInstance($GLOBALS['PHP54_HOST_NAME']);
@@ -270,7 +281,7 @@ function loadClass($class) {
 				break;
 			default:
 				// Unknown class
-				exit('Class does not exist: '.$class);
+				exit('Class does not exist: ' . $class);
 		}
 		return $_LOADED_LIBS[$class];
 	}

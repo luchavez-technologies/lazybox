@@ -76,7 +76,7 @@ function echo_test_service() {
 
 # List all addon services
 function services() {
-    echo mailhog memcd minio mongo mysql ngrok pgsql redis soketi
+    echo mailhog memcd minio mongo mysql ngrok pgsql redis soketi meilisearch
 }
 
 # Sync services' vhosts based on their availability

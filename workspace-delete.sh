@@ -70,7 +70,7 @@ fi
 echo
 
 # Remove the associated resources of the deleted workspace
-declare -a resources=( "backup" "log" "database" "mail" "storage" )
+declare -a resources=( "backup" "log" "database" "mail" "storage" "meilisearch" )
 
 for resource in "${resources[@]}"; do
 	echo_message "Deleting $(style " $resource " bg-white bold) resources..."

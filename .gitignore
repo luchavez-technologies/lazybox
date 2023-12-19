@@ -257,3 +257,7 @@ $RECYCLE.BIN/
 # backups related
 /backup/*
 !/backup/.keepme
+
+# backups related
+/meilisearch/*
+!/meilisearch/.keepme

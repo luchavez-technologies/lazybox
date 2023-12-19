@@ -1,4 +1,5 @@
 <?php
+
 namespace devilbox;
 
 class Html
@@ -22,10 +23,10 @@ class Html
 				'name' => 'C&C',
 				'path' => '/cnc.php'
 			),
-			array(
-				'name' => 'Workflows',
-				'path' => '/workflows.php'
-			),
+			#array(
+			#	'name' => 'Workflows',
+			#	'path' => '/workflows.php'
+			#),
 			array(
 				'name' => 'Services',
 				'path' => '/services.php'
@@ -147,7 +148,6 @@ class Html
 	);
 
 
-
 	/*********************************************************************************
 	 *
 	 * Statics
@@ -172,7 +172,6 @@ class Html
 		}
 		return self::$_instance;
 	}
-
 
 
 	/*********************************************************************************
@@ -232,9 +231,9 @@ HTML;
 		$menu = $this->_buildMenu();
 		$logout = '';
 		if (loadClass('Helper')->isLoginProtected()) {
-			$logout =	'<ul class="navbar-nav">'.
-							'<li class="nav-item text-right"><a class="nav-link" href="/logout.php?id='.session_id().'">Log out</a></li>'.
-						'</ul>';
+			$logout = '<ul class="navbar-nav">' .
+				'<li class="nav-item text-right"><a class="nav-link" href="/logout.php?id=' . session_id() . '">Log out</a></li>' .
+				'</ul>';
 		}
 
 		$html = <<<HTML
@@ -264,7 +263,7 @@ HTML;
 
 	public function getWorkspace()
 	{
-		$workspace = loadClass('Helper')->getEnv('HOST_PATH_CURRENT_WORKSPACE')." Workspace";
+		$workspace = loadClass('Helper')->getEnv('HOST_PATH_CURRENT_WORKSPACE') . " Workspace";
 
 		$html = <<<HTML
 			<div class="row">
@@ -282,7 +281,7 @@ HTML;
 	public function getFooter()
 	{
 		$render_time = round((microtime(true) - $GLOBALS['TIME_START']), 2);
-		$errors =  loadClass('Logger')->countErrors();
+		$errors = loadClass('Logger')->countErrors();
 
 		$html = <<<HTML
 			<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse footer">
@@ -304,7 +303,6 @@ HTML;
 HTML;
 		return $html;
 	}
-
 
 
 	public function getCirle($name)
@@ -365,14 +363,12 @@ HTML;
 					$version = loadClass($name)->getVersion();
 					$available = loadClass($name)->isAvailable();
 					$name = loadClass($name)->getName();
-				}
-				elseif (in_array($name, ['Minio', 'Mailhog', 'Ngrok', 'Soketi'])) {
+				} elseif (in_array($name, ['Minio', 'Mailhog', 'Ngrok', 'Soketi', 'Meilisearch'])) {
 					$class = 'bg-success';
 					$version = loadClass($name)->getVersion();
 					$available = loadClass($name)->isAvailable();
 					$name = loadClass($name)->getName();
-				}
-				else {
+				} else {
 					$available = false;
 					$version = '';
 				}
@@ -380,31 +376,31 @@ HTML;
 		}
 
 		$style = 'color:black;';
-		$version = '('.$version.')';
+		$version = '(' . $version . ')';
 		if (!$available) {
 			$class = '';
 			$style = 'background-color:gray;';
 			$version = '&nbsp;';
 		}
-		$circle = '<div class="circles">'.
-					'<div>'.
-						'<div class="'.$class.'" style="'.$style.'">'.
-							'<div>'.
-								'<div><br/><strong>'.$name.'</strong><br/><small style="color:#333333">'.$version.'</small></div>'.
-							'</div>'.
-						'</div>'.
-					'</div>'.
-				'</div>';
+		$circle = '<div class="circles">' .
+			'<div>' .
+			'<div class="' . $class . '" style="' . $style . '">' .
+			'<div>' .
+			'<div><br/><strong>' . $name . '</strong><br/><small style="color:#333333">' . $version . '</small></div>' .
+			'</div>' .
+			'</div>' .
+			'</div>' .
+			'</div>';
 		return $circle;
 	}
 
 	public function getEnvVarsAsRow(array $vars): string
 	{
-		$rows="";
+		$rows = "";
 
-		foreach ($vars as $var){
-			$value=loadClass('Helper')->getEnv($var);
-			$rows.=<<<HTML
+		foreach ($vars as $var) {
+			$value = loadClass('Helper')->getEnv($var);
+			$rows .= <<<HTML
 				<tr>
 					<th>$var</th>
 					<td>$value</td>
@@ -453,13 +449,13 @@ HTML;
 		$is_available = loadClass($service)->isAvailable();
 		$status = $is_available ? 'ONLINE' : 'OFFLINE';
 		$color = $is_available ? 'success' : 'warning';
-		$tag='span';
-		$href=null;
+		$tag = 'span';
+		$href = null;
 
 		if ($is_available && $url) {
-			$tag='a';
-			$href="href=$url target='_blank'";
-			$status.=' <i class="fa fa-external-link" aria-hidden="true"></i>';
+			$tag = 'a';
+			$href = "href=$url target='_blank'";
+			$status .= ' <i class="fa fa-external-link" aria-hidden="true"></i>';
 		}
 
 		return <<<HTML
@@ -467,7 +463,6 @@ HTML;
 HTML;
 
 	}
-
 
 
 	/*********************************************************************************
@@ -496,16 +491,16 @@ HTML;
 						$span = '';
 					}
 
-					$html .= '<li class="nav-item '.$class.'">';
-					$html .= 	'<a class="nav-link" href="'.$el['path'].'">'.$el['name'].' '.$span.'</a>';
+					$html .= '<li class="nav-item ' . $class . '">';
+					$html .= '<a class="nav-link" href="' . $el['path'] . '">' . $el['name'] . ' ' . $span . '</a>';
 					$html .= '</li>';
 				}
 
-			// Submenu
+				// Submenu
 			} else {
 				$name = $elements['name'];
 				$class = '';
-				$id	= md5($name);
+				$id = md5($name);
 
 
 				// Make submenu active
@@ -516,11 +511,11 @@ HTML;
 					}
 				}
 
-				$html .= '<li class="nav-item dropdown '.$class.'">';
-				$html .=	'<a class="nav-link dropdown-toggle" href="#" id="'.$id.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-				$html .=    	$name;
-				$html .=	'</a>';
-				$html .=	'<div class="dropdown-menu" aria-labelledby="'.$id.'">';
+				$html .= '<li class="nav-item dropdown ' . $class . '">';
+				$html .= '<a class="nav-link dropdown-toggle" href="#" id="' . $id . '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+				$html .= $name;
+				$html .= '</a>';
+				$html .= '<div class="dropdown-menu" aria-labelledby="' . $id . '">';
 
 				foreach ($elements['menu'] as $el) {
 
@@ -546,18 +541,18 @@ HTML;
 					if ($el['path'] == '__ADMINER__') {
 						if (version_compare(loadClass('Php')->getVersion(), '5.4', '<')) {
 							$el['path'] = '/vendor/adminer-4.6.3-en.php';
-						} elseif (version_compare(loadClass('Php')->getVersion(), '8.0', '<')){
+						} elseif (version_compare(loadClass('Php')->getVersion(), '8.0', '<')) {
 							$el['path'] = '/vendor/adminer-4.8.1-en.php';
 						} else {
 							$el['path'] = '/vendor/adminer-4.8.1-en.php';
 						}
 					}
 
-					$target = isset($el['target']) ? 'target="'.$el['target'].'"' : '';
-					$html .= '<a class="dropdown-item" '.$target.' href="'.$el['path'].'">'.$el['name'].'</a>';
+					$target = isset($el['target']) ? 'target="' . $el['target'] . '"' : '';
+					$html .= '<a class="dropdown-item" ' . $target . ' href="' . $el['path'] . '">' . $el['name'] . '</a>';
 				}
 
-				$html .=	'</div>';
+				$html .= '</div>';
 				$html .= '</li>';
 			}
 		}

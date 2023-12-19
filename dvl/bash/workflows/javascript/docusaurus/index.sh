@@ -79,13 +79,6 @@ function docusaurus_clone() {
 	vhost_start "$vhost"
 }
 
-# Publish AWS CodeBuild configs
-function docusaurus_aws_codebuild_publish() {
-	local framework="Docusaurus"
-
-	node_aws_codebuild_publish "$framework" "$@"
-}
-
 # Ask for Docusaurus template
 function ask_docusaurus_template() {
 	local template
