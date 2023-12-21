@@ -239,25 +239,25 @@ $RECYCLE.BIN/
 !/workspaces/.keepme
 
 # minio related
-/storage/*
-!/storage/.keepme
+/data/storage/*
+!/data/storage/.keepme
 
 # database related
-/database/*
-!/database/.keepme
+/data/database/*
+!/data/database/.keepme
 
 # mail related
-/mail/*
-!/mail/.keepme
+/data/mail/*
+!/data/mail/.keepme
 
 # logs related
-/log/*
-!/log/.keepme
+/data/log/*
+!/data/log/.keepme
 
 # backups related
-/backup/*
-!/backup/.keepme
+/data/backup/*
+!/data/backup/.keepme
 
-# backups related
-/meilisearch/*
-!/meilisearch/.keepme
+# meilisearch related
+/data/meilisearch/*
+!/data/meilisearch/.keepme

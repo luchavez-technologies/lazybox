@@ -74,7 +74,7 @@ declare -a resources=( "backup" "log" "database" "mail" "storage" "meilisearch" 
 
 for resource in "${resources[@]}"; do
 	echo_message "Deleting $(style " $resource " bg-white bold) resources..."
-	resource_path="$resource/$inputted_workspace"
+	resource_path="data/$resource/$inputted_workspace"
 	if [ -d "$resource_path" ]; then
 	    execute "rm -rf $resource_path"
 	else
