@@ -3,6 +3,7 @@
 function astro_new() {
 	local framework="AstroJS"
 	local framework_version="latest"
+	local template
 	local port=3000
 	local vhost
 
@@ -11,11 +12,16 @@ function astro_new() {
 	framework_version=$(ask_framework_version "$framework" "$framework_version" "$2")
 	port=$(port_suggest "$port")
 	node_version=$(ask_node_version "$3")
+	template=$(ask_astro_template "$4")
 
 	if [ $# -ge 3 ]; then
-		shift 3
+		shift 4
 	else
 		shift $#
+	fi
+
+	if [ -n $template ]; then
+	    template="-- --template $template"
 	fi
 
 	cd /shared/httpd || stop_function
@@ -26,7 +32,7 @@ function astro_new() {
 
 	echo_ongoing "Now creating your awesome $framework app! 🔥" bold green
 
-	execute "npx create-astro@$framework_version $app --no-install --no-git $* 2>/dev/null"
+	execute "npx create-astro@$framework_version $app --no-install --no-git $template $* 2>/dev/null"
 
 	cd "$app" || stop_function
 
@@ -72,4 +78,14 @@ function astro_clone() {
 	reload_watcherd_message
 	welcome_to_new_app_message "$app"
 	vhost_start "$vhost"
+}
+
+# Ask for Astro template
+function ask_astro_template() {
+	local template
+
+	template=${1:-$(ask "Please enter Astro $(style "template" underline bold) to use")}
+
+	echo "$template"
+	return 0
 }
