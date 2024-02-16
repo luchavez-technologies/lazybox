@@ -11,7 +11,7 @@ function whereami() {
 
   if echo "$absolute" | grep -q "^$default"; then
       vhost=${absolute#$default}
-      relative="$workspace_dir/$vhost"
+      relative="$workspace_dir$vhost"
       vhost=${vhost#/}
       vhost=${vhost%%/*}
   fi

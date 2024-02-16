@@ -404,7 +404,7 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_USERNAME:-root}
       - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD:-root}
-      - MINIO_BROWSER_REDIRECT_URL=https://minio.dvl.to
+      - MINIO_BROWSER_REDIRECT_URL=https://minio.${TLD_SUFFIX}
     networks:
       app_net:
         ipv4_address: 172.16.238.199
